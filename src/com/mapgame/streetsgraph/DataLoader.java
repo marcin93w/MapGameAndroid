@@ -16,7 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class DataLoader {
-	String url = "http://172.16.56.105/~me/MapGame/ajaxGate.php?getWays";
+	String url = "http://192.168.43.200/~me/MapGame/ajaxGate.php?getWays";
 	
 	public List<Way> loadData() throws DataLoadException {
         InputStream inputStream = null;
@@ -57,7 +57,7 @@ public class DataLoader {
 				ArrayList<Point> points = new ArrayList<Point>();
 				for(int j=0; j<geom.length(); j++) {
 					JSONArray lonLat = geom.getJSONArray(j);
-					Point point = new Point(lonLat.optDouble(0), lonLat.getDouble(1));
+					Point point = new Point(lonLat.optDouble(1), lonLat.getDouble(0));
 					points.add(point);
 				}
 				
@@ -82,7 +82,7 @@ public class DataLoader {
 					JSONArray jsonPrevBackward = jObj.getJSONArray("prevBackward");				
 					for(int j=0; j<jsonPrevBackward.length(); j++) {
 		                prevBackward.add(ways.get(jsonPrevBackward.getInt(j)));
-		            }
+					}
 				} catch (JSONException e) {
 					//nie ma pola w jsonie wiec ta lista sasiadow jest pusta
 				}
@@ -93,7 +93,7 @@ public class DataLoader {
 					JSONArray jsonPrevForward = jObj.getJSONArray("prevForward");				
 					for(int j=0; j<jsonPrevForward.length(); j++) {
 		                prevForward.add(ways.get(jsonPrevForward.getInt(j)));
-		            }
+					}
 				} catch (JSONException e) {
 					//nie ma pola w jsonie wiec ta lista sasiadow jest pusta
 				}
@@ -104,7 +104,7 @@ public class DataLoader {
 					JSONArray jsonNextBackward = jObj.getJSONArray("nextBackward");				
 					for(int j=0; j<jsonNextBackward.length(); j++) {
 		                nextBackward.add(ways.get(jsonNextBackward.getInt(j)));
-		            }
+					}
 				} catch (JSONException e) {
 					//nie ma pola w jsonie wiec ta lista sasiadow jest pusta
 				}

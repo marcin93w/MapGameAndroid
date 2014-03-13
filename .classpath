@@ -7,5 +7,6 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="lib" path="/home/me/android-workspace/MapGame/libs/osmdroid-android-4.1.jar"/>
 	<classpathentry kind="lib" path="/home/me/android-workspace/MapGame/libs/slf4j-api-1.7.6.jar"/>
+	<classpathentry kind="lib" path="/home/me/android-workspace/MapGame/libs/osmdroid-android-4.1-javadoc.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
