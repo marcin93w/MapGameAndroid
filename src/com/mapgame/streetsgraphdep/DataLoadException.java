@@ -1,4 +1,4 @@
-package com.mapgame.streetsgraph;
+package com.mapgame.streetsgraphdep;
 
 public class DataLoadException extends Exception {
 

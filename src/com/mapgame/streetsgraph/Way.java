@@ -3,59 +3,27 @@ package com.mapgame.streetsgraph;
 import java.util.ArrayList;
 
 public class Way {
-	ArrayList<Point> points;
-	boolean oneway;
+	ArrayList<Point> geometry;
+	boolean forwardEnabled;
+	boolean backwardEnabled;
 	
-	//neighbors
-	ArrayList<Way> prevForward;
-	ArrayList<Way> prevBackward;
-	ArrayList<Way> nextForward;
-	ArrayList<Way> nextBackward;
-	
-	public Way(ArrayList<Point> points, boolean oneway) {
+	public Way(ArrayList<Point> geometry, boolean canForward, boolean canBackward) {
 		super();
-		this.points = points;
-		this.oneway = oneway;
+		this.geometry = geometry;
+		this.forwardEnabled = canForward;
+		this.backwardEnabled = canBackward;
 	}
-
-	public ArrayList<Point> getPoints() {
-		return points;
+	
+	public ArrayList<Point> getGeometry() {
+		return geometry;
 	}
-
-	public boolean isOneway() {
-		return oneway;
+	
+	public boolean isForwardEnabled() {
+		return forwardEnabled;
 	}
-
-	public ArrayList<Way> getPrevForward() {
-		return prevForward;
-	}
-
-	public void setPrevForward(ArrayList<Way> prevForward) {
-		this.prevForward = prevForward;
-	}
-
-	public ArrayList<Way> getPrevBackward() {
-		return prevBackward;
-	}
-
-	public void setPrevBackward(ArrayList<Way> prevBackward) {
-		this.prevBackward = prevBackward;
-	}
-
-	public ArrayList<Way> getNextForward() {
-		return nextForward;
-	}
-
-	public void setNextForward(ArrayList<Way> nextForward) {
-		this.nextForward = nextForward;
-	}
-
-	public ArrayList<Way> getNextBackward() {
-		return nextBackward;
-	}
-
-	public void setNextBackward(ArrayList<Way> nextBackward) {
-		this.nextBackward = nextBackward;
+	
+	public boolean isBackwardEnabled() {
+		return backwardEnabled;
 	}
 	
 }

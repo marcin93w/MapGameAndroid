@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.osmdroid.views.MapController;
 
-import com.mapgame.streetsgraph.Point;
+import com.mapgame.streetsgraphdep.Point;
 
 public class Map {
 	MapController controller;

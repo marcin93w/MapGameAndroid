@@ -1,4 +1,4 @@
-package com.mapgame.streetsgraph;
+package com.mapgame.streetsgraphdep;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -12,9 +12,9 @@ import android.widget.Toast;
 
 import com.mapgame.engine.Engine;
 import com.mapgame.mapprojection.Map;
-import com.mapgame.streetsgraph.DataLoadException;
-import com.mapgame.streetsgraph.DataLoader;
-import com.mapgame.streetsgraph.Way;
+import com.mapgame.streetsgraphdep.DataLoadException;
+import com.mapgame.streetsgraphdep.DataLoader;
+import com.mapgame.streetsgraphdep.Way;
 
 public class MainActivity extends Activity {
 

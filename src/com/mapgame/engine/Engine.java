@@ -2,7 +2,7 @@ package com.mapgame.engine;
 
 import com.mapgame.mapprojection.Map;
 import com.mapgame.mapprojection.MapMenageable;
-import com.mapgame.streetsgraph.Way;
+import com.mapgame.streetsgraphdep.Way;
 
 public class Engine implements MapMenageable {
 	Map map;
