@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.mapgame.streetsgraph.Point;
 
@@ -17,7 +18,7 @@ public class SpatialiteDb {
 	public SpatialiteDb() {
 		try {
             String sdcardDir = "/mnt/ext_card/spatialite/";
-            File spatialDbFile = new File(sdcardDir+"italy.sqlite");
+            File spatialDbFile = new File(sdcardDir+"dbb.sqlite");
 
             db = new jsqlite.Database();
             db.open(spatialDbFile.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE
@@ -28,7 +29,8 @@ public class SpatialiteDb {
 	}
 	
 	protected ArrayList<Point> geoJSONToPointsList(String json) throws JSONException {
-		JSONArray geom = new JSONArray(json);
+		JSONObject way = new JSONObject(json);
+		JSONArray geom = way.getJSONArray("coordinates");
 		ArrayList<Point> points = new ArrayList<Point>();
 		for(int j=0; j<geom.length(); j++) {
 			JSONArray lonLat = geom.getJSONArray(j);

@@ -1,7 +1,6 @@
 package com.mapgame;
 
-import java.util.ArrayList;
-
+import org.json.JSONException;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 
@@ -12,9 +11,8 @@ import android.widget.Toast;
 
 import com.mapgame.engine.Engine;
 import com.mapgame.mapprojection.Map;
-import com.mapgame.streetsgraphdep.DataLoadException;
-import com.mapgame.streetsgraphdep.DataLoader;
-import com.mapgame.streetsgraphdep.Way;
+import com.mapgame.streetsgraph.StreetsDataSource;
+import com.mapgame.streetsgraph.Way;
 
 public class MainActivity extends Activity {
 
@@ -27,23 +25,26 @@ public class MainActivity extends Activity {
 	    setContentView(R.layout.activity_main);
 	    
 	    MapView myOpenMapView = (MapView)findViewById(R.id.mapview);
-	    myOpenMapView.setBuiltInZoomControls(true);
-	    myOpenMapView.setClickable(true);
-	    map = new Map((MapController)myOpenMapView.getController());
-	    engine = new Engine(map);
+	    myOpenMapView.setBuiltInZoomControls(false);
+	    myOpenMapView.setClickable(false);
+	    map = new Map((MapController)myOpenMapView.getController(), this);
 	    
-	    DataLoader dl = new DataLoader();
+	    StreetsDataSource ds = new StreetsDataSource();
+	    engine = new Engine(map, ds);
+	    
 	    try {
-			ArrayList<Way> ways = (ArrayList<Way>) dl.loadData();
-			if(ways.isEmpty())
+			Way way = ds.getRandomWay();
+			if(way == null)
 				Toast.makeText(getApplicationContext(), "empty :(", Toast.LENGTH_LONG).show();
 			else {
 				Toast.makeText(getApplicationContext(), "success :)", Toast.LENGTH_LONG).show();
-				engine.drive(ways.get(0));
+				engine.drive(way);
 			}
 			
-		} catch (DataLoadException e) {
-			Toast.makeText(getApplicationContext(), e.getInnerException().getMessage(), Toast.LENGTH_LONG).show();
+		} catch (jsqlite.Exception e) {
+			Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+		} catch (JSONException e) {
+			Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 		}
 	    
 	}

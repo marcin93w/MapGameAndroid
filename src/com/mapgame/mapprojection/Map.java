@@ -4,20 +4,23 @@ import java.util.ArrayList;
 
 import org.osmdroid.views.MapController;
 
-import com.mapgame.streetsgraphdep.Point;
+import android.app.Activity;
+
+import com.mapgame.streetsgraph.Point;
 
 public class Map {
 	MapController controller;
+	Activity mapActivity;
 	
 	final int zoom = 17;
-    final double moveStep = 0.00004;
-    final int moveTimeout = 30;
+    final double moveStep = 0.000055;
+    final int moveTimeout = 40;
     
     Point position;
 
-	public Map(MapController controller) {
-		super();
+	public Map(MapController controller, Activity mapActivity) {
 		this.controller = controller;
+		this.mapActivity = mapActivity;
 		
 		controller.setZoom(zoom);
 	}
@@ -57,8 +60,14 @@ public class Map {
 
 		@Override
 		public void run() {
-			for(Point point : movePoints) {
-				controller.setCenter(point);
+			for(final Point point : movePoints) {
+				mapActivity.runOnUiThread(new Runnable() {					
+					@Override
+					public void run() {
+						controller.setCenter(point);				
+					}
+				});
+				
 				try {
 					sleep(moveTimeout);
 				} catch (InterruptedException e) {

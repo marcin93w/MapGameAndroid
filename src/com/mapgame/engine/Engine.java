@@ -1,26 +1,33 @@
 package com.mapgame.engine;
 
+import java.util.ArrayList;
+import java.util.Random;
+
+import jsqlite.Exception;
+
+import org.json.JSONException;
+
 import com.mapgame.mapprojection.Map;
 import com.mapgame.mapprojection.MapMenageable;
-import com.mapgame.streetsgraphdep.Way;
+import com.mapgame.streetsgraph.CarPosition;
+import com.mapgame.streetsgraph.StreetsDataSource;
+import com.mapgame.streetsgraph.Way;
 
 public class Engine implements MapMenageable {
 	Map map;
+	StreetsDataSource sds;
 
-	Way currentWay;
-	int currentPointId;
-	boolean backward;
+	CarPosition car;
 	
-	public Engine(Map map) {
+	public Engine(Map map, StreetsDataSource ds) {
 		this.map = map;
+		this.sds = ds;
 	}
 
 	public void drive(Way startWay) {
-		currentWay = startWay;
-        currentPointId = 0;
-        backward = false;
-        map.setPosition(currentWay.getPoints().get(currentPointId));
-        map.moveTo(currentWay.getPoints().get(++currentPointId), this);
+		car = new CarPosition(startWay, false);
+        map.setPosition(car.getPoint());
+        map.moveTo(car.getNextPoint(), this);
 	}
 
 	@Override
@@ -29,20 +36,23 @@ public class Engine implements MapMenageable {
 	}
 
 	private void continueDrive() {
-		int step = backward ? -1 : 1;
-        if(!((backward && currentPointId == 0) || (!backward && currentPointId == currentWay.getPoints().size()-1))) {
-        	//node is not a crossroad
-            map.moveTo(currentWay.getPoints().get(currentPointId += step), this);
+        if(!car.isOnCrossroad()) {
+            map.moveTo(car.getNextPoint(), this);
         } else {
-            //node is a crossroad
-            if(currentWay.getNextForward() != null && !currentWay.getNextForward().isEmpty()) {
-            	currentWay = currentWay.getNextForward().get(0);
-            	backward = false;
-            	currentPointId = 0;
-            	continueDrive();
-            }
-        	
-        	/*var crossroad = new CrossroadSolver(currentWay.points[currentPointId], currentWay.points[currentPointId - step]);
+        	ArrayList<CarPosition> crossroadPositions = null;
+            try {
+				crossroadPositions = sds.getPossiblePositionsFromCrossroad(car.getCrossroadNode());
+			} catch (Exception e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+            
+            Random rand = new Random();
+            car = crossroadPositions.get(rand.nextInt(crossroadPositions.size()));
+            continueDrive();
+        	/*
+        	var crossroad = new CrossroadSolver(currentWay.points[currentPointId], currentWay.points[currentPointId - step]);
             
             var turnAngle = getTurnAngle();
             crossroad.turn(turnAngle);
