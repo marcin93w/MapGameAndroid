@@ -1,3 +1,10 @@
+/bin/classes/com/mapgame/GameSurface.class
+/bin/classes/com/mapgame/overlaycomponents/Component.class
+/bin/classes/com/mapgame/overlaycomponents/ComponentsManager.class
+/bin/classes/com/mapgame/overlaycomponents/DirectionArrow.class
+/bin/classes/com/mapgame/streetsgraph/DirectionVector.class
+/bin/classes/com/mapgame/turnsensor/TurnSensor.class
+/bin/classes/com/mapgame/turnsensor/Turnable.class
 /bin/classes/com/mapgame/mapprojection/Map$MoveAnimation$1.class
 /bin/classes/com/mapgame/streetsgraph/CarPosition.class
 /bin/classes/com/mapgame/streetsgraph/SpatialiteDb.class

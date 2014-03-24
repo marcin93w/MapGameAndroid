@@ -1,7 +1,6 @@
 package com.mapgame.engine;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import jsqlite.Exception;
 
@@ -9,19 +8,25 @@ import org.json.JSONException;
 
 import com.mapgame.mapprojection.Map;
 import com.mapgame.mapprojection.MapMenageable;
+import com.mapgame.overlaycomponents.ComponentsManager;
 import com.mapgame.streetsgraph.CarPosition;
 import com.mapgame.streetsgraph.StreetsDataSource;
 import com.mapgame.streetsgraph.Way;
+import com.mapgame.turnsensor.Turnable;
 
-public class Engine implements MapMenageable {
+public class Engine implements MapMenageable, Turnable {
 	Map map;
 	StreetsDataSource sds;
+	ComponentsManager cm;
 
 	CarPosition car;
+	int turnAngle = 0;
+	boolean stop = false;
 	
-	public Engine(Map map, StreetsDataSource ds) {
+	public Engine(Map map, StreetsDataSource ds, ComponentsManager cm) {
 		this.map = map;
 		this.sds = ds;
+		this.cm = cm;
 	}
 
 	public void drive(Way startWay) {
@@ -29,15 +34,38 @@ public class Engine implements MapMenageable {
         map.setPosition(car.getPoint());
         map.moveTo(car.getNextPoint(), this);
 	}
+	
+	public void drive() {
+		try {
+			drive(sds.getRandomWay());
+		} catch (Exception e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void stop() {
+		stop = true;
+	}
+	
+	@Override
+	public void turn(int degrees) {
+		turnAngle = degrees;
+		if(car != null)
+		cm.drawDirectionArrow(car.getDirectionVector().rotate(degrees));
+	}
 
 	@Override
 	public void mapMoveFinished() {
-		continueDrive();
+		if(!stop)
+			continueDrive();
 	}
 
 	private void continueDrive() {
         if(!car.isOnCrossroad()) {
             map.moveTo(car.getNextPoint(), this);
+            cm.drawDirectionArrow(car.getDirectionVector().rotate(turnAngle));
         } else {
         	ArrayList<CarPosition> crossroadPositions = null;
             try {
@@ -48,24 +76,16 @@ public class Engine implements MapMenageable {
 				e.printStackTrace();
 			}
             
-            Random rand = new Random();
-            car = crossroadPositions.get(rand.nextInt(crossroadPositions.size()));
-            continueDrive();
-        	/*
-        	var crossroad = new CrossroadSolver(currentWay.points[currentPointId], currentWay.points[currentPointId - step]);
+            CrossroadSolver crossroad = new CrossroadSolver(car.getPoint(), 
+            		car.getPrevPoint(),
+            		turnAngle);
             
-            var turnAngle = getTurnAngle();
-            crossroad.turn(turnAngle);
-            if(turnAngle <= 90 || turnAngle >= 270)
-                crossroad.canTurnAround = false;
+            for(CarPosition possiblePosition : crossroadPositions) {
+            	crossroad.addArm(possiblePosition);
+            }
             
-            crossroad.addAllWaysAsArms(currentWay, backward);        
-            var chosenArm = crossroad.getClosestArm();
-            
-            currentWay = chosenArm.way;
-            backward = chosenArm.backward;
-            currentPointId = backward ? currentWay.points.length - 1 : 0;
-            continueDrive();*/         
+            car = crossroad.getNextPosition();
+            continueDrive();   
         }
 		
 	}

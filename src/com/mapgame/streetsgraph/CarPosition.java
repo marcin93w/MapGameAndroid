@@ -1,5 +1,6 @@
 package com.mapgame.streetsgraph;
 
+
 /*
  * Class represents position (point) that car can be on
  */
@@ -16,6 +17,7 @@ public class CarPosition {
 		this.way = way;
 		this.backward = backward;
 		this.pointId = backward ? way.getGeometry().size() - 1 : 0;
+
 	}
 
 	public Point getPoint() {
@@ -24,6 +26,11 @@ public class CarPosition {
 	
 	public Point getNextPoint() {
 		pointId += backward ? -1 : 1;
+		return getPoint();
+	}
+	
+	public Point getPrevPoint() {
+		pointId += backward ? 1 : -1;
 		return getPoint();
 	}
 	
@@ -46,4 +53,30 @@ public class CarPosition {
 		else
 			return way.getEndNode();
 	}
+
+	public Way getWay() {
+		return way;
+	}
+
+	public boolean isBackward() {
+		return backward;
+	}
+	
+	public DirectionVector getDirectionVector() {
+		Point a,b;
+		if(pointId < way.getGeometry().size()-1) {
+			a = way.getGeometry().get(pointId); 
+			b = way.getGeometry().get(pointId+1);
+		} else {
+			a = way.getGeometry().get(pointId-1);
+			b = way.getGeometry().get(pointId);
+		}
+		
+		if(backward) {
+			return (new DirectionVector(b,a));
+		} else {
+			return (new DirectionVector(a,b));
+		}
+	}
+	
 }
