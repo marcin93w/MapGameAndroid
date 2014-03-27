@@ -1,4 +1,4 @@
-package com.mapgame.turnsensor;
+package com.mapgame.sensorturn;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -6,9 +6,9 @@ import android.hardware.SensorEventListener;
 
 public class TurnSensor implements SensorEventListener {
 
-	private Turnable receiver;
+	private SensorTurnable receiver;
 	
-	public TurnSensor(Turnable receiver) {
+	public TurnSensor(SensorTurnable receiver) {
 		this.receiver = receiver;
 	}
 

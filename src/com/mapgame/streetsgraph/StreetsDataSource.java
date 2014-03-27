@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.json.JSONException;
 
+import com.mapgame.engine.CarPosition;
 import com.mapgame.streetsgraph.Way;
 
 import jsqlite.Exception;

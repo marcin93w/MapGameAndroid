@@ -1,6 +1,6 @@
 package com.mapgame.overlaycomponents;
 
-import com.mapgame.streetsgraph.DirectionVector;
+import com.mapgame.engine.DirectionVector;
 
 import android.graphics.Canvas;
 import android.graphics.Color;

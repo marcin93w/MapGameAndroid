@@ -1,4 +1,6 @@
-package com.mapgame.streetsgraph;
+package com.mapgame.engine;
+
+import com.mapgame.streetsgraph.Point;
 
 
 public class DirectionVector {
@@ -10,11 +12,27 @@ public class DirectionVector {
 	    this.b = p2.getLatitude() - p1.getLatitude();
 	}
 	
-	public double getAngle (DirectionVector other) {
+	public DirectionVector(double a, double b) {
+		this.a = a;
+		this.b = b;
+	}
+	
+	public double getAbsAngle (DirectionVector other) {
 	    return Math.acos(
 	            (this.a*other.a + this.b*other.b) / 
 	            (Math.sqrt(this.a*this.a+this.b*this.b)*Math.sqrt(other.a*other.a+other.b*other.b))
 	        );
+	}
+	
+	public double getAngleInDegrees(DirectionVector other) {
+		double angle = getAbsAngle(other);
+		if(b>0)
+			angle = -angle;
+		return radToDegrees(angle);
+	}
+	
+	private double radToDegrees(double rad) {
+		return (rad/Math.PI)*180;
 	}
 
 	public double getA() {

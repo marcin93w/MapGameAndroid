@@ -1,4 +1,7 @@
-package com.mapgame.streetsgraph;
+package com.mapgame.engine;
+
+import com.mapgame.streetsgraph.Point;
+import com.mapgame.streetsgraph.Way;
 
 
 /*
