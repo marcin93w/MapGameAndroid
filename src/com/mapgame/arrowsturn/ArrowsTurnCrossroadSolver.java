@@ -4,19 +4,29 @@ import java.util.ArrayList;
 
 import com.mapgame.engine.CarPosition;
 import com.mapgame.engine.CrossroadSolver;
-import com.mapgame.streetsgraph.Point;
+import com.mapgame.engine.DirectionVector;
 
 public class ArrowsTurnCrossroadSolver extends CrossroadSolver {
 
-	protected ArrowsTurnCrossroadSolver(Point center, Point previous,
+	CarPosition chosenPosition;
+	
+	protected ArrowsTurnCrossroadSolver(DirectionVector vector,
 			ArrayList<CarPosition> arms) {
-		super(center, previous, arms);
-		// TODO Auto-generated constructor stub
+		super(vector, arms);
+		chosenPosition = getArmClosestToDirectionVector();
+	}
+
+	public CarPosition getChosenPosition() {
+		return chosenPosition;
+	}
+
+	public void setChosenPosition(CarPosition chosenPosition) {
+		this.chosenPosition = chosenPosition;
 	}
 
 	@Override
 	public CarPosition getNextPosition() {
-		return getArmClosestToDirectionVector();
+		return chosenPosition;
 	}
 
 }

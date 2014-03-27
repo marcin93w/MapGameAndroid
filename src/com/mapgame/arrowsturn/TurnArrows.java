@@ -1,17 +1,21 @@
 package com.mapgame.arrowsturn;
 
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 
 import android.app.Activity;
-import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 
 import com.mapgame.R;
+import com.mapgame.engine.CarPosition;
 import com.mapgame.engine.DirectionVector;
 
 public class TurnArrows {
@@ -20,7 +24,11 @@ public class TurnArrows {
 	
 	ArrayList<ImageView> arrows;
 	
-	final int distanceFromCenter = 200;
+	Semaphore s;
+	
+	ArrowsTurnCrossroadSolver crossroad;
+	
+	final int distanceFromCenter = 150;
 	final int imageWidth = 256;
 	final int imageHeight = 256;
 	int halfWidthInDp, halfHeightInDp;
@@ -29,16 +37,63 @@ public class TurnArrows {
 		this.mainActivity = mainActivity;
 		this.view = view;
 		arrows = new ArrayList<ImageView>();
-		halfWidthInDp = convertPixelsToDp(imageWidth/2);
-		halfHeightInDp = convertPixelsToDp(imageHeight/2);
+		
+		s = new Semaphore(1);
+		
+		DisplayMetrics displayMetrics = mainActivity.getApplicationContext().
+	    		getResources().getDisplayMetrics();
+		
+	    halfWidthInDp = Math.round(imageWidth/2 / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+		halfHeightInDp = Math.round(imageHeight/2 / (displayMetrics.ydpi / DisplayMetrics.DENSITY_DEFAULT));
+	}
+	
+	public void setCrossroad(ArrowsTurnCrossroadSolver crossroad) {
+		this.crossroad = crossroad;
+		clearArrows();
 	}
 	 
-	public void setArrow(DirectionVector vector) {
+	public void setArrow(final CarPosition position, boolean main) {
+		DirectionVector vector = position.getDirectionVector();
         final ImageView imageView = new ImageView(mainActivity.getApplicationContext());
-        imageView.setImageResource(R.drawable.transparrent_arrow);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-        		RelativeLayout.LayoutParams.WRAP_CONTENT, 
-        		RelativeLayout.LayoutParams.WRAP_CONTENT);
+        if(main)
+        	imageView.setImageResource(R.drawable.transparrent_arrow_framea);
+        else
+        	imageView.setImageResource(R.drawable.transparrent_arrow);
+        
+        locateArrow(imageView, vector);
+        //vector [1,0] is default image Arrow vector
+        rotateArrow(imageView, (float)vector.getAngleInDegrees(new DirectionVector(1, 0)));
+        
+        imageView.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View arg0, MotionEvent arg1) {
+				s.acquireUninterruptibly();
+				for(ImageView arrow : arrows) {
+					arrow.setImageResource(R.drawable.transparrent_arrow);
+				}
+				s.release();
+				imageView.setImageResource(R.drawable.transparrent_arrow_framea);
+				crossroad.setChosenPosition(position);
+				return false;
+			}
+		});
+        
+        mainActivity.runOnUiThread(new Runnable() {			
+			@Override
+			public void run() {
+				view.addView(imageView);
+			}
+		});
+
+		s.acquireUninterruptibly();
+        arrows.add(imageView);
+		s.release();
+	}
+	
+	private void locateArrow(ImageView view, DirectionVector vector) {
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+        		LayoutParams.WRAP_CONTENT,
+        		LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.RIGHT_OF, R.id.fakeView);
         params.addRule(RelativeLayout.ABOVE, R.id.fakeView);
         
@@ -46,24 +101,13 @@ public class TurnArrows {
         params.setMargins((int)vector.getA()-halfWidthInDp, 0, 0,
         		(int)vector.getB()-halfHeightInDp);
 
-        //vector [1,0] is default image Arrow vector
-        rotate(imageView, (float)vector.getAngleInDegrees(new DirectionVector(1, 0)));
-        
-        imageView.setLayoutParams(params);
-        
-        mainActivity.runOnUiThread(new Runnable() {			
-			@Override
-			public void run() {
-		        view.addView(imageView);			
-			}
-		});
-        arrows.add(imageView);
+        view.setLayoutParams(params);
 	}
 	
-	private void rotate(ImageView imageView, float angle) {
+	private void rotateArrow(ImageView imageView, float angle) {
 		Matrix matrix=new Matrix();
 		imageView.setScaleType(ScaleType.MATRIX);   //required
-		matrix.postRotate(angle, halfWidthInDp, halfHeightInDp);
+		matrix.preRotate(angle, halfWidthInDp, halfHeightInDp);
 		imageView.setImageMatrix(matrix);
 	}
 	
@@ -71,16 +115,18 @@ public class TurnArrows {
 		mainActivity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
+				s.acquireUninterruptibly();
 				for(View arrow : arrows)
 					view.removeView(arrow);
+				s.release();
 			}
 		});
 	}
 	
-	private int convertPixelsToDp(float px){
-	    Resources resources = mainActivity.getApplicationContext().getResources();
-	    DisplayMetrics metrics = resources.getDisplayMetrics();
-	    int dp = (int) (px / (metrics.densityDpi / 160f));
+	public int pxToDp(int px) {
+	    DisplayMetrics displayMetrics = mainActivity.getApplicationContext().
+	    		getResources().getDisplayMetrics();
+	    int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
 	    return dp;
 	}
 }

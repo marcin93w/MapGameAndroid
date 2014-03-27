@@ -2,6 +2,7 @@ package com.mapgame.engine;
 
 import org.json.JSONException;
 
+import com.mapgame.arrowsturn.ArrowsTurnCrossroadSolverFactory;
 import com.mapgame.mapprojection.Map;
 import com.mapgame.mapprojection.MapMenageable;
 import com.mapgame.overlaycomponents.ComponentsManager;
@@ -30,6 +31,7 @@ public class Engine implements MapMenageable {
 		car = new CarPosition(startWay, false);
         map.setPosition(car.getPoint());
         map.moveTo(car.getNextPoint(), this);
+        ((ArrowsTurnCrossroadSolverFactory)csf).initialize(car);
 	}
 	
 	public void drive() {
