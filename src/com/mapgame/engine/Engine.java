@@ -18,9 +18,9 @@ public class Engine implements MapMenageable {
 	CarPosition car;
 	int turnAngle = 0;
 	boolean stop = false;
-	
+
 	public Engine(Map map, StreetsDataSource ds, ComponentsManager cm,
-					CrossroadSolverFactory csf) {
+			CrossroadSolverFactory csf) {
 		this.map = map;
 		this.sds = ds;
 		this.cm = cm;
@@ -29,11 +29,11 @@ public class Engine implements MapMenageable {
 
 	public void drive(Way startWay) {
 		car = new CarPosition(startWay, false);
-        map.setPosition(car.getPoint());
-        map.moveTo(car.getNextPoint(), this);
-        ((ArrowsTurnCrossroadSolverFactory)csf).initialize(car);
+		map.setPosition(car.getPoint());
+		map.moveTo(car.getNextPoint(), this);
+		((ArrowsTurnCrossroadSolverFactory) csf).initialize(car);
 	}
-	
+
 	public void drive() {
 		try {
 			drive(sds.getRandomWay());
@@ -43,27 +43,27 @@ public class Engine implements MapMenageable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void stop() {
 		stop = true;
 	}
 
 	@Override
 	public void mapMoveFinished() {
-		if(!stop)
+		if (!stop)
 			continueDrive();
 	}
 
 	private void continueDrive() {
-        if(!car.isOnCrossroad()) {
-            map.moveTo(car.getNextPoint(), this);
-        } else {
-        	cm.updateCounters(car.getWay().getLength(), car.getWay().getCost());
-            CrossroadSolver crossroad = csf.getCrossroadSolver(car);
-            
-            car = crossroad.getNextPosition();
-            continueDrive();   
-        }
-		
+		if (!car.isOnCrossroad()) {
+			map.moveTo(car.getNextPoint(), this);
+		} else {
+			cm.updateCounters(car.getWay().getLength(), car.getWay().getCost());
+			CrossroadSolver crossroad = csf.getCrossroadSolver(car);
+
+			car = crossroad.getNextPosition();
+			continueDrive();
+		}
+
 	}
 }

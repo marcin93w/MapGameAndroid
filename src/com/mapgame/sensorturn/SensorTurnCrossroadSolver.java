@@ -8,19 +8,19 @@ import com.mapgame.engine.DirectionVector;
 import com.mapgame.streetsgraph.Point;
 
 public class SensorTurnCrossroadSolver extends CrossroadSolver {
-	
-	public SensorTurnCrossroadSolver(Point center, Point previous, int turnDegrees) {
+
+	public SensorTurnCrossroadSolver(Point center, Point previous,
+			int turnDegrees) {
 		super((new DirectionVector(previous, center)).rotate(turnDegrees),
 				new ArrayList<CarPosition>());
 	}
-	
-	public SensorTurnCrossroadSolver(Point center, Point previous, 
+
+	public SensorTurnCrossroadSolver(Point center, Point previous,
 			ArrayList<CarPosition> arms, int turnDegrees) {
-		super((new DirectionVector(previous, center)).rotate(turnDegrees),
-				arms);
+		super((new DirectionVector(previous, center)).rotate(turnDegrees), arms);
 	}
-	
+
 	public CarPosition getNextPosition() {
-	    return getArmClosestToDirectionVector();
+		return getArmClosestToDirectionVector();
 	};
 }

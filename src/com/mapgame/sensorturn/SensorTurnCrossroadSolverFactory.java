@@ -6,18 +6,19 @@ import com.mapgame.engine.CrossroadSolverFactory;
 import com.mapgame.streetsgraph.StreetsDataSource;
 
 public class SensorTurnCrossroadSolverFactory extends CrossroadSolverFactory
-		implements SensorTurnable{
+		implements SensorTurnable {
 
 	private int turnAngle = 0;
-	
+
 	public SensorTurnCrossroadSolverFactory(StreetsDataSource sds) {
 		super(sds);
 	}
-	
+
 	@Override
 	public CrossroadSolver getCrossroadSolver(CarPosition car) {
-		return new SensorTurnCrossroadSolver(car.getPoint(), 
-        		car.getPrevPoint(), getCrossroadArms(car.getCrossroadNode()), turnAngle);
+		return new SensorTurnCrossroadSolver(car.getPoint(),
+				car.getPrevPoint(), getCrossroadArms(car.getCrossroadNode()),
+				turnAngle);
 	}
 
 	@Override
