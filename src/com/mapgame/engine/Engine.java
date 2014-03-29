@@ -58,6 +58,7 @@ public class Engine implements MapMenageable {
         if(!car.isOnCrossroad()) {
             map.moveTo(car.getNextPoint(), this);
         } else {
+        	cm.updateCounters(car.getWay().getLength(), car.getWay().getCost());
             CrossroadSolver crossroad = csf.getCrossroadSolver(car);
             
             car = crossroad.getNextPosition();

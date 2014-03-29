@@ -42,7 +42,7 @@ public class MainActivity extends Activity {
 	    setContentView(R.layout.activity_main);
 	    
 	    initializeMap();
-	    cm = new ComponentsManager();
+	    cm = new ComponentsManager(this);
 	    //initializeDirectionArrowSurfaceView();
 	    sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE); 
 	    onDASurfaceCreated();
@@ -59,6 +59,7 @@ public class MainActivity extends Activity {
 	    map = new Map((MapController)myOpenMapView.getController(), this);
 	}
 	
+	@SuppressWarnings("unused")
 	private void initializeDirectionArrowSurfaceView() {
 		SurfaceView directionArrowSurface = (SurfaceView)findViewById(R.id.surfaceView1);
 	    directionArrowSurface.setZOrderOnTop(true);

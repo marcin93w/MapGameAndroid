@@ -10,21 +10,19 @@ public class Way {
 	int startNode;
 	int endNode;
 	
+	double cost;
+	double length;
+	
 	public Way(ArrayList<Point> geometry, boolean forwardEnabled,
-			boolean backwardEnabled, int startNode, int endNode) {
-		super();
+			boolean backwardEnabled, int startNode, int endNode,
+			double length, double cost) {
 		this.geometry = geometry;
 		this.forwardEnabled = forwardEnabled;
 		this.backwardEnabled = backwardEnabled;
 		this.startNode = startNode;
 		this.endNode = endNode;
-	}
-
-	public Way(ArrayList<Point> geometry, boolean canForward, boolean canBackward) {
-		super();
-		this.geometry = geometry;
-		this.forwardEnabled = canForward;
-		this.backwardEnabled = canBackward;
+		this.cost = cost;
+		this.length = length;
 	}
 	
 	public ArrayList<Point> getGeometry() {
@@ -45,6 +43,14 @@ public class Way {
 
 	public int getEndNode() {
 		return endNode;
+	}
+
+	public double getCost() {
+		return cost;
+	}
+
+	public double getLength() {
+		return length;
 	}
 	
 }

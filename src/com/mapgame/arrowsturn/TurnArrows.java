@@ -106,7 +106,7 @@ public class TurnArrows {
 	
 	private void rotateArrow(ImageView imageView, float angle) {
 		Matrix matrix=new Matrix();
-		imageView.setScaleType(ScaleType.MATRIX);   //required
+		imageView.setScaleType(ScaleType.MATRIX);
 		matrix.preRotate(angle, halfWidthInDp, halfHeightInDp);
 		imageView.setImageMatrix(matrix);
 	}
@@ -121,12 +121,5 @@ public class TurnArrows {
 				s.release();
 			}
 		});
-	}
-	
-	public int pxToDp(int px) {
-	    DisplayMetrics displayMetrics = mainActivity.getApplicationContext().
-	    		getResources().getDisplayMetrics();
-	    int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-	    return dp;
 	}
 }

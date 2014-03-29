@@ -15,7 +15,8 @@ public class StreetsDataSource extends SpatialiteDb {
 	public Way getRandomWay() throws Exception, JSONException {
         Way way = null;
 		String query = "SELECT oneway_fromto, oneway_tofrom, " + 
-						"AsGeoJSON(geometry), node_from, node_to " +
+						"AsGeoJSON(geometry), node_from, node_to, " +
+						"length, cost " +
         				"FROM roads " +
         				"LIMIT 1";
 		
@@ -25,7 +26,8 @@ public class StreetsDataSource extends SpatialiteDb {
             boolean backward = stmt.column_int(1) == 1 ? true : false;
             way = new Way(geoJSONToPointsList(stmt.column_string(2)), 
             		forward, backward,
-            		stmt.column_int(3), stmt.column_int(4));
+            		stmt.column_int(3), stmt.column_int(4),
+            		stmt.column_double(5), stmt.column_double(6));
         }
         stmt.close();
 
@@ -36,7 +38,8 @@ public class StreetsDataSource extends SpatialiteDb {
 			throws Exception, JSONException {
 		ArrayList<CarPosition> positions = new ArrayList<CarPosition>();
 		String query = "SELECT oneway_fromto, oneway_tofrom, " + 
-						"AsGeoJSON(geometry), node_from, node_to " +
+						"AsGeoJSON(geometry), node_from, node_to, " +
+						"length, cost " +
 						"FROM roads " +
 						"WHERE (node_from = "+crossroadNodeId+" AND oneway_fromto = 1) OR " +
 						"(node_to = "+crossroadNodeId+" AND oneway_tofrom = 1)";
@@ -47,7 +50,8 @@ public class StreetsDataSource extends SpatialiteDb {
             boolean canBackward = stmt.column_int(1) == 1 ? true : false;
             Way way = new Way(geoJSONToPointsList(stmt.column_string(2)), 
 	            		canForward, canBackward,
-	            		stmt.column_int(3), stmt.column_int(4));
+	            		stmt.column_int(3), stmt.column_int(4),
+	            		stmt.column_double(5), stmt.column_double(6));
             boolean backward = stmt.column_int(3) == crossroadNodeId ? false : true;
             positions.add(new CarPosition(way, backward));
         }
