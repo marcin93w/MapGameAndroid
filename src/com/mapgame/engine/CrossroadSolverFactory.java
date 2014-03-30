@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.json.JSONException;
 
+import com.mapgame.streetsgraph.Road;
 import com.mapgame.streetsgraph.StreetsDataSource;
 
 public abstract class CrossroadSolverFactory {
@@ -13,19 +14,19 @@ public abstract class CrossroadSolverFactory {
 		this.sds = sds;
 	}
 
-	public abstract CrossroadSolver getCrossroadSolver(CarPosition position);
+	public abstract CrossroadSolver getCrossroadSolver(Road position);
 
-	protected ArrayList<CarPosition> getCrossroadArms(int crossroadNodeId) {
-		ArrayList<CarPosition> crossroadPositions = null;
+	protected ArrayList<Road> getCrossroadArms(int crossroadNodeId) {
+		ArrayList<Road> crossroadRoads = null;
 		try {
-			crossroadPositions = sds
-					.getPossiblePositionsFromCrossroad(crossroadNodeId);
+			crossroadRoads = sds
+					.getPossibleRoadsFromCrossroad(crossroadNodeId);
 		} catch (jsqlite.Exception e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 
-		return crossroadPositions;
+		return crossroadRoads;
 	}
 }

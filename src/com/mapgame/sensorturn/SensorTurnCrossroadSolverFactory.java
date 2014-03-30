@@ -1,8 +1,8 @@
 package com.mapgame.sensorturn;
 
-import com.mapgame.engine.CarPosition;
 import com.mapgame.engine.CrossroadSolver;
 import com.mapgame.engine.CrossroadSolverFactory;
+import com.mapgame.streetsgraph.Road;
 import com.mapgame.streetsgraph.StreetsDataSource;
 
 public class SensorTurnCrossroadSolverFactory extends CrossroadSolverFactory
@@ -15,9 +15,10 @@ public class SensorTurnCrossroadSolverFactory extends CrossroadSolverFactory
 	}
 
 	@Override
-	public CrossroadSolver getCrossroadSolver(CarPosition car) {
-		return new SensorTurnCrossroadSolver(car.getPoint(),
-				car.getPrevPoint(), getCrossroadArms(car.getCrossroadNode()),
+	public CrossroadSolver getCrossroadSolver(Road road) {
+		return new SensorTurnCrossroadSolver(
+				road.createDirectionVector(Road.Position.END), 
+				getCrossroadArms(road.getEndCrossroadNode()),
 				turnAngle);
 	}
 

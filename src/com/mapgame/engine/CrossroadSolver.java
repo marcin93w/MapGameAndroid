@@ -3,39 +3,45 @@ package com.mapgame.engine;
 import java.util.ArrayList;
 
 import com.mapgame.streetsgraph.Point;
+import com.mapgame.streetsgraph.Road;
 
 public abstract class CrossroadSolver {
 	DirectionVector directionVector;
-	ArrayList<CarPosition> arms;
+	protected ArrayList<Road> arms;
 
 	protected CrossroadSolver(Point center, Point previous,
-			ArrayList<CarPosition> arms) {
+			ArrayList<Road> arms) {
 		directionVector = (new DirectionVector(previous, center));
 		this.arms = arms;
 	}
 
 	protected CrossroadSolver(DirectionVector directionVector,
-			ArrayList<CarPosition> arms) {
+			ArrayList<Road> arms) {
 		this.directionVector = directionVector;
 		this.arms = arms;
 	}
 
-	public abstract CarPosition getNextPosition();
+	public abstract Road getNextRoad();
 
-	protected CarPosition getArmClosestToDirectionVector() {
+	protected Road getArmClosestToDirectionVector() {
+		return arms.get(getIndexOfArmClosestToDirectionVector());
+	}
+	
+	protected int getIndexOfArmClosestToDirectionVector() {
 		double angle = Double.MAX_VALUE;
-		CarPosition arm = arms.get(0);
+		int idx = 0;
 
 		for (int i = 0; i < this.arms.size(); i++) {
-			double calculatedAngle = arms.get(i).getDirectionVector()
+			double calculatedAngle = arms.get(i)
+					.createDirectionVector(Road.Position.START)
 					.getAbsAngle(this.directionVector);
 			if (calculatedAngle < angle) {
 				angle = calculatedAngle;
-				arm = this.arms.get(i);
+				idx = i;
 			}
 		}
 
-		return arm;
+		return idx;
 	}
 
 }

@@ -6,6 +6,7 @@ import com.mapgame.arrowsturn.ArrowsTurnCrossroadSolverFactory;
 import com.mapgame.mapprojection.Map;
 import com.mapgame.mapprojection.MapMenageable;
 import com.mapgame.overlaycomponents.ComponentsManager;
+import com.mapgame.streetsgraph.Road;
 import com.mapgame.streetsgraph.StreetsDataSource;
 import com.mapgame.streetsgraph.Way;
 
@@ -15,7 +16,7 @@ public class Engine implements MapMenageable {
 	ComponentsManager cm;
 	CrossroadSolverFactory csf;
 
-	CarPosition car;
+	Car car;
 	int turnAngle = 0;
 	boolean stop = false;
 
@@ -28,10 +29,10 @@ public class Engine implements MapMenageable {
 	}
 
 	public void drive(Way startWay) {
-		car = new CarPosition(startWay, false);
+		car = new Car(new Road(startWay, false));
 		map.setPosition(car.getPoint());
-		map.moveTo(car.getNextPoint(), this);
-		((ArrowsTurnCrossroadSolverFactory) csf).initialize(car);
+		map.moveTo(car.move(), this);
+		((ArrowsTurnCrossroadSolverFactory) csf).initialize(car.getRoad());
 	}
 
 	public void drive() {
@@ -56,12 +57,13 @@ public class Engine implements MapMenageable {
 
 	private void continueDrive() {
 		if (!car.isOnCrossroad()) {
-			map.moveTo(car.getNextPoint(), this);
+			map.moveTo(car.move(), this);
 		} else {
-			cm.updateCounters(car.getWay().getLength(), car.getWay().getCost());
-			CrossroadSolver crossroad = csf.getCrossroadSolver(car);
+			cm.updateCounters(car.getRoad().getWay().getLength(), 
+					car.getRoad().getWay().getCost());
+			CrossroadSolver crossroad = csf.getCrossroadSolver(car.getRoad());
 
-			car = crossroad.getNextPosition();
+			car.setRoad(crossroad.getNextRoad());
 			continueDrive();
 		}
 

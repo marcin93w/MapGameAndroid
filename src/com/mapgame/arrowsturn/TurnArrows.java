@@ -15,8 +15,8 @@ import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 
 import com.mapgame.R;
-import com.mapgame.engine.CarPosition;
 import com.mapgame.engine.DirectionVector;
+import com.mapgame.streetsgraph.Road;
 
 public class TurnArrows {
 	Activity mainActivity;
@@ -54,8 +54,17 @@ public class TurnArrows {
 		clearArrows();
 	}
 
-	public void setArrow(final CarPosition position, boolean main) {
-		DirectionVector vector = position.getDirectionVector();
+	public void addArrow(Road position, boolean main) {
+		addArrow(position, null, main);
+	}
+	
+	public void addArrow(final Road targetRoad, final Road targetRoadChild, 
+			boolean main) {
+		DirectionVector vector;
+		if(targetRoadChild != null)
+			vector = targetRoadChild.createDirectionVector(Road.Position.START);
+		else
+			vector = targetRoad.createDirectionVector(Road.Position.START);
 		final ImageView imageView = new ImageView(
 				mainActivity.getApplicationContext());
 		if (main)
@@ -64,7 +73,6 @@ public class TurnArrows {
 			imageView.setImageResource(R.drawable.transparrent_arrow);
 
 		locateArrow(imageView, vector);
-		// vector [1,0] is default image Arrow vector
 		rotateArrow(imageView,
 				(float) vector.getAngleInDegrees(new DirectionVector(1, 0)));
 
@@ -77,7 +85,7 @@ public class TurnArrows {
 				}
 				s.release();
 				imageView.setImageResource(R.drawable.transparrent_arrow_framea);
-				crossroad.setChosenPosition(position);
+				crossroad.setChosenRoad(targetRoad, targetRoadChild);
 				return false;
 			}
 		});

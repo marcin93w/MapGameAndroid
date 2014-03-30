@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.json.JSONException;
 
-import com.mapgame.engine.CarPosition;
 import com.mapgame.streetsgraph.Way;
 
 import jsqlite.Exception;
@@ -31,9 +30,9 @@ public class StreetsDataSource extends SpatialiteDb {
 		return way;
 	}
 
-	public ArrayList<CarPosition> getPossiblePositionsFromCrossroad(
+	public ArrayList<Road> getPossibleRoadsFromCrossroad(
 			int crossroadNodeId) throws Exception, JSONException {
-		ArrayList<CarPosition> positions = new ArrayList<CarPosition>();
+		ArrayList<Road> positions = new ArrayList<Road>();
 		String query = "SELECT oneway_fromto, oneway_tofrom, "
 				+ "AsGeoJSON(geometry), node_from, node_to, " + "length, cost "
 				+ "FROM roads " + "WHERE (node_from = " + crossroadNodeId
@@ -50,7 +49,7 @@ public class StreetsDataSource extends SpatialiteDb {
 					stmt.column_double(6));
 			boolean backward = stmt.column_int(3) == crossroadNodeId ? false
 					: true;
-			positions.add(new CarPosition(way, backward));
+			positions.add(new Road(way, backward));
 		}
 		stmt.close();
 
