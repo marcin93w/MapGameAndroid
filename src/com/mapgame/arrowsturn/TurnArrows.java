@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 
 import com.mapgame.R;
 import com.mapgame.engine.DirectionVector;
+import com.mapgame.streetsgraph.CrossroadNode;
 import com.mapgame.streetsgraph.Road;
 
 public class TurnArrows {
@@ -25,8 +26,6 @@ public class TurnArrows {
 	ArrayList<ImageView> arrows;
 
 	Semaphore s;
-
-	ArrowsTurnCrossroadSolver crossroad;
 
 	final int distanceFromCenter = 150;
 	final int imageWidth = 256;
@@ -48,23 +47,9 @@ public class TurnArrows {
 		halfHeightInDp = Math.round(imageHeight / 2
 				/ (displayMetrics.ydpi / DisplayMetrics.DENSITY_DEFAULT));
 	}
-
-	public void setCrossroad(ArrowsTurnCrossroadSolver crossroad) {
-		this.crossroad = crossroad;
-		clearArrows();
-	}
-
-	public void addArrow(Road position, boolean main) {
-		addArrow(position, null, main);
-	}
 	
-	public void addArrow(final Road targetRoad, final Road targetRoadChild, 
-			boolean main) {
-		DirectionVector vector;
-		if(targetRoadChild != null)
-			vector = targetRoadChild.createDirectionVector(Road.Position.START);
-		else
-			vector = targetRoad.createDirectionVector(Road.Position.START);
+	public void addArrow(final CrossroadNode targetNode, boolean main) {
+		DirectionVector vector = targetNode.getRoad().createDirectionVector(Road.Position.START);
 		final ImageView imageView = new ImageView(
 				mainActivity.getApplicationContext());
 		if (main)
@@ -85,7 +70,7 @@ public class TurnArrows {
 				}
 				s.release();
 				imageView.setImageResource(R.drawable.transparrent_arrow_framea);
-				crossroad.setChosenRoad(targetRoad, targetRoadChild);
+				targetNode.select();
 				return false;
 			}
 		});

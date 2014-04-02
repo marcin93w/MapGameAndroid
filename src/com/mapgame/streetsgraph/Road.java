@@ -13,9 +13,9 @@ public class Road {
 	
 	public int getEndCrossroadNode() {
 		if(backward)
-			return way.getStartNode();
+			return way.getStartNodeId();
 		else
-			return way.getEndNode();
+			return way.getEndNodeId();
 	}
 
 	public Way getWay() {
@@ -24,6 +24,11 @@ public class Road {
 
 	public boolean isBackward() {
 		return backward;
+	}
+	
+	public Road reverse() {
+		backward = !backward;
+		return this;
 	}
 	
 	public enum Position { START, END };

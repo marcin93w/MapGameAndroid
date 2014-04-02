@@ -37,11 +37,11 @@ public class Way {
 		return backwardEnabled;
 	}
 
-	public int getStartNode() {
+	public int getStartNodeId() {
 		return startNode;
 	}
 
-	public int getEndNode() {
+	public int getEndNodeId() {
 		return endNode;
 	}
 

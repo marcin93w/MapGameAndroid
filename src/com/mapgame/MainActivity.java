@@ -5,8 +5,6 @@ import org.osmdroid.views.MapView;
 
 import android.app.Activity;
 import android.graphics.PixelFormat;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -16,13 +14,11 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.RelativeLayout;
 
-import com.mapgame.arrowsturn.ArrowsTurnCrossroadSolverFactory;
+import com.mapgame.arrowsturn.DrivingController;
 import com.mapgame.arrowsturn.TurnArrows;
-import com.mapgame.engine.CrossroadSolverFactory;
 import com.mapgame.engine.Engine;
 import com.mapgame.mapprojection.Map;
 import com.mapgame.overlaycomponents.ComponentsManager;
-import com.mapgame.sensorturn.TurnSensor;
 import com.mapgame.streetsgraph.StreetsDataSource;
 
 public class MainActivity extends Activity {
@@ -31,10 +27,7 @@ public class MainActivity extends Activity {
 	private Engine engine;
 	private StreetsDataSource ds;
 	private ComponentsManager cm;
-	private CrossroadSolverFactory csf;
-
-	private SensorManager sensorManager;
-	private TurnSensor turnSensor;
+	private DrivingController dc;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,7 +37,6 @@ public class MainActivity extends Activity {
 		initializeMap();
 		cm = new ComponentsManager(this);
 		// initializeDirectionArrowSurfaceView();
-		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		onDASurfaceCreated();
 	}
 
@@ -90,18 +82,10 @@ public class MainActivity extends Activity {
 		// database init
 		ds = new StreetsDataSource();
 
-		csf = new ArrowsTurnCrossroadSolverFactory(ds, ta);
-
-		/*
-		 * /turn sensor init turnSensor = new
-		 * TurnSensor((SensorTurnCrossroadSolverFactory)csf);
-		 * sensorManager.registerListener(turnSensor,
-		 * sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-		 * SensorManager.SENSOR_DELAY_NORMAL); /
-		 */
+		dc = new DrivingController(ta, ds);
 
 		// engine start
-		engine = new Engine(map, ds, cm, csf);
+		engine = new Engine(map, ds, cm, dc);
 		engine.drive();
 	}
 
@@ -120,16 +104,12 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		// TODO pause game onPause
-		sensorManager.registerListener(turnSensor,
-				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-				SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
 	@Override
 	protected void onPause() {
 		// TODO pause game onPause
 		super.onPause();
-		sensorManager.unregisterListener(turnSensor);
 	}
 
 }

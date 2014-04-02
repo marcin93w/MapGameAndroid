@@ -32,7 +32,7 @@ public class StreetsDataSource extends SpatialiteDb {
 
 	public ArrayList<Road> getPossibleRoadsFromCrossroad(
 			int crossroadNodeId) throws Exception, JSONException {
-		ArrayList<Road> positions = new ArrayList<Road>();
+		ArrayList<Road> roads = new ArrayList<Road>();
 		String query = "SELECT oneway_fromto, oneway_tofrom, "
 				+ "AsGeoJSON(geometry), node_from, node_to, " + "length, cost "
 				+ "FROM roads " + "WHERE (node_from = " + crossroadNodeId
@@ -49,11 +49,11 @@ public class StreetsDataSource extends SpatialiteDb {
 					stmt.column_double(6));
 			boolean backward = stmt.column_int(3) == crossroadNodeId ? false
 					: true;
-			positions.add(new Road(way, backward));
+			roads.add(new Road(way, backward));
 		}
 		stmt.close();
 
-		return positions;
+		return roads;
 	}
 
 }
