@@ -17,6 +17,13 @@ public class Road {
 		else
 			return way.getEndNodeId();
 	}
+	
+	public int getStartCrossroadNode() {
+		if(backward)
+			return way.getEndNodeId();
+		else
+			return way.getStartNodeId();
+	}
 
 	public Way getWay() {
 		return way;
@@ -33,7 +40,7 @@ public class Road {
 	
 	public enum Position { START, END };
 	
-	public DirectionVector createDirectionVector(Position position) {
+	public DirectionVector getDirectionVector(Position position) {
 		if(position == Position.START)
 			return createDirectionVector(0);
 		else

@@ -16,7 +16,7 @@ public class CrossroadNode {
 	}
     
     public int getNodeId() {
-    	return road.way.getEndNodeId();
+    	return road.getEndCrossroadNode();
     }
     
     public Road getRoad() {
@@ -41,12 +41,18 @@ public class CrossroadNode {
 			//return children without parent node
 			List<CrossroadNode> list = new ArrayList<CrossroadNode>();
 			for(CrossroadNode child : children) {
-				if(child.getNodeId() != road.getWay().getStartNodeId()) {
+				if(child.getNodeId() != parent.getNodeId()) {
 					list.add(child);
 				}
 			}
 			return list;
 		}
+	}
+	
+	public boolean isReturnToParent(CrossroadNode child) {
+		if(child.getNodeId() == road.getStartCrossroadNode())
+			return true;
+		return false;
 	}
 
 	public void addChildren(List<Road> roadsToChildren) {
@@ -56,6 +62,15 @@ public class CrossroadNode {
 			childNode.parent = this;
 			children.add(childNode);
 		}
+		
+		//if its a one way, dead road - enable turn around
+		if(children.size() == 0) {
+			CrossroadNode backNode = new CrossroadNode(
+					new Road(road.getWay(), !road.isBackward()));
+			backNode.parent = this;
+			children.add(backNode);
+		}
+		
 		selectedChild = getDefaultChild();
 	}
 	
@@ -69,9 +84,9 @@ public class CrossroadNode {
 
 		for (int i = 0; i < children.size(); i++) {
 			DirectionVector vectorToChild = children.get(i).getRoad()
-					.createDirectionVector(Road.Position.START);
+					.getDirectionVector(Road.Position.START);
 			DirectionVector vectorToThis = road
-					.createDirectionVector(Road.Position.END);
+					.getDirectionVector(Road.Position.END);
 			double calculatedAngle = vectorToChild.getAbsAngle(vectorToThis);
 			if (calculatedAngle < angle) {
 				angle = calculatedAngle;
@@ -85,5 +100,16 @@ public class CrossroadNode {
 	public CrossroadNode separate() {
 		parent = null;
 		return this;
+	}
+	
+	public int getLevel() {
+		int level = 0;
+		CrossroadNode p = parent;
+		while(p != null) {
+			p = p.parent;
+			level++;
+		}
+		
+		return level;
 	}
 }

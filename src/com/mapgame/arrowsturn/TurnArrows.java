@@ -16,7 +16,6 @@ import android.widget.RelativeLayout;
 
 import com.mapgame.R;
 import com.mapgame.engine.DirectionVector;
-import com.mapgame.streetsgraph.CrossroadNode;
 import com.mapgame.streetsgraph.Road;
 
 public class TurnArrows {
@@ -48,11 +47,11 @@ public class TurnArrows {
 				/ (displayMetrics.ydpi / DisplayMetrics.DENSITY_DEFAULT));
 	}
 	
-	public void addArrow(final CrossroadNode targetNode, boolean main) {
-		DirectionVector vector = targetNode.getRoad().createDirectionVector(Road.Position.START);
+	public void addArrow(final Arrow arrow) {
+		DirectionVector vector = arrow.node.getRoad().getDirectionVector(Road.Position.START);
 		final ImageView imageView = new ImageView(
 				mainActivity.getApplicationContext());
-		if (main)
+		if (arrow.main)
 			imageView.setImageResource(R.drawable.transparrent_arrow_framea);
 		else
 			imageView.setImageResource(R.drawable.transparrent_arrow);
@@ -70,7 +69,7 @@ public class TurnArrows {
 				}
 				s.release();
 				imageView.setImageResource(R.drawable.transparrent_arrow_framea);
-				targetNode.select();
+				arrow.node.select();
 				return false;
 			}
 		});

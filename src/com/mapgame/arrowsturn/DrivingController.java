@@ -11,7 +11,7 @@ import com.mapgame.streetsgraph.Road;
 import com.mapgame.streetsgraph.StreetsDataSource;
 
 public class DrivingController {
-	final static double minTreeLength = 2;
+	final static double minTreeLength = 100;
 	
 	CrossroadNode treeRoot;
 	TurnArrows arrowsManager;
@@ -36,7 +36,7 @@ public class DrivingController {
 	}
 
 	private void updateTree(Road nextRoad) {
-		treeRoot = treeRoot.getSelectedChild();
+		treeRoot = treeRoot.getSelectedChild().separate();
 		addChildrenToNodeRecursive(treeRoot, minTreeLength);
 	}
 
@@ -65,27 +65,45 @@ public class DrivingController {
 		}
 	}
 	
+	private ArrayList<Arrow> arrows;
+	
 	private void updateArrows() {
 		arrowsManager.clearArrows();
+		arrows = new ArrayList<Arrow>();
 		for(CrossroadNode node : treeRoot.getChildren()) {
-			addArrowsForNodeRecursive(node, 
-					node == treeRoot.getSelectedChild() ? true : false);
+			addArrowsForNodeRecursive(new Arrow(node, 
+					node == treeRoot.getSelectedChild() ? true : false));
+		}
+		for(Arrow arrow : arrows) {
+			if(arrow.active)
+				arrowsManager.addArrow(arrow);
 		}
 	}
 	
-	private void addArrowsForNodeRecursive(CrossroadNode node, boolean main) {
-		if(node.getChildren() == null) {
-			arrowsManager.addArrow(node, main);
-		} else {
-			if(main) {
-				for(CrossroadNode childNode : node.getChildren()) {
-					addArrowsForNodeRecursive(childNode,
-							childNode == node.getSelectedChild() ? true : false);
-				} 
+	private void addArrowsForNodeRecursive(Arrow arrow) {
+		if(!arrows.contains(arrow)) {
+			arrows.add(arrow);
+			if(arrow.node.getChildren() == null) {		
+				arrow.setActive(true);
 			} else {
-				for(CrossroadNode childNode : node.getChildren()) {
-					addArrowsForNodeRecursive(childNode, false);
+				if(!treeRoot.isReturnToParent(arrow.node)) {
+					if(arrow.main) {
+						for(CrossroadNode childNode : arrow.node.getChildren()) {
+							addArrowsForNodeRecursive(new Arrow(childNode,
+									childNode == arrow.node.getSelectedChild() ? true : false));
+						} 
+					} else {
+						for(CrossroadNode childNode : arrow.node.getChildren()) {
+							addArrowsForNodeRecursive(new Arrow(childNode, false));
+						}
+					}
 				}
+			}
+		} else {
+			if(arrows.get(arrows.indexOf(arrow)).node.getLevel() > 
+					arrow.node.getLevel()) {
+				arrows.remove(arrow);
+				addArrowsForNodeRecursive(arrow);
 			}
 		}
 	}
