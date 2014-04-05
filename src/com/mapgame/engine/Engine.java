@@ -48,6 +48,13 @@ public class Engine implements MapMenageable {
 	public void stop() {
 		stop = true;
 	}
+	
+	public void start() {
+		if(stop) {
+			stop = false;
+			continueDrive();
+		}
+	}
 
 	@Override
 	public void mapMoveFinished() {

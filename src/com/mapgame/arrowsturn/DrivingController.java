@@ -71,9 +71,9 @@ public class DrivingController {
 		arrowsManager.clearArrows();
 		arrows = new ArrayList<Arrow>();
 		for(CrossroadNode node : treeRoot.getChildren()) {
-			addArrowsForNodeRecursive(new Arrow(node, 
-					node == treeRoot.getSelectedChild() ? true : false));
+			addArrowsForNodeRecursive(new Arrow(node));
 		}
+		markMainArrow();
 		for(Arrow arrow : arrows) {
 			if(arrow.active)
 				arrowsManager.addArrow(arrow);
@@ -83,29 +83,67 @@ public class DrivingController {
 	private void addArrowsForNodeRecursive(Arrow arrow) {
 		if(!arrows.contains(arrow)) {
 			arrows.add(arrow);
-			if(arrow.node.getChildren() == null) {		
+			if(arrow.node.getChildren() == null || treeRoot.isReturnToParent(arrow.node)) {
+				//jeśli jest liściem w drzewie lub jest kierunkiem zawracania
 				arrow.setActive(true);
 			} else {
-				if(!treeRoot.isReturnToParent(arrow.node)) {
-					if(arrow.main) {
-						for(CrossroadNode childNode : arrow.node.getChildren()) {
-							addArrowsForNodeRecursive(new Arrow(childNode,
-									childNode == arrow.node.getSelectedChild() ? true : false));
-						} 
-					} else {
-						for(CrossroadNode childNode : arrow.node.getChildren()) {
-							addArrowsForNodeRecursive(new Arrow(childNode, false));
-						}
-					}
-				}
+				for(CrossroadNode childNode : arrow.node.getChildren()) {
+					addArrowsForNodeRecursive(new Arrow(childNode));
+				} 
 			}
 		} else {
-			if(arrows.get(arrows.indexOf(arrow)).node.getLevel() > 
-					arrow.node.getLevel()) {
-				arrows.remove(arrow);
+			Arrow currentArrow = arrows.get(arrows.indexOf(arrow));
+			if(currentArrow.node.getLevel() > arrow.node.getLevel()) {
+				arrows.remove(currentArrow);
 				addArrowsForNodeRecursive(arrow);
 			}
 		}
 	}
 	
+	private void markMainArrow() {
+		//FIXME nie zawsze oznacza i jest null pointer wtedy
+		if(!markSelectedArrowAsMain()) {
+			markMostForwardOffspringArrowAsMain();
+		}
+	}
+	
+	private boolean markSelectedArrowAsMain() {
+		CrossroadNode node = treeRoot;
+		while(node.getSelectedChild() != null)
+			node = node.getSelectedChild();
+		
+		while(node != null) {
+			for(Arrow arrow : arrows) {
+				if(arrow.active) {
+					if(arrow.node.getNodeId() == node.getNodeId()) {
+						arrow.main = true;
+						return true;
+					}
+				}
+			}
+			node = node.getParent();
+		}
+		
+		return false;
+	}
+	
+	private void markMostForwardOffspringArrowAsMain() {
+		ArrayList<Arrow> arrowToOffspring = new ArrayList<Arrow>();
+		ArrayList<CrossroadNode> offspring = new ArrayList<CrossroadNode>();
+		for(Arrow arrow : arrows) {
+			if(arrow.active) {
+				arrowToOffspring.add(arrow);
+				offspring.add(arrow.node);
+			}
+		}
+		
+		CrossroadNode lastSelectedNode = treeRoot;
+		while(lastSelectedNode.getSelectedChild() != null) {
+			lastSelectedNode = lastSelectedNode.getSelectedChild();
+		}
+		
+		int indexOfMostForwardOffspring = lastSelectedNode.getIndexOfMostForwardOffspring(offspring);
+		offspring.get(indexOfMostForwardOffspring).select();
+		arrowToOffspring.get(indexOfMostForwardOffspring).main = true;	
+	}
 }

@@ -1,7 +1,5 @@
 package com.mapgame.mapprojection;
 
-import java.util.ArrayList;
-
 import org.osmdroid.views.MapController;
 
 import android.app.Activity;
@@ -13,14 +11,22 @@ public class Map {
 	Activity mapActivity;
 
 	final int zoom = 17;
-	final double moveStep = 0.000055;
+	//double moveStep = 0.000055;
 	final int moveTimeout = 40;
+	
+	double moveStep;
 
 	Point position;
+	
+	MoveAnimation moveAnimation;
 
+	public enum MoveSpeed { FAST, SLOW };
+	
 	public Map(MapController controller, Activity mapActivity) {
 		this.controller = controller;
 		this.mapActivity = mapActivity;
+		
+		this.moveStep = 0.000055;
 
 		controller.setZoom(zoom);
 	}
@@ -29,9 +35,20 @@ public class Map {
 		controller.setCenter(position);
 		this.position = position;
 	}
+	
+	public void setSpeed(MoveSpeed speed) {
+		if(speed == MoveSpeed.FAST) {
+			moveStep = 0.000055;
+		} else {
+			moveStep = 0.00002;
+		}
+		
+		if(moveAnimation != null)
+			moveAnimation.setMoveStep(moveStep);
+	}
 
 	public void moveTo(Point destination, MapMenageable sender) {
-		ArrayList<Point> movePoints = new ArrayList<Point>();
+		/*ArrayList<Point> movePoints = new ArrayList<Point>();
 		int steps = (int) (destination.lonLatDistance(position) / moveStep);
 
 		for (int i = 0; i < steps; i++) {
@@ -43,31 +60,46 @@ public class Map {
 					+ ((destination.getLongitude() - position.getLongitude())
 							/ steps * (i + 1))
 			));
-		}
+		}*/
 
-		(new MoveAnimation(movePoints, sender)).start();
+		moveAnimation = new MoveAnimation(position, destination, sender, moveStep);
+		moveAnimation.start();
 		position = destination;
 	}
 
 	class MoveAnimation extends Thread {
-		ArrayList<Point> movePoints;
+		Point start, end;
 		MapMenageable sender;
 
-		public MoveAnimation(ArrayList<Point> movePoints, MapMenageable sender) {
-			super();
-			this.movePoints = movePoints;
+		int stepsCount;
+		double stepLon, stepLat;
+		
+		public MoveAnimation(Point start, Point end, MapMenageable sender, double moveStep) {
+			this.start = start;
+			this.end = end;
 			this.sender = sender;
+			setMoveStep(moveStep);
+		}
+		
+		public void setMoveStep(double moveStep) {
+			this.stepsCount = (int) (start.lonLatDistance(end) / moveStep);
+			this.stepLat = (end.getLatitude() - start.getLatitude()) / stepsCount;
+			this.stepLon = (end.getLongitude() - start.getLongitude()) / stepsCount;
 		}
 
 		@Override
 		public void run() {
-			for (final Point point : movePoints) {
+			Point p = start;
+			while(p.isBefore(end, stepLon > 0 ? false : true, stepLat > 0 ? false : true)) {
+				final Point point = p;
 				mapActivity.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
 						controller.setCenter(point);
 					}
 				});
+				
+				p = new Point(p.getLatitude() + stepLat, p.getLongitude() + stepLon);
 
 				try {
 					sleep(moveTimeout);

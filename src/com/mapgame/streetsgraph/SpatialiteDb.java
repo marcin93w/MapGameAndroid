@@ -28,6 +28,7 @@ public class SpatialiteDb {
 		}
 	}
 
+	//slowest method!
 	protected ArrayList<Point> geoJSONToPointsList(String json)
 			throws JSONException {
 		JSONObject way = new JSONObject(json);

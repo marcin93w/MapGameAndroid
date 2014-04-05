@@ -15,4 +15,25 @@ public class Point extends GeoPoint {
 				+ (other.getLatitude() - this.getLatitude())
 				* (other.getLatitude() - this.getLatitude()));
 	}
+	
+	public boolean isBefore(Point other, boolean lonBackward, boolean latBackward) {
+		if((this.getLatitude() < other.getLatitude()) && !latBackward) {
+			if((this.getLongitude() < other.getLongitude()) && !lonBackward) {
+				return true;
+			}
+			if((this.getLongitude() > other.getLongitude()) && lonBackward) {
+				return true;
+			}
+		}
+		if((this.getLatitude() > other.getLatitude()) && latBackward) {
+			if((this.getLongitude() < other.getLongitude()) && !lonBackward) {
+				return true;
+			}
+			if((this.getLongitude() > other.getLongitude()) && lonBackward) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }

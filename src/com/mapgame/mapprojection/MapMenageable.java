@@ -1,5 +1,5 @@
 package com.mapgame.mapprojection;
 
-public interface MapMenageable {
+public interface MapMenageable {	
 	void mapMoveFinished();
 }

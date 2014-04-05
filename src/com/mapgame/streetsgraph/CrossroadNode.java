@@ -70,20 +70,15 @@ public class CrossroadNode {
 			backNode.parent = this;
 			children.add(backNode);
 		}
-		
-		selectedChild = getDefaultChild();
 	}
 	
-	private CrossroadNode getDefaultChild() {
-		return children.get(getIndexOfDefaultChild());
-	}
 	
-	private int getIndexOfDefaultChild() {
+	public int getIndexOfMostForwardOffspring(List<CrossroadNode> offspring) {
 		double angle = Double.MAX_VALUE;
 		int idx = 0;
 
-		for (int i = 0; i < children.size(); i++) {
-			DirectionVector vectorToChild = children.get(i).getRoad()
+		for (int i = 0; i < offspring.size(); i++) {
+			DirectionVector vectorToChild = offspring.get(i).getRoad()
 					.getDirectionVector(Road.Position.START);
 			DirectionVector vectorToThis = road
 					.getDirectionVector(Road.Position.END);
@@ -111,5 +106,9 @@ public class CrossroadNode {
 		}
 		
 		return level;
+	}
+
+	public CrossroadNode getParent() {
+		return parent;
 	}
 }

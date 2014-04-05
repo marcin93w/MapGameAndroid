@@ -12,7 +12,10 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
+import android.widget.ToggleButton;
 
 import com.mapgame.arrowsturn.DrivingController;
 import com.mapgame.arrowsturn.TurnArrows;
@@ -49,6 +52,14 @@ public class MainActivity extends Activity {
 			}
 		});
 		map = new Map((MapController) myOpenMapView.getController(), this);
+		
+		ToggleButton slowButton = (ToggleButton) findViewById(R.id.slowButton);
+		slowButton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				map.setSpeed(isChecked ? Map.MoveSpeed.SLOW : Map.MoveSpeed.FAST);
+			}
+		});
 	}
 
 	@SuppressWarnings("unused")
