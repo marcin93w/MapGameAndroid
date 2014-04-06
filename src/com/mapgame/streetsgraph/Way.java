@@ -1,56 +1,67 @@
 package com.mapgame.streetsgraph;
 
-import java.util.ArrayList;
+import com.mapgame.engine.DirectionVector;
 
 public class Way {
-	ArrayList<Point> geometry;
-	boolean forwardEnabled;
-	boolean backwardEnabled;
-
-	int startNode;
-	int endNode;
-
-	double cost;
-	double length;
-
-	public Way(ArrayList<Point> geometry, boolean forwardEnabled,
-			boolean backwardEnabled, int startNode, int endNode, double length,
-			double cost) {
-		this.geometry = geometry;
-		this.forwardEnabled = forwardEnabled;
-		this.backwardEnabled = backwardEnabled;
-		this.startNode = startNode;
-		this.endNode = endNode;
-		this.cost = cost;
-		this.length = length;
+	Road road;
+	boolean backward;
+	
+	public Way(Road road, boolean backward) {
+		this.road = road;
+		this.backward = backward;
+	}
+	
+	public int getEndCrossroadNode() {
+		if(backward)
+			return road.getStartNodeId();
+		else
+			return road.getEndNodeId();
+	}
+	
+	public int getStartCrossroadNode() {
+		if(backward)
+			return road.getEndNodeId();
+		else
+			return road.getStartNodeId();
 	}
 
-	public ArrayList<Point> getGeometry() {
-		return geometry;
+	public Road getRoad() {
+		return road;
 	}
 
-	public boolean isForwardEnabled() {
-		return forwardEnabled;
+	public boolean isBackward() {
+		return backward;
 	}
-
-	public boolean isBackwardEnabled() {
-		return backwardEnabled;
+	
+	public Way reverse() {
+		backward = !backward;
+		return this;
 	}
-
-	int getStartNodeId() {
-		return startNode;
+	
+	public enum Position { START, END };
+	
+	public DirectionVector getDirectionVector(Position position) {
+		if(position == Position.START)
+			return createDirectionVector(0);
+		else
+			return createDirectionVector(road.getGeometry().size()-1);
 	}
-
-	int getEndNodeId() {
-		return endNode;
+	
+	public DirectionVector createDirectionVector(int pointId) {
+		Point a,b;
+		if(pointId < road.getGeometry().size()-1) {
+			a = road.getGeometry().get(pointId); 
+			b = road.getGeometry().get(pointId+1);
+		} else {
+			a = road.getGeometry().get(pointId-1);
+			b = road.getGeometry().get(pointId);
+		}
+		
+		if(backward) {
+			return (new DirectionVector(b,a));
+		} else {
+			return (new DirectionVector(a,b));
+		}
 	}
-
-	public double getCost() {
-		return cost;
-	}
-
-	public double getLength() {
-		return length;
-	}
-
+	
 }

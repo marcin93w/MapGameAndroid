@@ -6,9 +6,9 @@ import com.mapgame.arrowsturn.DrivingController;
 import com.mapgame.mapprojection.Map;
 import com.mapgame.mapprojection.MapMenageable;
 import com.mapgame.overlaycomponents.ComponentsManager;
-import com.mapgame.streetsgraph.Road;
-import com.mapgame.streetsgraph.StreetsDataSource;
 import com.mapgame.streetsgraph.Way;
+import com.mapgame.streetsgraph.StreetsDataSource;
+import com.mapgame.streetsgraph.Road;
 
 public class Engine implements MapMenageable {
 	Map map;
@@ -28,8 +28,8 @@ public class Engine implements MapMenageable {
 		this.dc = dc;
 	}
 
-	public void drive(Way startWay) {
-		car = new Car(new Road(startWay, false));
+	public void drive(Road startWay) {
+		car = new Car(new Way(startWay, false));
 		map.setPosition(car.getPoint());
 		map.moveTo(car.moveAndReturnPoint(), this);
 		dc.initialize(car.getRoad());
@@ -37,7 +37,7 @@ public class Engine implements MapMenageable {
 
 	public void drive() {
 		try {
-			drive(sds.getRandomWay());
+			drive(sds.getWay("Kapelanka"));
 		} catch (jsqlite.Exception e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
@@ -66,8 +66,8 @@ public class Engine implements MapMenageable {
 		if (!car.isOnCrossroad()) {
 			map.moveTo(car.moveAndReturnPoint(), this);
 		} else {
-			cm.updateCounters(car.getRoad().getWay().getLength(), 
-					car.getRoad().getWay().getCost());
+			cm.updateCounters(car.getRoad().getRoad().getLength(), 
+					car.getRoad().getRoad().getCost());
 
 			car.setRoad(dc.getNextRoad());
 			continueDrive();

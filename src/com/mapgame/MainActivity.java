@@ -12,9 +12,12 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.mapgame.arrowsturn.DrivingController;
@@ -35,6 +38,11 @@ public class MainActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+                                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		
 		setContentView(R.layout.activity_main);
 
 		initializeMap();
@@ -88,7 +96,8 @@ public class MainActivity extends Activity {
 	public void onDASurfaceCreated() {
 		// turn Arrows
 		TurnArrows ta = new TurnArrows(this,
-				(RelativeLayout) findViewById(R.id.buttonsPanel));
+				(RelativeLayout) findViewById(R.id.buttonsPanel),
+				(TextView) findViewById(R.id.street));
 
 		// database init
 		ds = new StreetsDataSource();

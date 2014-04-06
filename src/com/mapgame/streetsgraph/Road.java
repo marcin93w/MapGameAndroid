@@ -1,67 +1,92 @@
 package com.mapgame.streetsgraph;
 
-import com.mapgame.engine.DirectionVector;
+import java.util.ArrayList;
+import java.util.Locale;
 
 public class Road {
-	Way way;
-	boolean backward;
 	
-	public Road(Way way, boolean backward) {
-		this.way = way;
-		this.backward = backward;
-	}
+	public enum Class { 
+		MOTORWAY,
+		MOTORWAY_LINK,
+		PRIMARY,
+		PRIMARY_LINK,
+		RESIDENTIAL,
+		SECONDARY,
+		SECONDARY_LINK,
+		TERTIARY,
+		TERTIARY_LINK,
+		TRUNK,
+		TRUNK_LINK,
+		UNCLASSIFIED 
+	};
 	
-	public int getEndCrossroadNode() {
-		if(backward)
-			return way.getStartNodeId();
-		else
-			return way.getEndNodeId();
-	}
+	ArrayList<Point> geometry;
+	boolean forwardEnabled;
+	boolean backwardEnabled;
+
+	int startNode;
+	int endNode;
+
+	double cost;
+	double length;
 	
-	public int getStartCrossroadNode() {
-		if(backward)
-			return way.getEndNodeId();
-		else
-			return way.getStartNodeId();
+	String name;
+	Class roadClass;
+
+	public Road(ArrayList<Point> geometry, boolean forwardEnabled,
+			boolean backwardEnabled, int startNode, int endNode, double length,
+			double cost, String name, String roadClass) {
+		this.geometry = geometry;
+		this.forwardEnabled = forwardEnabled;
+		this.backwardEnabled = backwardEnabled;
+		this.startNode = startNode;
+		this.endNode = endNode;
+		this.cost = cost;
+		this.length = length;
+		this.name = name;
+		this.roadClass = Class.valueOf(roadClass.toUpperCase(Locale.US));
 	}
 
-	public Way getWay() {
-		return way;
+	public ArrayList<Point> getGeometry() {
+		return geometry;
 	}
 
-	public boolean isBackward() {
-		return backward;
+	public boolean isForwardEnabled() {
+		return forwardEnabled;
+	}
+
+	public boolean isBackwardEnabled() {
+		return backwardEnabled;
+	}
+
+	int getStartNodeId() {
+		return startNode;
+	}
+
+	int getEndNodeId() {
+		return endNode;
+	}
+
+	public double getCost() {
+		return cost;
+	}
+
+	public double getLength() {
+		return length;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public Class getRoadClass() {
+		return roadClass;
 	}
 	
-	public Road reverse() {
-		backward = !backward;
-		return this;
+	public boolean isMainRoad() {
+		if(roadClass == Class.RESIDENTIAL || roadClass == Class.UNCLASSIFIED)
+			return false;
+		return true;
 	}
-	
-	public enum Position { START, END };
-	
-	public DirectionVector getDirectionVector(Position position) {
-		if(position == Position.START)
-			return createDirectionVector(0);
-		else
-			return createDirectionVector(way.getGeometry().size()-1);
-	}
-	
-	public DirectionVector createDirectionVector(int pointId) {
-		Point a,b;
-		if(pointId < way.getGeometry().size()-1) {
-			a = way.getGeometry().get(pointId); 
-			b = way.getGeometry().get(pointId+1);
-		} else {
-			a = way.getGeometry().get(pointId-1);
-			b = way.getGeometry().get(pointId);
-		}
-		
-		if(backward) {
-			return (new DirectionVector(b,a));
-		} else {
-			return (new DirectionVector(a,b));
-		}
-	}
-	
+
 }

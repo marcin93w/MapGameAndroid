@@ -1,18 +1,18 @@
 package com.mapgame.engine;
 
 import com.mapgame.streetsgraph.Point;
-import com.mapgame.streetsgraph.Road;
+import com.mapgame.streetsgraph.Way;
 
 public class Car {
-	Road road;
+	Way road;
 	int pointIdx;
 	
-	public Car(Road road) {
+	public Car(Way road) {
 		setRoad(road);
 	}
 	
 	public Point getPoint() {
-		return road.getWay().getGeometry().get(pointIdx);
+		return road.getRoad().getGeometry().get(pointIdx);
 	}
 	
 	public Point moveAndReturnPoint() {
@@ -20,19 +20,19 @@ public class Car {
 		return getPoint();
 	}
 	
-	public Road getRoad() {
+	public Way getRoad() {
 		return road;
 	}
 	
-	public void setRoad(Road road) {
+	public void setRoad(Way road) {
 		this.road = road;
-		pointIdx = road.isBackward() ? road.getWay().getGeometry().size() - 1 : 0;
+		pointIdx = road.isBackward() ? road.getRoad().getGeometry().size() - 1 : 0;
 	}
 
 	public boolean isOnCrossroad() {
 		if(road.isBackward() && pointIdx == 0)
 			return true;
-		if(!road.isBackward() && pointIdx == road.getWay().getGeometry().size()-1)
+		if(!road.isBackward() && pointIdx == road.getRoad().getGeometry().size()-1)
 			return true;
 		return false;
 	}

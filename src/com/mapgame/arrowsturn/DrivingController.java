@@ -7,11 +7,12 @@ import jsqlite.Exception;
 import org.json.JSONException;
 
 import com.mapgame.streetsgraph.CrossroadNode;
-import com.mapgame.streetsgraph.Road;
 import com.mapgame.streetsgraph.StreetsDataSource;
+import com.mapgame.streetsgraph.Way;
 
 public class DrivingController {
-	final static double minTreeLength = 100;
+	final static double minTreeLengthForMainRoads = 100;
+	final static double minTreeLengthForNormalRoads = 30;
 	
 	CrossroadNode treeRoot;
 	TurnArrows arrowsManager;
@@ -22,29 +23,34 @@ public class DrivingController {
 		this.sds = sds;
 	}
 	
-	public void initialize(Road initialRoad) {
+	public void initialize(Way initialRoad) {
 		treeRoot = new CrossroadNode(initialRoad);
-		addChildrenToNodeRecursive(treeRoot, minTreeLength);
+		addChildrenToNodeRecursive(treeRoot, minTreeLengthForMainRoads);
 		updateArrows();
 	}
 	
-	public Road getNextRoad() {
-		Road nextRoad = treeRoot.getSelectedChild().getRoad();
+	public Way getNextRoad() {
+		Way nextRoad = treeRoot.getSelectedChild().getWay();
 		updateTree(nextRoad);
 		updateArrows();
 		return nextRoad;
 	}
 
-	private void updateTree(Road nextRoad) {
+	private void updateTree(Way nextRoad) {
 		treeRoot = treeRoot.getSelectedChild().separate();
-		addChildrenToNodeRecursive(treeRoot, minTreeLength);
+		addChildrenToNodeRecursive(treeRoot, minTreeLengthForMainRoads);
 	}
 
 	private void addChildrenToNodeRecursive(CrossroadNode node, double length) {
 		addChildrenToNode(node);
 		for(CrossroadNode child : node.getChildren()) {
-			double roadToChildLength = child.getRoad().getWay().getLength();
-			if(roadToChildLength < length) {
+			double roadToChildLength = child.getWay().getRoad().getLength();
+			double allowedLength = length;
+			if(!child.getWay().getRoad().isMainRoad()) {
+				allowedLength -= minTreeLengthForMainRoads - minTreeLengthForNormalRoads;
+			}
+			
+			if(roadToChildLength < allowedLength) {
 				addChildrenToNodeRecursive(child, length - roadToChildLength);
 			}
 		}
@@ -52,7 +58,7 @@ public class DrivingController {
 	
 	private void addChildrenToNode(CrossroadNode node) {
 		if(node.getChildren() == null) {
-			ArrayList<Road> childRoads = null;
+			ArrayList<Way> childRoads = null;
 			try {
 				childRoads = sds.getPossibleRoadsFromCrossroad(node.getNodeId());
 			} catch (Exception e) {
@@ -84,7 +90,6 @@ public class DrivingController {
 		if(!arrows.contains(arrow)) {
 			arrows.add(arrow);
 			if(arrow.node.getChildren() == null || treeRoot.isReturnToParent(arrow.node)) {
-				//jeśli jest liściem w drzewie lub jest kierunkiem zawracania
 				arrow.setActive(true);
 			} else {
 				for(CrossroadNode childNode : arrow.node.getChildren()) {
@@ -93,6 +98,8 @@ public class DrivingController {
 			}
 		} else {
 			Arrow currentArrow = arrows.get(arrows.indexOf(arrow));
+			//FIXME Kapelanka nie przechodzi warunku leveli
+			//być może krótszy level pokazuje na dalszy node i dlatego wyswietlaja sie 2
 			if(currentArrow.node.getLevel() > arrow.node.getLevel()) {
 				arrows.remove(currentArrow);
 				addArrowsForNodeRecursive(arrow);
@@ -101,49 +108,21 @@ public class DrivingController {
 	}
 	
 	private void markMainArrow() {
-		//FIXME nie zawsze oznacza i jest null pointer wtedy
-		if(!markSelectedArrowAsMain()) {
-			markMostForwardOffspringArrowAsMain();
-		}
-	}
-	
-	private boolean markSelectedArrowAsMain() {
-		CrossroadNode node = treeRoot;
-		while(node.getSelectedChild() != null)
-			node = node.getSelectedChild();
-		
-		while(node != null) {
-			for(Arrow arrow : arrows) {
-				if(arrow.active) {
-					if(arrow.node.getNodeId() == node.getNodeId()) {
-						arrow.main = true;
-						return true;
-					}
-				}
-			}
-			node = node.getParent();
-		}
-		
-		return false;
-	}
-	
-	private void markMostForwardOffspringArrowAsMain() {
-		ArrayList<Arrow> arrowToOffspring = new ArrayList<Arrow>();
-		ArrayList<CrossroadNode> offspring = new ArrayList<CrossroadNode>();
-		for(Arrow arrow : arrows) {
-			if(arrow.active) {
-				arrowToOffspring.add(arrow);
-				offspring.add(arrow.node);
-			}
-		}
-		
 		CrossroadNode lastSelectedNode = treeRoot;
 		while(lastSelectedNode.getSelectedChild() != null) {
 			lastSelectedNode = lastSelectedNode.getSelectedChild();
 		}
 		
-		int indexOfMostForwardOffspring = lastSelectedNode.getIndexOfMostForwardOffspring(offspring);
-		offspring.get(indexOfMostForwardOffspring).select();
-		arrowToOffspring.get(indexOfMostForwardOffspring).main = true;	
+		while(lastSelectedNode != null) {
+			for(Arrow arrow : arrows) {
+				if(arrow.active) {
+					if(lastSelectedNode.haveInAncestry(arrow.node)) {
+						arrow.main = true;
+						return;
+					}
+				}
+			}
+			lastSelectedNode = lastSelectedNode.getParent();
+		}
 	}
 }

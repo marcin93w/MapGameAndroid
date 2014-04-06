@@ -13,14 +13,16 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.mapgame.R;
 import com.mapgame.engine.DirectionVector;
-import com.mapgame.streetsgraph.Road;
+import com.mapgame.streetsgraph.Way;
 
 public class TurnArrows {
 	Activity mainActivity;
 	RelativeLayout view;
+	TextView streetNameView;
 
 	ArrayList<ImageView> arrows;
 
@@ -31,9 +33,10 @@ public class TurnArrows {
 	final int imageHeight = 256;
 	int halfWidthInDp, halfHeightInDp;
 
-	public TurnArrows(Activity mainActivity, RelativeLayout view) {
+	public TurnArrows(Activity mainActivity, RelativeLayout view, TextView streetNameView) {
 		this.mainActivity = mainActivity;
 		this.view = view;
+		this.streetNameView = streetNameView;
 		arrows = new ArrayList<ImageView>();
 
 		s = new Semaphore(1);
@@ -48,17 +51,19 @@ public class TurnArrows {
 	}
 	
 	public void addArrow(final Arrow arrow) {
-		DirectionVector vector = arrow.node.getRoad().getDirectionVector(Road.Position.START);
+		DirectionVector vector = arrow.node.getWay().getDirectionVector(Way.Position.START);
 		final ImageView imageView = new ImageView(
 				mainActivity.getApplicationContext());
-		if (arrow.main)
+		if (arrow.main) {
 			imageView.setImageResource(R.drawable.transparrent_arrow_framea);
+		}
 		else
 			imageView.setImageResource(R.drawable.transparrent_arrow);
 
-		locateArrow(imageView, vector);
+		
 		rotateArrow(imageView,
 				(float) vector.getAngleInDegrees(new DirectionVector(1, 0)));
+		locateArrow(imageView, vector);
 
 		imageView.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -69,6 +74,7 @@ public class TurnArrows {
 				}
 				s.release();
 				imageView.setImageResource(R.drawable.transparrent_arrow_framea);
+				streetNameView.setText(arrow.node.getWay().getRoad().getName());
 				arrow.node.select();
 				return false;
 			}
@@ -78,6 +84,8 @@ public class TurnArrows {
 			@Override
 			public void run() {
 				view.addView(imageView);
+				if(arrow.main)
+					streetNameView.setText(arrow.node.getWay().getRoad().getName());
 			}
 		});
 

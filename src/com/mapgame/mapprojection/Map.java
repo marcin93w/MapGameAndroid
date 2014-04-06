@@ -48,20 +48,6 @@ public class Map {
 	}
 
 	public void moveTo(Point destination, MapMenageable sender) {
-		/*ArrayList<Point> movePoints = new ArrayList<Point>();
-		int steps = (int) (destination.lonLatDistance(position) / moveStep);
-
-		for (int i = 0; i < steps; i++) {
-			movePoints.add(new Point(
-					position.getLatitude()
-					+ ((destination.getLatitude() - position.getLatitude())
-							/ steps * (i + 1)), 
-					position.getLongitude()
-					+ ((destination.getLongitude() - position.getLongitude())
-							/ steps * (i + 1))
-			));
-		}*/
-
 		moveAnimation = new MoveAnimation(position, destination, sender, moveStep);
 		moveAnimation.start();
 		position = destination;
@@ -71,7 +57,7 @@ public class Map {
 		Point start, end;
 		MapMenageable sender;
 
-		int stepsCount;
+		double stepsCount;
 		double stepLon, stepLat;
 		
 		public MoveAnimation(Point start, Point end, MapMenageable sender, double moveStep) {
@@ -82,7 +68,7 @@ public class Map {
 		}
 		
 		public void setMoveStep(double moveStep) {
-			this.stepsCount = (int) (start.lonLatDistance(end) / moveStep);
+			this.stepsCount = start.lonLatDistance(end) / moveStep;
 			this.stepLat = (end.getLatitude() - start.getLatitude()) / stepsCount;
 			this.stepLon = (end.getLongitude() - start.getLongitude()) / stepsCount;
 		}
