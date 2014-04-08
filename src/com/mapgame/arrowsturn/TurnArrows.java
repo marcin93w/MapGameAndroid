@@ -24,7 +24,16 @@ public class TurnArrows {
 	RelativeLayout view;
 	TextView streetNameView;
 
-	ArrayList<ImageView> arrows;
+	class ImageArrow {
+		public ImageView image;
+		public Arrow arrow;
+		public ImageArrow(ImageView image, Arrow arrow) {
+			this.image = image;
+			this.arrow = arrow;
+		}
+	}
+	
+	ArrayList<ImageArrow> arrows;
 
 	Semaphore s;
 
@@ -37,7 +46,7 @@ public class TurnArrows {
 		this.mainActivity = mainActivity;
 		this.view = view;
 		this.streetNameView = streetNameView;
-		arrows = new ArrayList<ImageView>();
+		arrows = new ArrayList<ImageArrow>();
 
 		s = new Semaphore(1);
 
@@ -55,11 +64,11 @@ public class TurnArrows {
 		final ImageView imageView = new ImageView(
 				mainActivity.getApplicationContext());
 		if (arrow.main) {
-			imageView.setImageResource(R.drawable.transparrent_arrow_framea);
+			imageView.setImageResource(R.drawable.arrow_selected);
 		}
-		else
-			imageView.setImageResource(R.drawable.transparrent_arrow);
-
+		else {
+			imageView.setImageResource(getProperImage(arrow));
+		}
 		
 		rotateArrow(imageView,
 				(float) vector.getAngleInDegrees(new DirectionVector(1, 0)));
@@ -69,11 +78,11 @@ public class TurnArrows {
 			@Override
 			public boolean onTouch(View arg0, MotionEvent arg1) {
 				s.acquireUninterruptibly();
-				for (ImageView arrow : arrows) {
-					arrow.setImageResource(R.drawable.transparrent_arrow);
+				for (ImageArrow arrowImage : arrows) {
+					arrowImage.image.setImageResource(getProperImage(arrowImage.arrow));
 				}
 				s.release();
-				imageView.setImageResource(R.drawable.transparrent_arrow_framea);
+				imageView.setImageResource(R.drawable.arrow_selected);
 				streetNameView.setText(arrow.node.getWay().getRoad().getName());
 				arrow.node.select();
 				return false;
@@ -90,8 +99,29 @@ public class TurnArrows {
 		});
 
 		s.acquireUninterruptibly();
-		arrows.add(imageView);
+		arrows.add(new ImageArrow(imageView, arrow));
 		s.release();
+	}
+	
+	private int getProperImage(Arrow arrow) {
+		switch(arrow.node.getWay().getRoad().getRoadClass()) {
+			case MOTORWAY:
+			case MOTORWAY_LINK:
+				return R.drawable.arrow_blue;
+			case PRIMARY:
+			case PRIMARY_LINK:
+				return R.drawable.arrow_red;
+			case SECONDARY:
+			case SECONDARY_LINK:
+				return R.drawable.arrow_orange;
+			case TERTIARY:
+			case TERTIARY_LINK:
+			case TRUNK:
+			case TRUNK_LINK:
+				return R.drawable.arrow_yellow;
+			default:
+				return R.drawable.arrow;
+		}
 	}
 
 	private void locateArrow(ImageView view, DirectionVector vector) {
@@ -119,8 +149,8 @@ public class TurnArrows {
 			@Override
 			public void run() {
 				s.acquireUninterruptibly();
-				for (View arrow : arrows)
-					view.removeView(arrow);
+				for (ImageArrow arrow : arrows)
+					view.removeView(arrow.image);
 				s.release();
 			}
 		});

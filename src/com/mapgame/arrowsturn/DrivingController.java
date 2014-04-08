@@ -76,12 +76,12 @@ public class DrivingController {
 	private ArrayList<Arrow> arrows;
 	
 	private void updateArrows() {
-		arrowsManager.clearArrows();
 		arrows = new ArrayList<Arrow>();
 		for(CrossroadNode node : treeRoot.getChildren()) {
 			addArrowsForNodeRecursive(new Arrow(node));
 		}
 		markMainArrow();
+		arrowsManager.clearArrows();
 		for(Arrow arrow : arrows) {
 			if(arrow.active)
 				arrowsManager.addArrow(arrow);

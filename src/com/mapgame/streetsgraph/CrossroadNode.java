@@ -85,6 +85,12 @@ public class CrossroadNode {
 			DirectionVector vectorToThis = way
 					.getDirectionVector(Way.Position.END);
 			double calculatedAngle = vectorToChild.getAbsAngle(vectorToThis);
+			
+			//exception
+			if(this.way.road.getName().equals(nodes.get(i).way.road.getName()) &&
+					calculatedAngle < Math.PI/4)
+				return i;
+			
 			if (calculatedAngle < angle) {
 				angle = calculatedAngle;
 				idx = i;
