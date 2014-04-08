@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
@@ -40,8 +41,8 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
-                                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN |
+        						WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		
 		setContentView(R.layout.activity_main);
 

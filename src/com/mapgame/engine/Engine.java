@@ -37,7 +37,7 @@ public class Engine implements MapMenageable {
 
 	public void drive() {
 		try {
-			drive(sds.getWay("Kapelanka"));
+			drive(sds.getWay("Wielicka"));
 		} catch (jsqlite.Exception e) {
 			e.printStackTrace();
 		} catch (JSONException e) {

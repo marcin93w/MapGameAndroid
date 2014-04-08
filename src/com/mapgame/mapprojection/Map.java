@@ -11,7 +11,6 @@ public class Map {
 	Activity mapActivity;
 
 	final int zoom = 17;
-	//double moveStep = 0.000055;
 	final int moveTimeout = 40;
 	
 	double moveStep;
@@ -26,7 +25,7 @@ public class Map {
 		this.controller = controller;
 		this.mapActivity = mapActivity;
 		
-		this.moveStep = 0.000055;
+		setSpeed(MoveSpeed.FAST);
 
 		controller.setZoom(zoom);
 	}
@@ -38,9 +37,9 @@ public class Map {
 	
 	public void setSpeed(MoveSpeed speed) {
 		if(speed == MoveSpeed.FAST) {
-			moveStep = 0.000055;
+			moveStep = 50;//0.000055;
 		} else {
-			moveStep = 0.00002;
+			moveStep = 15;//0.00002;
 		}
 		
 		if(moveAnimation != null)
@@ -48,34 +47,34 @@ public class Map {
 	}
 
 	public void moveTo(Point destination, MapMenageable sender) {
-		moveAnimation = new MoveAnimation(position, destination, sender, moveStep);
+		moveAnimation = new MoveAnimation(destination, sender);
 		moveAnimation.start();
-		position = destination;
 	}
 
 	class MoveAnimation extends Thread {
-		Point start, end;
+		Point end;
 		MapMenageable sender;
 
 		double stepsCount;
 		double stepLon, stepLat;
 		
-		public MoveAnimation(Point start, Point end, MapMenageable sender, double moveStep) {
-			this.start = start;
+		public MoveAnimation(Point end, MapMenageable sender) {
 			this.end = end;
 			this.sender = sender;
 			setMoveStep(moveStep);
 		}
 		
 		public void setMoveStep(double moveStep) {
-			this.stepsCount = start.lonLatDistance(end) / moveStep;
-			this.stepLat = (end.getLatitude() - start.getLatitude()) / stepsCount;
-			this.stepLon = (end.getLongitude() - start.getLongitude()) / stepsCount;
+			this.stepsCount = (int)(position.getMercatorDistance(end) / moveStep);
+			if(this.stepsCount == 0)
+				this.stepsCount = 1;
+			this.stepLat = (end.getLatitudeE6() - position.getLatitudeE6()) / stepsCount;
+			this.stepLon = (end.getLongitudeE6() - position.getLongitudeE6()) / stepsCount;
 		}
 
 		@Override
 		public void run() {
-			Point p = start;
+			Point p = position;
 			while(p.isBefore(end, stepLon > 0 ? false : true, stepLat > 0 ? false : true)) {
 				final Point point = p;
 				mapActivity.runOnUiThread(new Runnable() {
@@ -85,7 +84,8 @@ public class Map {
 					}
 				});
 				
-				p = new Point(p.getLatitude() + stepLat, p.getLongitude() + stepLon);
+				p.setLatitudeE6(p.getLatitudeE6() + (int)stepLat);
+				p.setLongitudeE6(p.getLongitudeE6() + (int)stepLon);
 
 				try {
 					sleep(moveTimeout);

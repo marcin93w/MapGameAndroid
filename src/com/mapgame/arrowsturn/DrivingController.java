@@ -9,10 +9,12 @@ import org.json.JSONException;
 import com.mapgame.streetsgraph.CrossroadNode;
 import com.mapgame.streetsgraph.StreetsDataSource;
 import com.mapgame.streetsgraph.Way;
+import com.mapgame.streetsgraph.Way.Position;
 
 public class DrivingController {
 	final static double minTreeLengthForMainRoads = 100;
 	final static double minTreeLengthForNormalRoads = 30;
+	final static int maxChildTurnAngle = 150;
 	
 	CrossroadNode treeRoot;
 	TurnArrows arrowsManager;
@@ -89,17 +91,33 @@ public class DrivingController {
 	private void addArrowsForNodeRecursive(Arrow arrow) {
 		if(!arrows.contains(arrow)) {
 			arrows.add(arrow);
+			
 			if(arrow.node.getChildren() == null || treeRoot.isReturnToParent(arrow.node)) {
 				arrow.setActive(true);
 			} else {
+				boolean blockedChild = false;
+				boolean addedChildren = false;
 				for(CrossroadNode childNode : arrow.node.getChildren()) {
-					addArrowsForNodeRecursive(new Arrow(childNode));
+					//block sharp turns in children - may cause problems!
+					if(arrow.node.getWay().getDirectionVector(Position.END)
+							.getAbsAngleInDegrees(
+									childNode.getWay().getDirectionVector(Position.START))
+									> maxChildTurnAngle) {
+						blockedChild = true;
+					} else {
+						addArrowsForNodeRecursive(new Arrow(childNode));
+						addedChildren = true;
+					}
 				} 
+				
+				//add parent if all children blocked
+				if(blockedChild && !addedChildren) {
+					arrow.setActive(true);
+				}
 			}
 		} else {
+			//if 2 arrows leads to same node, choose less complex path (lower level in tree)
 			Arrow currentArrow = arrows.get(arrows.indexOf(arrow));
-			//FIXME Kapelanka nie przechodzi warunku leveli
-			//być może krótszy level pokazuje na dalszy node i dlatego wyswietlaja sie 2
 			if(currentArrow.node.getLevel() > arrow.node.getLevel()) {
 				arrows.remove(currentArrow);
 				addArrowsForNodeRecursive(arrow);

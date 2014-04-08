@@ -28,6 +28,10 @@ public class DirectionVector {
 			angle = -angle;
 		return radToDegrees(angle);
 	}
+	
+	public double getAbsAngleInDegrees(DirectionVector other) {
+		return radToDegrees(getAbsAngle(other));
+	}
 
 	private double radToDegrees(double rad) {
 		return (rad / Math.PI) * 180;
@@ -49,8 +53,8 @@ public class DirectionVector {
 		this.b = b;
 	}
 
-	public void scaleToMagnitude(int size) {
-		double scale = Math.sqrt(((double) size * size) / (a * a + b * b));
+	public void scaleToMagnitude(double size) {
+		double scale = Math.sqrt((size * size) / (a * a + b * b));
 		a = a * scale;
 		b = b * scale;
 	}
