@@ -62,16 +62,6 @@
                 tilesource="Mapnik" >
             </org.osmdroid.views.MapView>
 
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:text="X"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/Red" />
-
             <SurfaceView
                 android:id="@+id/surfaceView1"
                 android:layout_width="wrap_content"

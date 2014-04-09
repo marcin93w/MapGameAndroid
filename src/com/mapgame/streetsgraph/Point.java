@@ -2,8 +2,6 @@ package com.mapgame.streetsgraph;
 
 import org.osmdroid.util.GeoPoint;
 
-import com.mapgame.engine.DirectionVector;
-
 public class Point extends GeoPoint {
 	private static final long serialVersionUID = 1L;
 
@@ -29,25 +27,27 @@ public class Point extends GeoPoint {
 				* (other.getLatitudeE6() - this.getLatitudeE6()));
 	}
 	
+	/*/
 	public Point move(double lonLatDistance, double lonDirection, double latDirection) {
 		DirectionVector vector = new DirectionVector(lonDirection, latDirection);
 		vector.scaleToMagnitude(lonLatDistance);
 		return new Point(this.getLatitude() + vector.getB(),
 				this.getLongitude() + vector.getA());
 	}
+	/*/
 	
 	public boolean isBefore(Point other, boolean lonBackward, boolean latBackward) {
 		//check longer direction
-		if(Math.abs(this.getLongitude() - other.getLongitude()) > 
-				Math.abs(this.getLatitude() - other.getLatitude())) {
-			if(this.getLongitude() < other.getLongitude() && !lonBackward)
+		if(Math.abs(this.getLongitudeE6() - other.getLongitudeE6()) > 
+				Math.abs(this.getLatitudeE6() - other.getLatitudeE6())) {
+			if(this.getLongitudeE6() < other.getLongitudeE6() && !lonBackward)
 				return true;
-			if(this.getLongitude() > other.getLongitude() && lonBackward)
+			if(this.getLongitudeE6() > other.getLongitudeE6() && lonBackward)
 				return true;
 		} else {
-			if(this.getLatitude() < other.getLatitude() && !latBackward)
+			if(this.getLatitudeE6() < other.getLatitudeE6() && !latBackward)
 				return true;
-			if(this.getLatitude() > other.getLatitude() && latBackward)
+			if(this.getLatitudeE6() > other.getLatitudeE6() && latBackward)
 				return true;
 		}
 		

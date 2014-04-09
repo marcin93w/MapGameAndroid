@@ -65,6 +65,7 @@ public class Engine implements MapMenageable {
 	private void continueDrive() {
 		if (!car.isOnCrossroad()) {
 			map.moveTo(car.moveAndReturnPoint(), this);
+			cm.drawCar(car.getRoad().createDirectionVector(car.pointIdx));
 		} else {
 			cm.updateCounters(car.getRoad().getRoad().getLength(), 
 					car.getRoad().getRoad().getCost());

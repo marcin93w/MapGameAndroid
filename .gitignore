@@ -1,3 +1,13 @@
+/bin/classes/com/mapgame/arrowsturn/TurnArrows$ImageArrow.class
+/bin/classes/com/mapgame/overlaycomponents/Car.class
+/bin/res/crunch/drawable-xxhdpi/arrow.png
+/bin/res/crunch/drawable-xxhdpi/arrow_blue.png
+/bin/res/crunch/drawable-xxhdpi/arrow_orange.png
+/bin/res/crunch/drawable-xxhdpi/arrow_red.png
+/bin/res/crunch/drawable-xxhdpi/arrow_selected.png
+/bin/res/crunch/drawable-xxhdpi/arrow_yellow.png
+/bin/res/crunch/drawable-xxhdpi/car.png
+/bin/res/crunch/drawable-xxhdpi/car_copy.png
 /bin/classes/com/mapgame/streetsgraph/Road$Class.class
 /bin/classes/com/mapgame/streetsgraph/Way$Position.class
 /bin/classes/com/mapgame/MainActivity$3.class

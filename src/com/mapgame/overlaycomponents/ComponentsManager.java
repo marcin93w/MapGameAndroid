@@ -3,6 +3,7 @@ package com.mapgame.overlaycomponents;
 import com.mapgame.engine.DirectionVector;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
@@ -13,8 +14,8 @@ import android.view.SurfaceHolder;
  */
 public class ComponentsManager {
 	
-	SurfaceHolder directionArrowSurfaceHolder;
-	DirectionArrow directionArrow;
+	SurfaceHolder carSurfaceHolder;
+	Car car;
 	
 	LengthCounter lengthCounter;
 	
@@ -22,20 +23,20 @@ public class ComponentsManager {
 		lengthCounter = new LengthCounter(mainActivity);
 	}
 	
-	public void setDirectionArrowSurfaceHolder(
-			SurfaceHolder directionArrowSurfaceHolder) {
-		this.directionArrowSurfaceHolder = directionArrowSurfaceHolder;
-		directionArrow = new DirectionArrow();
+	public void setCarSurfaceHolder(
+			SurfaceHolder carSurfaceHolder, Resources resources) {
+		this.carSurfaceHolder = carSurfaceHolder;
+		car = new Car(resources);
 	}
 
-	public void drawDirectionArrow(DirectionVector vector) {
-		if(directionArrow == null || directionArrowSurfaceHolder == null) {
+	public void drawCar(DirectionVector vector) {
+		if(car == null || carSurfaceHolder == null) {
 			//warning - not initialized
 		} else {
-			directionArrow.setVector(vector);
-			Canvas c = directionArrowSurfaceHolder.lockCanvas();
-			directionArrow.draw(c);
-			directionArrowSurfaceHolder.unlockCanvasAndPost(c);
+			car.setVector(vector);
+			Canvas c = carSurfaceHolder.lockCanvas();
+			car.draw(c);
+			carSurfaceHolder.unlockCanvasAndPost(c);
 		}
 	}
 	

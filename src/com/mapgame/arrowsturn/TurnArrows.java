@@ -41,6 +41,8 @@ public class TurnArrows {
 	final int imageWidth = 256;
 	final int imageHeight = 256;
 	int halfWidthInDp, halfHeightInDp;
+	
+	final int arrowsZeroZIndex = 0;
 
 	public TurnArrows(Activity mainActivity, RelativeLayout view, TextView streetNameView) {
 		this.mainActivity = mainActivity;
@@ -72,14 +74,18 @@ public class TurnArrows {
 		
 		rotateArrow(imageView,
 				(float) vector.getAngleInDegrees(new DirectionVector(1, 0)));
-		locateArrow(imageView, vector);
+		locateArrow(imageView, vector, arrow.main);
+		hideMainArrow();
 
 		imageView.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View arg0, MotionEvent arg1) {
 				s.acquireUninterruptibly();
 				for (ImageArrow arrowImage : arrows) {
-					arrowImage.image.setImageResource(getProperImage(arrowImage.arrow));
+					if(arrowImage.image != imageView) {
+						arrowImage.image.setImageResource(getProperImage(arrowImage.arrow));
+						arrowImage.image.bringToFront();
+					}
 				}
 				s.release();
 				imageView.setImageResource(R.drawable.arrow_selected);
@@ -92,7 +98,7 @@ public class TurnArrows {
 		mainActivity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				view.addView(imageView);
+				view.addView(imageView, arrowsZeroZIndex);
 				if(arrow.main)
 					streetNameView.setText(arrow.node.getWay().getRoad().getName());
 			}
@@ -124,7 +130,7 @@ public class TurnArrows {
 		}
 	}
 
-	private void locateArrow(ImageView view, DirectionVector vector) {
+	private void locateArrow(ImageView view, DirectionVector vector, boolean main) {
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		params.addRule(RelativeLayout.RIGHT_OF, R.id.fakeView);
@@ -135,6 +141,15 @@ public class TurnArrows {
 				(int) vector.getB() - halfHeightInDp);
 
 		view.setLayoutParams(params);
+	}
+	
+	private void hideMainArrow() {
+		s.acquireUninterruptibly();
+		for(ImageArrow ia : arrows) {
+			if(!ia.arrow.main)
+				ia.image.bringToFront();
+		}
+		s.release();
 	}
 
 	private void rotateArrow(ImageView imageView, float angle) {

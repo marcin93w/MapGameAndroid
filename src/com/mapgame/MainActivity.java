@@ -47,8 +47,7 @@ public class MainActivity extends Activity {
 
 		initializeMap();
 		cm = new ComponentsManager(this);
-		// initializeDirectionArrowSurfaceView();
-		onDASurfaceCreated();
+		initializeCarSurfaceView();
 	}
 
 	private void initializeMap() {
@@ -70,21 +69,20 @@ public class MainActivity extends Activity {
 		});
 	}
 
-	@SuppressWarnings("unused")
-	private void initializeDirectionArrowSurfaceView() {
-		SurfaceView directionArrowSurface = (SurfaceView) findViewById(R.id.surfaceView1);
-		directionArrowSurface.setZOrderOnTop(true);
-		directionArrowSurface.setVisibility(View.VISIBLE);
-		SurfaceHolder daSufraceHolder = directionArrowSurface.getHolder();
-		daSufraceHolder.setFormat(PixelFormat.TRANSPARENT);
-		daSufraceHolder.addCallback(new SurfaceHolder.Callback() {
+	private void initializeCarSurfaceView() {
+		SurfaceView carSurface = (SurfaceView) findViewById(R.id.surfaceView1);
+		carSurface.setZOrderOnTop(true);
+		carSurface.setVisibility(View.VISIBLE);
+		SurfaceHolder carSufraceHolder = carSurface.getHolder();
+		carSufraceHolder.setFormat(PixelFormat.TRANSPARENT);
+		carSufraceHolder.addCallback(new SurfaceHolder.Callback() {
 			public void surfaceDestroyed(SurfaceHolder holder) {
-				onDASurfaceDestroyed();
+				onCarSurfaceDestroyed();
 			}
 
 			public void surfaceCreated(SurfaceHolder holder) {
-				cm.setDirectionArrowSurfaceHolder(holder);
-				onDASurfaceCreated();
+				cm.setCarSurfaceHolder(holder, getResources());
+				onCarSurfaceCreated();
 			}
 
 			public void surfaceChanged(SurfaceHolder holder, int format,
@@ -93,7 +91,7 @@ public class MainActivity extends Activity {
 		});
 	}
 
-	public void onDASurfaceCreated() {
+	public void onCarSurfaceCreated() {
 		// turn Arrows
 		TurnArrows ta = new TurnArrows(this,
 				(RelativeLayout) findViewById(R.id.buttonsPanel),
@@ -109,7 +107,7 @@ public class MainActivity extends Activity {
 		engine.drive();
 	}
 
-	public void onDASurfaceDestroyed() {
+	public void onCarSurfaceDestroyed() {
 		engine.stop();
 	}
 
