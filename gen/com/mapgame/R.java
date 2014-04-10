@@ -12,6 +12,7 @@ public final class R {
     }
     public static final class color {
         public static final int Red=0x7f070000;
+        public static final int Silver=0x7f070001;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -36,16 +37,19 @@ public final class R {
     }
     public static final class id {
         public static final int TextView01=0x7f090000;
-        public static final int action_settings=0x7f09000a;
+        public static final int action_settings=0x7f09000d;
         public static final int buttonsPanel=0x7f090007;
         public static final int cost=0x7f090003;
         public static final int fakeView=0x7f090008;
         public static final int length=0x7f090001;
         public static final int mapview=0x7f090005;
+        public static final int pauseScreen=0x7f09000a;
         public static final int slowButton=0x7f090004;
         public static final int street=0x7f090009;
         public static final int surfaceView1=0x7f090006;
+        public static final int textView1=0x7f09000b;
         public static final int textView2=0x7f090002;
+        public static final int unpause=0x7f09000c;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;

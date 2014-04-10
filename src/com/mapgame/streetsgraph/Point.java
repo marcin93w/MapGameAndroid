@@ -12,29 +12,13 @@ public class Point extends GeoPoint {
 	public Point(int aLatitudeE6, int aLongitudeE6) {
 		super(aLatitudeE6, aLongitudeE6);
 	}
-
-	public double getLonLatDistance(Point other) {
-		return Math.sqrt((other.getLongitude() - this.getLongitude())
-				* (other.getLongitude() - this.getLongitude())
-				+ (other.getLatitude() - this.getLatitude())
-				* (other.getLatitude() - this.getLatitude()));
-	}
 	
-	public double getMercatorDistance(Point other) {
+	public double getLonLatDistance(Point other) {
 		return Math.sqrt((other.getLongitudeE6() - this.getLongitudeE6())
 				* (other.getLongitudeE6() - this.getLongitudeE6())
 				+ (other.getLatitudeE6() - this.getLatitudeE6())
 				* (other.getLatitudeE6() - this.getLatitudeE6()));
 	}
-	
-	/*/
-	public Point move(double lonLatDistance, double lonDirection, double latDirection) {
-		DirectionVector vector = new DirectionVector(lonDirection, latDirection);
-		vector.scaleToMagnitude(lonLatDistance);
-		return new Point(this.getLatitude() + vector.getB(),
-				this.getLongitude() + vector.getA());
-	}
-	/*/
 	
 	public boolean isBefore(Point other, boolean lonBackward, boolean latBackward) {
 		//check longer direction

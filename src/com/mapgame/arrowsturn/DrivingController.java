@@ -81,11 +81,12 @@ public class DrivingController {
 			addArrowsForNodeRecursive(new Arrow(node));
 		}
 		markMainArrow();
-		arrowsManager.clearArrows();
+		arrowsManager.addArrowsBegin();
 		for(Arrow arrow : arrows) {
 			if(arrow.active)
 				arrowsManager.addArrow(arrow);
 		}
+		arrowsManager.addArrowsEnd();
 	}
 	
 	private void addArrowsForNodeRecursive(Arrow arrow) {

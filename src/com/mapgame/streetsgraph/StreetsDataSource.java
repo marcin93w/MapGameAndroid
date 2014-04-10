@@ -2,12 +2,10 @@ package com.mapgame.streetsgraph;
 
 import java.util.ArrayList;
 
-import org.json.JSONException;
-
-import com.mapgame.streetsgraph.Road;
-
 import jsqlite.Exception;
 import jsqlite.Stmt;
+
+import org.json.JSONException;
 
 public class StreetsDataSource extends SpatialiteDb {
 

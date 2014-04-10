@@ -11,9 +11,11 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
@@ -35,6 +37,8 @@ public class MainActivity extends Activity {
 	private ComponentsManager cm;
 	private DrivingController dc;
 
+	View pauseScreen;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,6 +48,8 @@ public class MainActivity extends Activity {
         						WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		
 		setContentView(R.layout.activity_main);
+		pauseScreen = findViewById(R.id.pauseScreen);
+		resumeSetUp();
 
 		initializeMap();
 		cm = new ComponentsManager(this);
@@ -121,12 +127,24 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		// TODO pause game onPause
 	}
 
+	private void resumeSetUp() {
+		pauseScreen.setVisibility(View.GONE);
+		Button resume = (Button) findViewById(R.id.unpause);
+		resume.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				engine.start();		
+				pauseScreen.setVisibility(View.GONE);
+			}
+		});
+	}
+	
 	@Override
 	protected void onPause() {
-		// TODO pause game onPause
+		engine.stop();
+		pauseScreen.setVisibility(View.VISIBLE);
 		super.onPause();
 	}
 

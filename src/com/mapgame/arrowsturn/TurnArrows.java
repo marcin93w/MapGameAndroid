@@ -33,7 +33,7 @@ public class TurnArrows {
 		}
 	}
 	
-	ArrayList<ImageArrow> arrows;
+	ArrayList<ImageArrow> arrows, arrowsTmp;
 
 	Semaphore s;
 
@@ -61,6 +61,10 @@ public class TurnArrows {
 				/ (displayMetrics.ydpi / DisplayMetrics.DENSITY_DEFAULT));
 	}
 	
+	public void addArrowsBegin() {
+		arrowsTmp = new ArrayList<TurnArrows.ImageArrow>();
+	}
+	
 	public void addArrow(final Arrow arrow) {
 		DirectionVector vector = arrow.node.getWay().getDirectionVector(Way.Position.START);
 		final ImageView imageView = new ImageView(
@@ -75,7 +79,6 @@ public class TurnArrows {
 		rotateArrow(imageView,
 				(float) vector.getAngleInDegrees(new DirectionVector(1, 0)));
 		locateArrow(imageView, vector, arrow.main);
-		hideMainArrow();
 
 		imageView.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -95,17 +98,24 @@ public class TurnArrows {
 			}
 		});
 
-		mainActivity.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				view.addView(imageView, arrowsZeroZIndex);
-				if(arrow.main)
-					streetNameView.setText(arrow.node.getWay().getRoad().getName());
-			}
-		});
-
+		arrowsTmp.add(new ImageArrow(imageView, arrow));
+	}
+	
+	public void addArrowsEnd() {
+		hideMainArrow();
 		s.acquireUninterruptibly();
-		arrows.add(new ImageArrow(imageView, arrow));
+		for(final ImageArrow ia : arrowsTmp) {
+			mainActivity.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					view.addView(ia.image, arrowsZeroZIndex);
+					if(ia.arrow.main)
+						streetNameView.setText(ia.arrow.node.getWay().getRoad().getName());
+				}
+			});
+		}
+		clearArrows();
+		arrows = arrowsTmp;
 		s.release();
 	}
 	
@@ -144,12 +154,10 @@ public class TurnArrows {
 	}
 	
 	private void hideMainArrow() {
-		s.acquireUninterruptibly();
-		for(ImageArrow ia : arrows) {
+		for(ImageArrow ia : arrowsTmp) {
 			if(!ia.arrow.main)
 				ia.image.bringToFront();
 		}
-		s.release();
 	}
 
 	private void rotateArrow(ImageView imageView, float angle) {
@@ -160,14 +168,13 @@ public class TurnArrows {
 	}
 
 	public void clearArrows() {
-		mainActivity.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				s.acquireUninterruptibly();
-				for (ImageArrow arrow : arrows)
+		for (final ImageArrow arrow : arrows) {
+			mainActivity.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
 					view.removeView(arrow.image);
-				s.release();
-			}
-		});
+				}
+			});		
+		}
 	}
 }

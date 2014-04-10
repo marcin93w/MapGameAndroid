@@ -24,7 +24,6 @@ public class Map {
 	public Map(MapController controller, Activity mapActivity) {
 		this.controller = controller;
 		this.mapActivity = mapActivity;
-		
 		setSpeed(MoveSpeed.FAST);
 
 		controller.setZoom(zoom);
@@ -32,7 +31,7 @@ public class Map {
 
 	public void setPosition(Point position) {
 		controller.setCenter(position);
-		this.position = position;
+		this.position =  position;
 	}
 	
 	public void setSpeed(MoveSpeed speed) {
@@ -57,7 +56,6 @@ public class Map {
 
 		double stepsCount;
 		double stepLon, stepLat;
-		//double stepLonLoss, stepLatLoss;
 		
 		public MoveAnimation(Point end, MapMenageable sender) {
 			this.end = end;
@@ -66,45 +64,25 @@ public class Map {
 		}
 		
 		public void setMoveStep(double moveStep) {
-			this.stepsCount = (position.getMercatorDistance(end) / moveStep);
+			this.stepsCount = (position.getLonLatDistance(end) / moveStep);
 			if(this.stepsCount == 0)
 				this.stepsCount = 1;
-			//FIXME to nie moze byc w lonlatach, trzeba jakos przerzucic sie na mercatory
 			this.stepLat = (end.getLatitudeE6() - position.getLatitudeE6()) / stepsCount;
 			this.stepLon = (end.getLongitudeE6() - position.getLongitudeE6()) / stepsCount;
 		}
 
 		@Override
 		public void run() {
-			Point p = position;
-			while(p.isBefore(end, stepLon > 0 ? false : true, stepLat > 0 ? false : true)) {
-				final Point point = p;
+			while(position.isBefore(end, stepLon > 0 ? false : true, stepLat > 0 ? false : true)) {
 				mapActivity.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
-						controller.setCenter(point);
+						controller.setCenter(position);
 					}
 				});
 				
-				/*/
-				stepLatLoss += stepLat - (int)stepLat;
-				stepLonLoss += stepLon - (int)stepLon;
-				
-				int intStepLat = (int)stepLat;
-				int intStepLon = (int)stepLon;
-				
-				if(stepLatLoss > 1) {
-					intStepLat++;
-					stepLatLoss--;
-				}
-				if(stepLonLoss > 1) {
-					intStepLon++;
-					stepLonLoss--;
-				}
-				/*/
-				
-				p.setLatitudeE6(p.getLatitudeE6() + (int)stepLat);
-				p.setLongitudeE6(p.getLongitudeE6() + (int)stepLon);
+				position.setLatitudeE6(position.getLatitudeE6() + (int)stepLat);
+				position.setLongitudeE6(position.getLongitudeE6() + (int)stepLon);
 
 				try {
 					sleep(moveTimeout);
