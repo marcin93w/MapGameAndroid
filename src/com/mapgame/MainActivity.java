@@ -25,13 +25,16 @@ import android.widget.ToggleButton;
 import com.mapgame.arrowsturn.DrivingController;
 import com.mapgame.arrowsturn.TurnArrows;
 import com.mapgame.engine.Engine;
-import com.mapgame.mapprojection.Map;
+import com.mapgame.engine.Game;
+import com.mapgame.mapprojection.GameMap;
+import com.mapgame.mapprojection.PreviewMap;
 import com.mapgame.overlaycomponents.ComponentsManager;
+import com.mapgame.streetsgraph.Point;
 import com.mapgame.streetsgraph.StreetsDataSource;
 
 public class MainActivity extends Activity {
 
-	private Map map;
+	private GameMap map;
 	private Engine engine;
 	private StreetsDataSource ds;
 	private ComponentsManager cm;
@@ -64,13 +67,13 @@ public class MainActivity extends Activity {
 				return true;
 			}
 		});
-		map = new Map((MapController) myOpenMapView.getController(), this);
+		map = new GameMap((MapController) myOpenMapView.getController(), this);
 		
 		ToggleButton slowButton = (ToggleButton) findViewById(R.id.slowButton);
 		slowButton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				map.setSpeed(isChecked ? Map.MoveSpeed.SLOW : Map.MoveSpeed.FAST);
+				map.setSpeed(isChecked ? GameMap.MoveSpeed.SLOW : GameMap.MoveSpeed.FAST);
 			}
 		});
 	}
@@ -110,7 +113,20 @@ public class MainActivity extends Activity {
 
 		// engine start
 		engine = new Engine(map, ds, cm, dc);
-		engine.drive();
+		
+		// preview map
+		MapView previewMapView = (MapView) findViewById(R.id.mappreview);
+		previewMapView.setBuiltInZoomControls(false);
+		previewMapView.setOnTouchListener(new OnTouchListener() {
+			public boolean onTouch(View v, MotionEvent event) {
+				return true;
+			}
+		});
+		PreviewMap previewMap = new PreviewMap(previewMapView,
+				this, new Point(50.065404,19.949255));
+		
+		Game game = new Game(engine, previewMap);
+		game.startTheGame();
 	}
 
 	public void onCarSurfaceDestroyed() {

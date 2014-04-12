@@ -2,62 +2,33 @@ package com.mapgame.mapprojection;
 
 import org.osmdroid.views.MapController;
 
-import android.app.Activity;
-
 import com.mapgame.streetsgraph.Point;
 
-public class Map {
+import android.app.Activity;
+
+public class AnimatedMap {
 	MapController controller;
 	Activity mapActivity;
-
-	final int zoom = 17;
-	final int moveTimeout = 40;
 	
+	//for animation
 	double moveStep;
-
 	Point position;
 	
-	MoveAnimation moveAnimation;
-
-	public enum MoveSpeed { FAST, SLOW };
+	final int moveTimeout = 40;
 	
-	public Map(MapController controller, Activity mapActivity) {
+	public AnimatedMap(MapController controller, Activity mapActivity) {
 		this.controller = controller;
 		this.mapActivity = mapActivity;
-		setSpeed(MoveSpeed.FAST);
-
-		controller.setZoom(zoom);
-	}
-
-	public void setPosition(Point position) {
-		controller.setCenter(position);
-		this.position =  position;
 	}
 	
-	public void setSpeed(MoveSpeed speed) {
-		if(speed == MoveSpeed.FAST) {
-			moveStep = 50;
-		} else {
-			moveStep = 15;
-		}
-		
-		if(moveAnimation != null)
-			moveAnimation.setMoveStep(moveStep);
-	}
-
-	public void moveTo(Point destination, MapMenageable sender) {
-		moveAnimation = new MoveAnimation(destination, sender);
-		moveAnimation.start();
-	}
-
 	class MoveAnimation extends Thread {
 		Point end;
-		MapMenageable sender;
+		MapMoveMenageable sender;
 
 		double stepsCount;
 		double stepLon, stepLat;
 		
-		public MoveAnimation(Point end, MapMenageable sender) {
+		public MoveAnimation(Point end, MapMoveMenageable sender) {
 			this.end = end;
 			this.sender = sender;
 			setMoveStep(moveStep);
@@ -93,5 +64,5 @@ public class Map {
 			sender.mapMoveFinished();
 		}
 	}
-
+	
 }

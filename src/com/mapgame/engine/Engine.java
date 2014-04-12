@@ -3,15 +3,15 @@ package com.mapgame.engine;
 import org.json.JSONException;
 
 import com.mapgame.arrowsturn.DrivingController;
-import com.mapgame.mapprojection.Map;
-import com.mapgame.mapprojection.MapMenageable;
+import com.mapgame.mapprojection.GameMap;
+import com.mapgame.mapprojection.MapMoveMenageable;
 import com.mapgame.overlaycomponents.ComponentsManager;
 import com.mapgame.streetsgraph.Way;
 import com.mapgame.streetsgraph.StreetsDataSource;
 import com.mapgame.streetsgraph.Road;
 
-public class Engine implements MapMenageable {
-	Map map;
+public class Engine implements MapMoveMenageable {
+	GameMap map;
 	StreetsDataSource sds;
 	ComponentsManager cm;
 	DrivingController dc;
@@ -20,7 +20,7 @@ public class Engine implements MapMenageable {
 	int turnAngle = 0;
 	boolean stop = false;
 
-	public Engine(Map map, StreetsDataSource ds, ComponentsManager cm,
+	public Engine(GameMap map, StreetsDataSource ds, ComponentsManager cm,
 			DrivingController dc) {
 		this.map = map;
 		this.sds = ds;

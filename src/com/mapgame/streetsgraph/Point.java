@@ -14,10 +14,12 @@ public class Point extends GeoPoint {
 	}
 	
 	public double getLonLatDistance(Point other) {
-		return Math.sqrt((other.getLongitudeE6() - this.getLongitudeE6())
-				* (other.getLongitudeE6() - this.getLongitudeE6())
-				+ (other.getLatitudeE6() - this.getLatitudeE6())
-				* (other.getLatitudeE6() - this.getLatitudeE6()));
+		double dis2 = Math.pow(other.getLongitude() - this.getLongitude(), 2) +
+					Math.pow(other.getLatitude() - this.getLatitude(), 2);
+				//* (other.getLongitudeE6() - this.getLongitudeE6())
+				//+ (other.getLatitudeE6() - this.getLatitudeE6())
+				//* (other.getLatitudeE6() - this.getLatitudeE6());
+		return Math.sqrt(dis2)*1000000;
 	}
 	
 	public boolean isBefore(Point other, boolean lonBackward, boolean latBackward) {
@@ -36,6 +38,11 @@ public class Point extends GeoPoint {
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public Point clone() {
+		return new Point(getLatitudeE6(), getLongitudeE6());
 	}
 	
 }
