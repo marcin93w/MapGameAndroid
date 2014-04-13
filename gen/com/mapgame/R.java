@@ -32,8 +32,9 @@ public final class R {
         public static final int arrow_selected=0x7f020004;
         public static final int arrow_yellow=0x7f020005;
         public static final int car=0x7f020006;
-        public static final int car_copy=0x7f020007;
+        public static final int end_flag=0x7f020007;
         public static final int ic_launcher=0x7f020008;
+        public static final int start_flag=0x7f020009;
     }
     public static final class id {
         public static final int TextView01=0x7f090000;

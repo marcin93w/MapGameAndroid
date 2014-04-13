@@ -19,7 +19,7 @@ public class Game {
 		carEngine.stop();
 		Point start = carEngine.car.getPoint();
 		Point end = new Point(50.0, 20.0);
-		previewMap.showPreview(start, end, new PreviewMapManageable() {
+		previewMap.showIntroPreview(start, end, new PreviewMapManageable() {
 			@Override
 			public void previewFinished() {
 				carEngine.start();
