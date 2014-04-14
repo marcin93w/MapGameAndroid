@@ -8,7 +8,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 
 import com.mapgame.R;
-import com.mapgame.engine.DirectionVector;
+import com.mapgame.streetsgraph.model.DirectionVector;
 
 public class Car extends Component {
 	

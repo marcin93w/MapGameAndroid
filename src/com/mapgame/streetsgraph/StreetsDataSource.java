@@ -7,6 +7,9 @@ import jsqlite.Stmt;
 
 import org.json.JSONException;
 
+import com.mapgame.streetsgraph.model.Road;
+import com.mapgame.streetsgraph.model.Way;
+
 public class StreetsDataSource extends SpatialiteDb {
 
 	public Road getRandomWay() throws Exception, JSONException {

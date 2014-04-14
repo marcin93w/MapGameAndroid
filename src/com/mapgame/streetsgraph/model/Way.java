@@ -1,6 +1,5 @@
-package com.mapgame.streetsgraph;
+package com.mapgame.streetsgraph.model;
 
-import com.mapgame.engine.DirectionVector;
 
 public class Way {
 	Road road;

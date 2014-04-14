@@ -1,19 +1,22 @@
-package com.mapgame.mapprojection;
+package com.mapgame.mapprojection.previewmap;
 
-import android.view.View;
+import org.osmdroid.api.IMapController;
 
 import com.mapgame.mapprojection.AnimatedMap.MoveAnimation;
-import com.mapgame.streetsgraph.Point;
+import com.mapgame.mapprojection.MapViewManageableActivity.MapControllerRunable;
+import com.mapgame.mapprojection.MapViewManageableActivity.MapType;
+import com.mapgame.mapprojection.gamemap.GameMapCallback;
+import com.mapgame.streetsgraph.model.Point;
 
 class IntroPreviewMapAnimation extends Thread {
 	Point start, destination;
 	PreviewMap map;
-	PreviewMapManageable callback;
+	PreviewMapCallback callback;
 	
 	MoveAnimation moveAnimation;
 	
 	public IntroPreviewMapAnimation(PreviewMap map, Point start, Point destination,
-			PreviewMapManageable callback) {
+			PreviewMapCallback callback) {
 		this.start = start;
 		this.destination = destination;
 		this.map = map;
@@ -32,14 +35,14 @@ class IntroPreviewMapAnimation extends Thread {
 	
 	private void moveToStart() {
 		map.position = start.clone();
-		map.mapActivity.runOnUiThread(new Runnable() {		
+		map.mapActivity.invokeMapController(new MapControllerRunable() {		
 			@Override
-			public void run() {
-				map.controller.setCenter(start);
-				map.controller.setZoom(14);
-				map.controller.zoomIn();
+			public void run(IMapController controller) {
+				controller.setCenter(start);
+				controller.setZoom(14);
+				controller.zoomIn();
 			}
-		});
+		}, MapType.PREVIEW_MAP);
 		try {
 			sleep(4000);
 		} catch (InterruptedException e) {
@@ -50,15 +53,15 @@ class IntroPreviewMapAnimation extends Thread {
 	
 	@SuppressWarnings("unused")
 	private void moveToStartSmoothly() {
-		map.new MoveAnimation(start, new MapMoveMenageable() {
+		map.new MoveAnimation(start, new GameMapCallback() {
 			@Override
 			public void mapMoveFinished() {
-				map.mapActivity.runOnUiThread(new Runnable() {		
+				map.mapActivity.invokeMapController(new MapControllerRunable() {		
 					@Override
-					public void run() {
-						map.controller.zoomIn();
+					public void run(IMapController controller) {
+						controller.zoomIn();
 					}
-				});
+				}, MapType.PREVIEW_MAP);
 				try {
 					sleep(4000);
 				} catch (InterruptedException e) {
@@ -70,12 +73,12 @@ class IntroPreviewMapAnimation extends Thread {
 	}
 	
 	private void moveToDestination() {
-		map.mapActivity.runOnUiThread(new Runnable() {
+		map.mapActivity.invokeMapController(new MapControllerRunable() {
 			@Override
-			public void run() {
-				map.controller.zoomOut();
+			public void run(IMapController controller) {
+				controller.zoomOut();
 			}
-		});
+		}, MapType.PREVIEW_MAP);
 		
 		try {
 			sleep(1000);
@@ -83,15 +86,15 @@ class IntroPreviewMapAnimation extends Thread {
 			e.printStackTrace();
 		}
 		
-		map.new MoveAnimation(destination, new MapMoveMenageable() {
+		map.new MoveAnimation(destination, new GameMapCallback() {
 			@Override
 			public void mapMoveFinished() {
-				map.mapActivity.runOnUiThread(new Runnable() {
+				map.mapActivity.invokeMapController(new MapControllerRunable() {
 					@Override
-					public void run() {
-						map.controller.zoomIn();
+					public void run(IMapController controller) {
+						controller.zoomIn();
 					}
-				});	
+				}, MapType.PREVIEW_MAP);	
 				try {
 					sleep(4000);
 				} catch (InterruptedException e) {
@@ -103,12 +106,7 @@ class IntroPreviewMapAnimation extends Thread {
 	}
 	
 	private void onAnimationEnd() {
-		map.mapActivity.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				map.mapViewLayout.setVisibility(View.GONE);
-			}
-		});
+		map.mapActivity.hidePreviewMap();
 		callback.previewFinished();
 	}
 }

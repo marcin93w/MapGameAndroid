@@ -1,12 +1,16 @@
 package com.mapgame;
 
-import org.osmdroid.views.MapController;
+import java.util.ArrayList;
+
+import org.osmdroid.api.IMapController;
+import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.OverlayItem;
 
 import android.app.Activity;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -16,31 +20,24 @@ import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.mapgame.arrowsturn.DrivingController;
-import com.mapgame.arrowsturn.TurnArrows;
-import com.mapgame.engine.Engine;
+import com.mapgame.arrowsturn.ArrowsDisplayableActivity;
 import com.mapgame.engine.Game;
-import com.mapgame.mapprojection.GameMap;
-import com.mapgame.mapprojection.PreviewMap;
-import com.mapgame.overlaycomponents.ComponentsManager;
-import com.mapgame.streetsgraph.Point;
-import com.mapgame.streetsgraph.StreetsDataSource;
+import com.mapgame.mapprojection.MapViewManageableActivity;
 
-public class MainActivity extends Activity {
-
-	private GameMap map;
-	private Engine engine;
-	private StreetsDataSource ds;
-	private ComponentsManager cm;
-	private DrivingController dc;
+public class MainActivity extends Activity 
+		implements MapViewManageableActivity, ArrowsDisplayableActivity {
 
 	View pauseScreen;
+	MapView gameMapView, previewMapView;
+	View turnArrowsView;
+	TextView nextStreetView;
+	
+	Game game;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -53,91 +50,38 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		pauseScreen = findViewById(R.id.pauseScreen);
 		resumeSetUp();
+		turnArrowsView = (RelativeLayout) findViewById(R.id.buttonsPanel);
+		nextStreetView = (TextView) findViewById(R.id.street);
 
-		initializeMap();
-		cm = new ComponentsManager(this);
-		initializeCarSurfaceView();
+		gameMapView = (MapView) findViewById(R.id.mapview);
+		initializeMap(gameMapView);
+		previewMapView = (MapView) findViewById(R.id.mappreview);
+		initializeMap(previewMapView);
+		
+		game = new Game(this);
 	}
 
-	private void initializeMap() {
-		MapView myOpenMapView = (MapView) findViewById(R.id.mapview);
-		myOpenMapView.setBuiltInZoomControls(false);
-		myOpenMapView.setOnTouchListener(new OnTouchListener() {
+	private void initializeMap(MapView map) {
+		map.setBuiltInZoomControls(false);
+		map.setOnTouchListener(new OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
 				return true;
 			}
 		});
-		map = new GameMap((MapController) myOpenMapView.getController(), this);
-		
+	}
+	
+	public void setOnSlowClickListener(OnCheckedChangeListener listener) {
 		ToggleButton slowButton = (ToggleButton) findViewById(R.id.slowButton);
-		slowButton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				map.setSpeed(isChecked ? GameMap.MoveSpeed.SLOW : GameMap.MoveSpeed.FAST);
-			}
-		});
+		slowButton.setOnCheckedChangeListener(listener);
 	}
 
-	private void initializeCarSurfaceView() {
+	public void initializeCarSurfaceView(SurfaceHolder.Callback callback) {
 		SurfaceView carSurface = (SurfaceView) findViewById(R.id.surfaceView1);
 		carSurface.setZOrderOnTop(true);
 		carSurface.setVisibility(View.VISIBLE);
 		SurfaceHolder carSufraceHolder = carSurface.getHolder();
 		carSufraceHolder.setFormat(PixelFormat.TRANSPARENT);
-		carSufraceHolder.addCallback(new SurfaceHolder.Callback() {
-			public void surfaceDestroyed(SurfaceHolder holder) {
-				onCarSurfaceDestroyed();
-			}
-
-			public void surfaceCreated(SurfaceHolder holder) {
-				cm.setCarSurfaceHolder(holder, getResources());
-				onCarSurfaceCreated();
-			}
-
-			public void surfaceChanged(SurfaceHolder holder, int format,
-					int width, int height) {
-			}
-		});
-	}
-
-	public void onCarSurfaceCreated() {
-		// turn Arrows
-		TurnArrows ta = new TurnArrows(this,
-				(RelativeLayout) findViewById(R.id.buttonsPanel),
-				(TextView) findViewById(R.id.street));
-
-		// database init
-		ds = new StreetsDataSource();
-
-		dc = new DrivingController(ta, ds);
-
-		// engine start
-		engine = new Engine(map, ds, cm, dc);
-		
-		// preview map
-		MapView previewMapView = (MapView) findViewById(R.id.mappreview);
-		previewMapView.setBuiltInZoomControls(false);
-		previewMapView.setOnTouchListener(new OnTouchListener() {
-			public boolean onTouch(View v, MotionEvent event) {
-				return true;
-			}
-		});
-		PreviewMap previewMap = new PreviewMap(previewMapView,
-				this, new Point(50.065404,19.949255));
-		
-		Game game = new Game(engine, previewMap);
-		game.startTheGame();
-	}
-
-	public void onCarSurfaceDestroyed() {
-		engine.stop();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+		carSufraceHolder.addCallback(callback);
 	}
 
 	@Override
@@ -151,7 +95,7 @@ public class MainActivity extends Activity {
 		resume.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				engine.start();		
+				game.unpause();		
 				pauseScreen.setVisibility(View.GONE);
 			}
 		});
@@ -159,9 +103,113 @@ public class MainActivity extends Activity {
 	
 	@Override
 	protected void onPause() {
-		engine.stop();
+		game.pause();
 		pauseScreen.setVisibility(View.VISIBLE);
 		super.onPause();
 	}
 
+	
+	//*************************MAP MANAGEABLE ACTIVITY METHODS**********************
+	@Override
+	public void invokeMapController(final MapControllerRunable job,
+			final MapType mapType) {
+		runOnUiThread(new Runnable() {		
+			@Override
+			public void run() {
+				switch(mapType) {
+				case GAME_MAP:
+					job.run(gameMapView.getController());
+					break;
+				case PREVIEW_MAP:
+					job.run(previewMapView.getController());
+				}
+			}
+		});
+	}
+
+	@Override
+	public IMapController getController(MapType mapType) {
+		switch(mapType) {
+		case GAME_MAP:
+			return gameMapView.getController();
+		case PREVIEW_MAP:
+			return previewMapView.getController();
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public void showPreviewMap() {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				View previewMapView = findViewById(R.id.mapprevievLayout);
+				previewMapView.setVisibility(View.VISIBLE);
+			}
+		});
+	}
+
+	@Override
+	public void hidePreviewMap() {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				View previewMapView = findViewById(R.id.mapprevievLayout);
+				previewMapView.setVisibility(View.GONE);
+			}
+		});
+	}
+
+	@Override
+	public void addStartFlagToMap(OverlayItem startFlag, MapType mapType) {
+		drawFlagOnMap(R.drawable.start_flag, startFlag, mapType);
+	}
+
+	@Override
+	public void addEndFlagToMap(OverlayItem endFlag, MapType mapType) {
+		drawFlagOnMap(R.drawable.end_flag, endFlag, mapType);
+	}
+	
+	private void drawFlagOnMap(int flagId, OverlayItem item, MapType mapType) {
+		final ArrayList<OverlayItem> itemList = new ArrayList<OverlayItem>();
+		itemList.add(item);
+		ItemizedIconOverlay<OverlayItem> itemLocationOverlay = 
+				new ItemizedIconOverlay<OverlayItem>(itemList, 
+						getResources().getDrawable(flagId) ,null,
+						new ResourceProxyImpl(this));
+		MapView map = mapType == MapType.GAME_MAP ? gameMapView : previewMapView;
+		map.getOverlays().add(itemLocationOverlay);
+	}
+
+	//******************************************************************************
+
+	//*************************ARROWS DRAWABLE ACTIVITY METHODS**********************
+	@Override
+	public void invokeArrowsView(final ViewRunnable job) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				job.run(turnArrowsView);
+			}
+		});
+	}
+	
+	@Override
+	public void invokeNextStreetView(final ViewRunnable job) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				job.run(nextStreetView);
+			}
+		});
+	}
+
+	@Override
+	public TextView getStreetNameView() {
+		return nextStreetView;
+	}
+	
+	//******************************************************************************
+	
 }

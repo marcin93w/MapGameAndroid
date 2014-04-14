@@ -1,7 +1,8 @@
-package com.mapgame.streetsgraph;
+package com.mapgame.streetsgraph.model;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
 
 public class Road {
 	

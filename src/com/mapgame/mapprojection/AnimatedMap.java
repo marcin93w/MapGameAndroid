@@ -1,34 +1,41 @@
 package com.mapgame.mapprojection;
 
-import org.osmdroid.views.MapController;
+import org.osmdroid.api.IMapController;
 
-import com.mapgame.streetsgraph.Point;
+import com.mapgame.mapprojection.MapViewManageableActivity.MapControllerRunable;
+import com.mapgame.mapprojection.MapViewManageableActivity.MapType;
+import com.mapgame.mapprojection.gamemap.GameMap;
+import com.mapgame.mapprojection.gamemap.GameMapCallback;
+import com.mapgame.streetsgraph.model.Point;
 
-import android.app.Activity;
-
-public class AnimatedMap {
-	MapController controller;
-	Activity mapActivity;
+public abstract class AnimatedMap {
+	public MapViewManageableActivity mapActivity;
 	
 	//for animation
-	double moveStep;
-	Point position;
+	protected double moveStep;
+	public Point position;
 	
-	final int moveTimeout = 40;
+	MapType mapType;
 	
-	public AnimatedMap(MapController controller, Activity mapActivity) {
-		this.controller = controller;
+	protected final int moveTimeout = 40;
+	
+	public AnimatedMap(MapViewManageableActivity mapActivity) {
 		this.mapActivity = mapActivity;
+		
+		if(this instanceof GameMap)
+			mapType = MapType.GAME_MAP;
+		else
+			mapType = MapType.PREVIEW_MAP;
 	}
 	
-	class MoveAnimation extends Thread {
-		Point end;
-		MapMoveMenageable sender;
+	public class MoveAnimation extends Thread {
+		protected Point end;
+		protected GameMapCallback sender;
 
 		double stepsCount;
 		double stepLon, stepLat;
 		
-		public MoveAnimation(Point end, MapMoveMenageable sender) {
+		public MoveAnimation(Point end, GameMapCallback sender) {
 			this.end = end;
 			this.sender = sender;
 			setMoveStep(moveStep);
@@ -45,12 +52,12 @@ public class AnimatedMap {
 		@Override
 		public void run() {
 			while(position.isBefore(end, stepLon > 0 ? false : true, stepLat > 0 ? false : true)) {
-				mapActivity.runOnUiThread(new Runnable() {
+				mapActivity.invokeMapController(new MapControllerRunable() {
 					@Override
-					public void run() {
+					public void run(IMapController controller) {
 						controller.setCenter(position);
 					}
-				});
+				}, mapType);
 				
 				position.setLatitudeE6(position.getLatitudeE6() + (int)stepLat);
 				position.setLongitudeE6(position.getLongitudeE6() + (int)stepLon);

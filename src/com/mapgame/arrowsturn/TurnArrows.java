@@ -3,12 +3,13 @@ package com.mapgame.arrowsturn;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
-import android.app.Activity;
+import android.content.Context;
 import android.graphics.Matrix;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
@@ -16,13 +17,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mapgame.R;
-import com.mapgame.engine.DirectionVector;
-import com.mapgame.streetsgraph.Way;
+import com.mapgame.arrowsturn.ArrowsDisplayableActivity.ViewRunnable;
+import com.mapgame.streetsgraph.model.DirectionVector;
+import com.mapgame.streetsgraph.model.Way;
 
 public class TurnArrows {
-	Activity mainActivity;
-	RelativeLayout view;
-	TextView streetNameView;
+	ArrowsDisplayableActivity mainActivity;
+	Context context;
 
 	class ImageArrow {
 		public ImageView image;
@@ -44,15 +45,14 @@ public class TurnArrows {
 	
 	final int arrowsZeroZIndex = 0;
 
-	public TurnArrows(Activity mainActivity, RelativeLayout view, TextView streetNameView) {
-		this.mainActivity = mainActivity;
-		this.view = view;
-		this.streetNameView = streetNameView;
+	public TurnArrows(ArrowsDisplayableActivity activity, Context context) {
+		this.mainActivity = activity;
+		this.context = context;
 		arrows = new ArrayList<ImageArrow>();
 
 		s = new Semaphore(1);
 
-		DisplayMetrics displayMetrics = mainActivity.getApplicationContext()
+		DisplayMetrics displayMetrics = context
 				.getResources().getDisplayMetrics();
 
 		halfWidthInDp = Math.round(imageWidth / 2
@@ -67,8 +67,7 @@ public class TurnArrows {
 	
 	public void addArrow(final Arrow arrow) {
 		DirectionVector vector = arrow.node.getWay().getDirectionVector(Way.Position.START);
-		final ImageView imageView = new ImageView(
-				mainActivity.getApplicationContext());
+		final ImageView imageView = new ImageView(context);
 		if (arrow.main) {
 			imageView.setImageResource(R.drawable.arrow_selected);
 		}
@@ -92,7 +91,7 @@ public class TurnArrows {
 				}
 				s.release();
 				imageView.setImageResource(R.drawable.arrow_selected);
-				streetNameView.setText(arrow.node.getWay().getRoad().getName());
+				mainActivity.getStreetNameView().setText(arrow.node.getWay().getRoad().getName());
 				arrow.node.select();
 				return false;
 			}
@@ -105,14 +104,22 @@ public class TurnArrows {
 		hideMainArrow();
 		s.acquireUninterruptibly();
 		for(final ImageArrow ia : arrowsTmp) {
-			mainActivity.runOnUiThread(new Runnable() {
+			mainActivity.invokeArrowsView(new ViewRunnable() {
 				@Override
-				public void run() {
-					view.addView(ia.image, arrowsZeroZIndex);
-					if(ia.arrow.main)
-						streetNameView.setText(ia.arrow.node.getWay().getRoad().getName());
+				public void run(View arrowsView) {
+					((ViewGroup) arrowsView).addView(ia.image, arrowsZeroZIndex);				
 				}
 			});
+			if(ia.arrow.main) {
+				mainActivity.invokeNextStreetView(new ViewRunnable() {
+					@Override
+					public void run(View streetNameView) {
+						((TextView) streetNameView).setText(
+								ia.arrow.node.getWay().getRoad().getName());
+					}		
+				});
+				
+			}
 		}
 		clearArrows();
 		arrows = arrowsTmp;
@@ -169,10 +176,10 @@ public class TurnArrows {
 
 	public void clearArrows() {
 		for (final ImageArrow arrow : arrows) {
-			mainActivity.runOnUiThread(new Runnable() {
+			mainActivity.invokeArrowsView(new ViewRunnable() {
 				@Override
-				public void run() {
-					view.removeView(arrow.image);
+				public void run(View view) {
+					((ViewGroup) view).removeView(arrow.image);
 				}
 			});		
 		}

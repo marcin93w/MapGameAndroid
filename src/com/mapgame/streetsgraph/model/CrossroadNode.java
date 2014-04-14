@@ -1,9 +1,8 @@
-package com.mapgame.streetsgraph;
+package com.mapgame.streetsgraph.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mapgame.engine.DirectionVector;
 
 public class CrossroadNode {
 	private Way way; //way from parent

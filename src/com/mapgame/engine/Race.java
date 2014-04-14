@@ -2,15 +2,15 @@ package com.mapgame.engine;
 
 import org.json.JSONException;
 
-import com.mapgame.arrowsturn.DrivingController;
-import com.mapgame.mapprojection.GameMap;
-import com.mapgame.mapprojection.MapMoveMenageable;
+import com.mapgame.mapprojection.gamemap.GameMap;
+import com.mapgame.mapprojection.gamemap.GameMapCallback;
 import com.mapgame.overlaycomponents.ComponentsManager;
-import com.mapgame.streetsgraph.Way;
 import com.mapgame.streetsgraph.StreetsDataSource;
-import com.mapgame.streetsgraph.Road;
+import com.mapgame.streetsgraph.model.Car;
+import com.mapgame.streetsgraph.model.Road;
+import com.mapgame.streetsgraph.model.Way;
 
-public class Engine implements MapMoveMenageable {
+public class Race implements GameMapCallback {
 	GameMap map;
 	StreetsDataSource sds;
 	ComponentsManager cm;
@@ -20,7 +20,7 @@ public class Engine implements MapMoveMenageable {
 	int turnAngle = 0;
 	boolean stop = false;
 
-	public Engine(GameMap map, StreetsDataSource ds, ComponentsManager cm,
+	public Race(GameMap map, StreetsDataSource ds, ComponentsManager cm,
 			DrivingController dc) {
 		this.map = map;
 		this.sds = ds;
@@ -28,16 +28,16 @@ public class Engine implements MapMoveMenageable {
 		this.dc = dc;
 	}
 
-	public void drive(Road startWay) {
+	public void start(Road startWay) {
 		car = new Car(new Way(startWay, false));
 		map.setPosition(car.getPoint());
 		map.moveTo(car.moveAndReturnPoint(), this);
 		dc.initialize(car.getRoad());
 	}
 
-	public void drive() {
+	public void start() {
 		try {
-			drive(sds.getWay("Wielicka"));
+			start(sds.getWay("Wielicka"));
 		} catch (jsqlite.Exception e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
@@ -45,11 +45,11 @@ public class Engine implements MapMoveMenageable {
 		}
 	}
 
-	public void stop() {
+	public void pause() {
 		stop = true;
 	}
 	
-	public void start() {
+	public void unpause() {
 		if(stop) {
 			stop = false;
 			continueDrive();
@@ -65,10 +65,10 @@ public class Engine implements MapMoveMenageable {
 	private void continueDrive() {
 		if (!car.isOnCrossroad()) {
 			map.moveTo(car.moveAndReturnPoint(), this);
-			cm.drawCar(car.getRoad().createDirectionVector(car.pointIdx));
+			cm.drawCar(car.getRoad().createDirectionVector(car.getPointIdx()));
 		} else {
-			cm.updateCounters(car.getRoad().getRoad().getLength(), 
-					car.getRoad().getRoad().getCost());
+			//cm.updateCounters(car.getRoad().getRoad().getLength(), 
+			//		car.getRoad().getRoad().getCost());
 
 			car.setRoad(dc.getNextRoad());
 			continueDrive();

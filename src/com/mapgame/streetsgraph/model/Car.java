@@ -1,7 +1,5 @@
-package com.mapgame.engine;
+package com.mapgame.streetsgraph.model;
 
-import com.mapgame.streetsgraph.Point;
-import com.mapgame.streetsgraph.Way;
 
 public class Car {
 	Way road;
@@ -35,6 +33,10 @@ public class Car {
 		if(!road.isBackward() && pointIdx == road.getRoad().getGeometry().size()-1)
 			return true;
 		return false;
+	}
+
+	public int getPointIdx() {
+		return pointIdx;
 	}
 	
 }

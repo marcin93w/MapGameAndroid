@@ -1,4 +1,4 @@
-package com.mapgame.arrowsturn;
+package com.mapgame.engine;
 
 import java.util.ArrayList;
 
@@ -6,10 +6,12 @@ import jsqlite.Exception;
 
 import org.json.JSONException;
 
-import com.mapgame.streetsgraph.CrossroadNode;
+import com.mapgame.arrowsturn.Arrow;
+import com.mapgame.arrowsturn.TurnArrows;
 import com.mapgame.streetsgraph.StreetsDataSource;
-import com.mapgame.streetsgraph.Way;
-import com.mapgame.streetsgraph.Way.Position;
+import com.mapgame.streetsgraph.model.CrossroadNode;
+import com.mapgame.streetsgraph.model.Way;
+import com.mapgame.streetsgraph.model.Way.Position;
 
 public class DrivingController {
 	final static double minTreeLengthForMainRoads = 100;

@@ -1,6 +1,5 @@
-package com.mapgame.engine;
+package com.mapgame.streetsgraph.model;
 
-import com.mapgame.streetsgraph.Point;
 
 public class DirectionVector {
 	double a;

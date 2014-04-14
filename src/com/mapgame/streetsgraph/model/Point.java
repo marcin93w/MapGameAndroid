@@ -1,4 +1,4 @@
-package com.mapgame.streetsgraph;
+package com.mapgame.streetsgraph.model;
 
 import org.osmdroid.util.GeoPoint;
 

@@ -1,12 +1,11 @@
 package com.mapgame.arrowsturn;
 
-import com.mapgame.streetsgraph.CrossroadNode;
+import com.mapgame.streetsgraph.model.CrossroadNode;
 
-//TODO arrow shuld extend node
 public class Arrow {
-	CrossroadNode node;
-	boolean main;
-	boolean active; //arrows replaced by child arrows are marked as non active
+	public CrossroadNode node;
+	public boolean main;
+	public boolean active; //arrows replaced by child arrows are marked as non active
 	
 	public Arrow(CrossroadNode node) {
 		this.node = node;

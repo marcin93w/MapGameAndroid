@@ -7,7 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.mapgame.streetsgraph.Point;
+import com.mapgame.streetsgraph.model.Point;
 
 import jsqlite.Database;
 
