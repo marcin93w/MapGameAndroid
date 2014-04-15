@@ -1,12 +1,15 @@
 package com.mapgame;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.PathOverlay;
 
 import android.app.Activity;
 import android.graphics.PixelFormat;
@@ -28,6 +31,7 @@ import android.widget.ToggleButton;
 import com.mapgame.arrowsturn.ArrowsDisplayableActivity;
 import com.mapgame.engine.Game;
 import com.mapgame.mapprojection.MapViewManageableActivity;
+import com.mapgame.streetsgraph.model.Point;
 
 public class MainActivity extends Activity 
 		implements MapViewManageableActivity, ArrowsDisplayableActivity {
@@ -44,7 +48,7 @@ public class MainActivity extends Activity
 		super.onCreate(savedInstanceState);
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN |
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN |
         						WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		
 		setContentView(R.layout.activity_main);
@@ -182,6 +186,17 @@ public class MainActivity extends Activity
 		map.getOverlays().add(itemLocationOverlay);
 	}
 
+	public void addPathToPreviewMap(final LinkedList<Point> path, final int color) {
+		runOnUiThread(new Runnable() {		
+			@Override
+			public void run() {
+				PathOverlay po = new PathOverlay(color, getApplicationContext());
+				po.addPoints(new LinkedList<IGeoPoint>(path));
+				previewMapView.getOverlays().add(po);
+			}
+		});
+	}
+	
 	//******************************************************************************
 
 	//*************************ARROWS DRAWABLE ACTIVITY METHODS**********************

@@ -37,6 +37,10 @@ public class Way {
 		return this;
 	}
 	
+	public Point getFirstPoint() {
+		return road.geometry.get(backward ? road.geometry.size() - 1 : 0);
+	}
+	
 	public enum Position { START, END };
 	
 	public DirectionVector getDirectionVector(Position position) {

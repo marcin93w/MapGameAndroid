@@ -1,48 +1,43 @@
 package com.mapgame.engine;
 
-import org.json.JSONException;
+import java.util.LinkedList;
 
 import com.mapgame.mapprojection.gamemap.GameMap;
 import com.mapgame.mapprojection.gamemap.GameMapCallback;
 import com.mapgame.overlaycomponents.ComponentsManager;
-import com.mapgame.streetsgraph.StreetsDataSource;
 import com.mapgame.streetsgraph.model.Car;
-import com.mapgame.streetsgraph.model.Road;
+import com.mapgame.streetsgraph.model.CrossroadNode;
 import com.mapgame.streetsgraph.model.Way;
 
 public class Race implements GameMapCallback {
 	GameMap map;
-	StreetsDataSource sds;
 	ComponentsManager cm;
 	DrivingController dc;
-
+	RaceFinishedCallback finishedCallback;
+	
 	Car car;
 	int turnAngle = 0;
 	boolean stop = false;
+	CrossroadNode endNode;
+	
+	private LinkedList<Way> route;
 
-	public Race(GameMap map, StreetsDataSource ds, ComponentsManager cm,
-			DrivingController dc) {
+	public Race(GameMap map, ComponentsManager cm, DrivingController dc,
+			RaceFinishedCallback callback) {
 		this.map = map;
-		this.sds = ds;
 		this.cm = cm;
 		this.dc = dc;
+		this.finishedCallback = callback;
 	}
 
-	public void start(Road startWay) {
-		car = new Car(new Way(startWay, false));
+	public void start(CrossroadNode startNode, CrossroadNode endNode) {		
+		this.car = new Car(startNode.getWay());
+		this.endNode = endNode;
+		this.route = new LinkedList<Way>();
+		route.add(startNode.getWay());
 		map.setPosition(car.getPoint());
 		map.moveTo(car.moveAndReturnPoint(), this);
-		dc.initialize(car.getRoad());
-	}
-
-	public void start() {
-		try {
-			start(sds.getWay("Wielicka"));
-		} catch (jsqlite.Exception e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		dc.initialize(startNode);
 	}
 
 	public void pause() {
@@ -65,13 +60,19 @@ public class Race implements GameMapCallback {
 	private void continueDrive() {
 		if (!car.isOnCrossroad()) {
 			map.moveTo(car.moveAndReturnPoint(), this);
-			cm.drawCar(car.getRoad().createDirectionVector(car.getPointIdx()));
+			cm.drawCar(car.getWay().createDirectionVector(car.getPointIdx()));
 		} else {
 			//cm.updateCounters(car.getRoad().getRoad().getLength(), 
 			//		car.getRoad().getRoad().getCost());
 
-			car.setRoad(dc.getNextRoad());
-			continueDrive();
+			if(car.getWay().getEndCrossroadNode() == endNode.getNodeId()) {
+				finishedCallback.onRaceFinished(route);
+			} else {
+				Way nextWay = dc.getNextWay();
+				car.setWay(nextWay);
+				route.add(nextWay);
+				continueDrive();
+			}
 		}
 
 	}

@@ -27,13 +27,13 @@ public class DrivingController {
 		this.sds = sds;
 	}
 	
-	public void initialize(Way initialRoad) {
-		treeRoot = new CrossroadNode(initialRoad);
+	public void initialize(CrossroadNode initialRoot) {
+		treeRoot = initialRoot;
 		addChildrenToNodeRecursive(treeRoot, minTreeLengthForMainRoads);
 		updateArrows();
 	}
 	
-	public Way getNextRoad() {
+	public Way getNextWay() {
 		Way nextRoad = treeRoot.getSelectedChild().getWay();
 		updateTree(nextRoad);
 		updateArrows();

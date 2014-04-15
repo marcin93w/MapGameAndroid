@@ -1,7 +1,11 @@
 package com.mapgame.mapprojection;
 
+import java.util.LinkedList;
+
 import org.osmdroid.api.IMapController;
 import org.osmdroid.views.overlay.OverlayItem;
+
+import com.mapgame.streetsgraph.model.Point;
 
 public interface MapViewManageableActivity {
 	public enum MapType { GAME_MAP, PREVIEW_MAP }; 
@@ -18,4 +22,5 @@ public interface MapViewManageableActivity {
 	
 	void addStartFlagToMap(OverlayItem startFlag, MapType mapType);
 	void addEndFlagToMap(OverlayItem endFlag, MapType mapType);
+	void addPathToPreviewMap(LinkedList<Point> path, int color);
 }

@@ -3,7 +3,9 @@ package com.mapgame.streetsgraph.model;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/*
+ * Node of a tree
+ */
 public class CrossroadNode {
 	private Way way; //way from parent
     private CrossroadNode parent;

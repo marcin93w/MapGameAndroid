@@ -2,35 +2,35 @@ package com.mapgame.streetsgraph.model;
 
 
 public class Car {
-	Way road;
+	Way way;
 	int pointIdx;
 	
 	public Car(Way road) {
-		setRoad(road);
+		setWay(road);
 	}
 	
 	public Point getPoint() {
-		return road.getRoad().getGeometry().get(pointIdx);
+		return way.getRoad().getGeometry().get(pointIdx);
 	}
 	
 	public Point moveAndReturnPoint() {
-		pointIdx += road.isBackward() ? -1 : 1;
+		pointIdx += way.isBackward() ? -1 : 1;
 		return getPoint();
 	}
 	
-	public Way getRoad() {
-		return road;
+	public Way getWay() {
+		return way;
 	}
 	
-	public void setRoad(Way road) {
-		this.road = road;
+	public void setWay(Way road) {
+		this.way = road;
 		pointIdx = road.isBackward() ? road.getRoad().getGeometry().size() - 1 : 0;
 	}
 
 	public boolean isOnCrossroad() {
-		if(road.isBackward() && pointIdx == 0)
+		if(way.isBackward() && pointIdx == 0)
 			return true;
-		if(!road.isBackward() && pointIdx == road.getRoad().getGeometry().size()-1)
+		if(!way.isBackward() && pointIdx == way.getRoad().getGeometry().size()-1)
 			return true;
 		return false;
 	}

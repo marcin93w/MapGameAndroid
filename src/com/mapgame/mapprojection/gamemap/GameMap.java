@@ -1,5 +1,7 @@
 package com.mapgame.mapprojection.gamemap;
 
+import org.osmdroid.views.overlay.OverlayItem;
+
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
@@ -22,6 +24,12 @@ public class GameMap extends AnimatedMap implements OnCheckedChangeListener {
 		mapActivity.getController(MapType.GAME_MAP).setZoom(zoom);
 	}
 
+	public void setStartEnd(Point start, Point end) {
+		mapActivity.addStartFlagToMap(new OverlayItem("Start", "", start.clone()), MapType.GAME_MAP);
+		mapActivity.addEndFlagToMap(new OverlayItem("End", "", end.clone()), MapType.GAME_MAP);
+		setPosition(start);
+	}
+	
 	public void setPosition(Point position) {
 		mapActivity.getController(MapType.GAME_MAP).setCenter(position);
 		this.position =  position;
