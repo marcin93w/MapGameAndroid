@@ -141,4 +141,8 @@ public class CrossroadNode {
 		else
 			return true;
 	}
+	
+	public Point getCrossroadPoint() {
+		return way.getLastPoint();
+	}
 }

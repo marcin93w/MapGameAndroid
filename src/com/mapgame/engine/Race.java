@@ -65,6 +65,7 @@ public class Race implements GameMapCallback {
 			//cm.updateCounters(car.getRoad().getRoad().getLength(), 
 			//		car.getRoad().getRoad().getCost());
 
+			//FIXME ten if jest zły
 			if(car.getWay().getEndCrossroadNode() == endNode.getNodeId()) {
 				finishedCallback.onRaceFinished(route);
 			} else {

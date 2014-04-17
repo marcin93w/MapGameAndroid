@@ -59,8 +59,8 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 		}
 		
 		
-		Point start = startNode.getWay().getFirstPoint();
-		Point end = endNode.getWay().getFirstPoint();
+		Point start = startNode.getCrossroadPoint();
+		Point end = endNode.getCrossroadPoint();
 		gameMap.setStartEnd(start, end);
 		previewMap.showIntroPreview(start, end, new PreviewMapCallback() {
 			@Override

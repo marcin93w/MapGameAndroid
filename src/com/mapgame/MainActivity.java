@@ -150,6 +150,8 @@ public class MainActivity extends Activity
 			public void run() {
 				View previewMapView = findViewById(R.id.mapprevievLayout);
 				previewMapView.setVisibility(View.VISIBLE);
+				//View carView = findViewById(R.id.surfaceView1);
+				//carView.setVisibility(View.INVISIBLE);
 			}
 		});
 	}
@@ -161,6 +163,8 @@ public class MainActivity extends Activity
 			public void run() {
 				View previewMapView = findViewById(R.id.mapprevievLayout);
 				previewMapView.setVisibility(View.GONE);
+				//View carView = findViewById(R.id.surfaceView1);
+				//carView.setVisibility(View.VISIBLE);
 			}
 		});
 	}
@@ -195,6 +199,16 @@ public class MainActivity extends Activity
 				previewMapView.getOverlays().add(po);
 			}
 		});
+	}
+	
+	public void addMapOnClickListener(final OnClickListener l) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				previewMapView.setOnClickListener(l);
+			}
+		});
+		
 	}
 	
 	//******************************************************************************

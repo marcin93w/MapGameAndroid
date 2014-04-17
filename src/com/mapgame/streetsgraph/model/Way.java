@@ -41,6 +41,10 @@ public class Way {
 		return road.geometry.get(backward ? road.geometry.size() - 1 : 0);
 	}
 	
+	public Point getLastPoint() {
+		return road.geometry.get(!backward ? road.geometry.size() - 1 : 0);
+	}
+	
 	public enum Position { START, END };
 	
 	public DirectionVector getDirectionVector(Position position) {

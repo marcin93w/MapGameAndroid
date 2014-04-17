@@ -112,7 +112,7 @@ public class StreetsDataSource extends SpatialiteDb {
 			String query = "SELECT node_id FROM roads_nodes "+
 					//"WHERE PtDistWithin(geometry, MakePoint($1, $2), $3) = 0 "+
 					//for debug:
-					"WHERE PtDistWithin(geometry, MakePoint($1, $2), 0.05) = 1 "+
+					"WHERE PtDistWithin(geometry, MakePoint($1, $2), 0.025) = 1 "+
 					"ORDER BY RANDOM() LIMIT 1";
 			stmt = db.prepare(query);
 			stmt.bind(1, other.getLongitude());

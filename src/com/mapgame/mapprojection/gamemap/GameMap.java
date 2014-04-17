@@ -32,7 +32,7 @@ public class GameMap extends AnimatedMap implements OnCheckedChangeListener {
 	
 	public void setPosition(Point position) {
 		mapActivity.getController(MapType.GAME_MAP).setCenter(position);
-		this.position =  position;
+		this.position =  position.clone();
 	}
 	
 	public void setSpeed(MoveSpeed speed) {

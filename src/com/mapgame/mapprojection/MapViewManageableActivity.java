@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.views.overlay.OverlayItem;
 
+import android.view.View.OnClickListener;
+
 import com.mapgame.streetsgraph.model.Point;
 
 public interface MapViewManageableActivity {
@@ -23,4 +25,6 @@ public interface MapViewManageableActivity {
 	void addStartFlagToMap(OverlayItem startFlag, MapType mapType);
 	void addEndFlagToMap(OverlayItem endFlag, MapType mapType);
 	void addPathToPreviewMap(LinkedList<Point> path, int color);
+	
+	void addMapOnClickListener(OnClickListener l);
 }

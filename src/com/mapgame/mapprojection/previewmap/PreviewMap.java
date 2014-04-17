@@ -6,6 +6,8 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import android.graphics.Color;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 import com.mapgame.mapprojection.AnimatedMap;
 import com.mapgame.mapprojection.MapViewManageableActivity;
@@ -43,7 +45,7 @@ public class PreviewMap extends AnimatedMap {
 	}
 	
 	public void showOutroPreview(LinkedList<Way> userRoute, LinkedList<Way> bestRoute,
-			PreviewMapCallback callback) {
+			final PreviewMapCallback callback) {
 		//TODO change map view from all city to route bounded
 		controller.setZoom(initialZoom);
 		controller.setCenter(cityCenterPoint);
@@ -63,15 +65,13 @@ public class PreviewMap extends AnimatedMap {
 		}
 		mapActivity.addPathToPreviewMap(points, Color.RED);
 		
-		//FIXME change wait to onClickListener
-		try {
-			wait(5000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		mapActivity.hidePreviewMap();
-		callback.onPreviewFinished();
+		mapActivity.addMapOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mapActivity.hidePreviewMap();
+				callback.onPreviewFinished();
+			}
+		});	
 	}
 
 }
