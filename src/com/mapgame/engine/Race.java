@@ -67,6 +67,7 @@ public class Race implements GameMapCallback {
 
 			//FIXME ten if jest zły
 			if(car.getWay().getEndCrossroadNode() == endNode.getNodeId()) {
+				cm.eraseCar();
 				finishedCallback.onRaceFinished(route);
 			} else {
 				Way nextWay = dc.getNextWay();

@@ -20,11 +20,12 @@ public interface MapViewManageableActivity {
 	IMapController getController(MapType mapType);
 	
 	void showPreviewMap();
-	void hidePreviewMap();
+	void showPreviewMap(boolean enableOnTouchListeners, 
+			OnClickListener nextGameButtonListener);
+	void hidePreviewMap(boolean clearMap);
 	
 	void addStartFlagToMap(OverlayItem startFlag, MapType mapType);
 	void addEndFlagToMap(OverlayItem endFlag, MapType mapType);
 	void addPathToPreviewMap(LinkedList<Point> path, int color);
 	
-	void addMapOnClickListener(OnClickListener l);
 }

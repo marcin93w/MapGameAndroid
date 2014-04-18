@@ -140,9 +140,9 @@
 	</RelativeLayout>
 
 	<RelativeLayout
+	    android:id="@+id/mapprevievLayout"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
-	    android:id="@+id/mapprevievLayout"
 	    android:visibility="gone" >
 				
 	    	<org.osmdroid.views.MapView
@@ -154,6 +154,17 @@
 	                android:layout_alignParentTop="true"
 	                tilesource="Mapnik" >
 	            </org.osmdroid.views.MapView>
+
+	    	<Button
+	    	    android:id="@+id/playagain"
+	    	    android:layout_width="wrap_content"
+	    	    android:layout_height="wrap_content"
+	    	    android:layout_alignParentBottom="true"
+	    	    android:layout_alignParentRight="true"
+	    	    android:layout_marginBottom="16dp"
+	    	    android:layout_marginRight="21dp"
+	    	    android:visibility="gone" 
+	    	    android:text="Zagraj jeszcze raz" />
 	    
 	</RelativeLayout>
 	

@@ -107,7 +107,7 @@ class IntroPreviewMapAnimation extends Thread {
 	}
 	
 	private void onAnimationEnd() {
-		map.mapActivity.hidePreviewMap();
+		map.mapActivity.hidePreviewMap(false);
 		callback.onPreviewFinished();
 	}
 }

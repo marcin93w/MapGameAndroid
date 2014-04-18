@@ -4,6 +4,7 @@ import com.mapgame.streetsgraph.model.DirectionVector;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.PorterDuff.Mode;
 import android.view.SurfaceHolder;
 
 /*
@@ -39,6 +40,12 @@ public class ComponentsManager implements SurfaceHolder.Callback {
 			car.draw(c);
 			carSurfaceHolder.unlockCanvasAndPost(c);
 		}
+	}
+	
+	public void eraseCar() {
+		Canvas c = carSurfaceHolder.lockCanvas();
+		c.drawColor(0, Mode.CLEAR);
+		carSurfaceHolder.unlockCanvasAndPost(c);
 	}
 
 	@Override

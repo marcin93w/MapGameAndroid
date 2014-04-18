@@ -58,18 +58,28 @@ public class MainActivity extends Activity
 		nextStreetView = (TextView) findViewById(R.id.street);
 
 		gameMapView = (MapView) findViewById(R.id.mapview);
-		initializeMap(gameMapView);
+		disableMapTouch(gameMapView);
 		previewMapView = (MapView) findViewById(R.id.mappreview);
-		initializeMap(previewMapView);
+		disableMapTouch(previewMapView);
 		
 		game = new Game(this);
 	}
 
-	private void initializeMap(MapView map) {
+	private void disableMapTouch(MapView map) {
 		map.setBuiltInZoomControls(false);
 		map.setOnTouchListener(new OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
 				return true;
+			}
+		});
+	}
+	
+	private void enableMapTouch(MapView map) {
+		map.setBuiltInZoomControls(true);
+		map.setOnTouchListener(new OnTouchListener() {		
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				return false;
 			}
 		});
 	}
@@ -145,26 +155,41 @@ public class MainActivity extends Activity
 
 	@Override
 	public void showPreviewMap() {
+		showPreviewMap(false, null);
+	}
+	
+	@Override
+	public void showPreviewMap(final boolean enableOnTouchListeners,
+			final OnClickListener nextGameButtonListener) {
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				View previewMapView = findViewById(R.id.mapprevievLayout);
-				previewMapView.setVisibility(View.VISIBLE);
-				//View carView = findViewById(R.id.surfaceView1);
-				//carView.setVisibility(View.INVISIBLE);
+				View previewMapViewL = findViewById(R.id.mapprevievLayout);
+				previewMapViewL.setVisibility(View.VISIBLE);
+				if(enableOnTouchListeners)
+					enableMapTouch(previewMapView);
+				if(nextGameButtonListener != null) {
+					View nextGameButton = findViewById(R.id.playagain);
+					nextGameButton.setVisibility(View.VISIBLE);
+					nextGameButton.setOnClickListener(nextGameButtonListener);
+				}
 			}
-		});
+		});	
 	}
 
 	@Override
-	public void hidePreviewMap() {
+	public void hidePreviewMap(final boolean clearMap) {
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				View previewMapView = findViewById(R.id.mapprevievLayout);
-				previewMapView.setVisibility(View.GONE);
-				//View carView = findViewById(R.id.surfaceView1);
-				//carView.setVisibility(View.VISIBLE);
+				View previewMapViewL = findViewById(R.id.mapprevievLayout);
+				previewMapViewL.setVisibility(View.GONE);
+				disableMapTouch(previewMapView);
+				View nextGameButton = findViewById(R.id.playagain);
+				nextGameButton.setVisibility(View.GONE);
+				if(clearMap) {
+					previewMapView.getOverlays().clear();
+				}
 			}
 		});
 	}
@@ -199,16 +224,6 @@ public class MainActivity extends Activity
 				previewMapView.getOverlays().add(po);
 			}
 		});
-	}
-	
-	public void addMapOnClickListener(final OnClickListener l) {
-		runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				previewMapView.setOnClickListener(l);
-			}
-		});
-		
 	}
 	
 	//******************************************************************************

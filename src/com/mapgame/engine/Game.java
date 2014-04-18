@@ -27,26 +27,26 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 	PreviewMap previewMap;
 	TurnArrows turnArrows;
 	ComponentsManager componentsManager;
+	StreetsDataSource sds;
 	
 	Race race;
+	CrossroadNode startNode, endNode;
 	
 	public Game(MainActivity gameActivity) {
 		this.gameMap = new GameMap(gameActivity);
 		this.previewMap = new PreviewMap(gameActivity, new Point(50.065404,19.949255));
 		this.turnArrows = new TurnArrows(gameActivity, gameActivity.getApplicationContext());
 		this.componentsManager = new ComponentsManager(gameActivity.getResources(), this);
+		this.sds = new StreetsDataSource();
 		
 		gameActivity.setOnSlowClickListener(gameMap);
 		gameActivity.initializeCarSurfaceView(componentsManager);
 	}
 	
 	public void startTheGame() {
-		StreetsDataSource sds = new StreetsDataSource();
 		this.race = new Race(gameMap, componentsManager, 
 				new DrivingController(turnArrows, sds), this);
 		
-		final CrossroadNode startNode;
-		final CrossroadNode endNode;
 		try {
 			startNode = sds.getRandomCrossroadNode();
 			endNode = sds.getRandomCrossroadNode(startNode.getWay().getFirstPoint(), 0.01);
@@ -59,7 +59,7 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 		}
 		
 		
-		Point start = startNode.getCrossroadPoint();
+		Point start = startNode.getWay().getFirstPoint();
 		Point end = endNode.getCrossroadPoint();
 		gameMap.setStartEnd(start, end);
 		previewMap.showIntroPreview(start, end, new PreviewMapCallback() {
@@ -73,7 +73,16 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 	
 	@Override
 	public void onRaceFinished(LinkedList<Way> route) {
-		previewMap.showOutroPreview(route, route, new PreviewMapCallback() {
+		LinkedList<Point> bestRoute = null;
+		try {
+			bestRoute = sds.getShortestRoute(startNode, endNode);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		previewMap.showOutroPreview(route, bestRoute, new PreviewMapCallback() {
 			@Override
 			public void onPreviewFinished() {
 				startTheGame();

@@ -1,6 +1,7 @@
 package com.mapgame.streetsgraph;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 
 import jsqlite.Exception;
@@ -27,7 +28,7 @@ public class StreetsDataSource extends SpatialiteDb {
 		if (stmt.step()) {
 			boolean forward = stmt.column_int(0) == 1 ? true : false;
 			boolean backward = stmt.column_int(1) == 1 ? true : false;
-			way = new Road(geoJSONToPointsList(stmt.column_string(2)), forward,
+			way = new Road(geoJSONToPointsArray(stmt.column_string(2)), forward,
 					backward, stmt.column_int(3), stmt.column_int(4),
 					stmt.column_double(5), stmt.column_double(6),
 					stmt.column_string(7), stmt.column_string(8));
@@ -51,7 +52,7 @@ public class StreetsDataSource extends SpatialiteDb {
 		if (stmt.step()) {
 			boolean forward = stmt.column_int(0) == 1 ? true : false;
 			boolean backward = stmt.column_int(1) == 1 ? true : false;
-			way = new Road(geoJSONToPointsList(stmt.column_string(2)), forward,
+			way = new Road(geoJSONToPointsArray(stmt.column_string(2)), forward,
 					backward, stmt.column_int(3), stmt.column_int(4),
 					stmt.column_double(5), stmt.column_double(6),
 					stmt.column_string(7), stmt.column_string(8));
@@ -79,7 +80,7 @@ public class StreetsDataSource extends SpatialiteDb {
 		while (stmt.step()) {
 			boolean canForward = stmt.column_int(0) == 1 ? true : false;
 			boolean canBackward = stmt.column_int(1) == 1 ? true : false;
-			Road way = new Road(geoJSONToPointsList(stmt.column_string(2)),
+			Road way = new Road(geoJSONToPointsArray(stmt.column_string(2)),
 					canForward, canBackward, stmt.column_int(3),
 					stmt.column_int(4), stmt.column_double(5),
 					stmt.column_double(6), stmt.column_string(7), stmt.column_string(8));
@@ -138,6 +139,27 @@ public class StreetsDataSource extends SpatialiteDb {
 		}
 		
 		return node;
+	}
+	
+	public LinkedList<Point> getShortestRoute(CrossroadNode a, CrossroadNode b) 
+			throws Exception, JSONException
+	{
+		LinkedList<Point> route = new LinkedList<Point>();
+		String query = "SELECT Cost, AsGeoJSON(Geometry) " +
+						"FROM roads_net " +
+						"WHERE NodeFrom = $1 " +
+						"AND NodeTo = $2 " +
+						"LIMIT 1;";
+		
+		Stmt stmt = db.prepare(query);
+		stmt.bind(1, a.getNodeId());
+		stmt.bind(2, b.getNodeId());
+		if (stmt.step()) {
+			route = geoJSONToPointsList(stmt.column_string(1));
+		}
+		stmt.close();
+
+		return route;
 	}
 
 }

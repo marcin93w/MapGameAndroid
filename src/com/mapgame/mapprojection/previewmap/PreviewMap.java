@@ -44,13 +44,19 @@ public class PreviewMap extends AnimatedMap {
 		(new IntroPreviewMapAnimation(this, start, destination, callback)).start();
 	}
 	
-	public void showOutroPreview(LinkedList<Way> userRoute, LinkedList<Way> bestRoute,
+	public void showOutroPreview(LinkedList<Way> userRoute, LinkedList<Point> bestRoute,
 			final PreviewMapCallback callback) {
 		//TODO change map view from all city to route bounded
 		controller.setZoom(initialZoom);
 		controller.setCenter(cityCenterPoint);
 		
-		mapActivity.showPreviewMap();
+		mapActivity.showPreviewMap(true, new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mapActivity.hidePreviewMap(true);
+				callback.onPreviewFinished();
+			}
+		});
 		
 		LinkedList<Point> points = new LinkedList<Point>();
 		for(Way w : userRoute) {
@@ -64,14 +70,7 @@ public class PreviewMap extends AnimatedMap {
 			}
 		}
 		mapActivity.addPathToPreviewMap(points, Color.RED);
-		
-		mapActivity.addMapOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				mapActivity.hidePreviewMap();
-				callback.onPreviewFinished();
-			}
-		});	
+		mapActivity.addPathToPreviewMap(bestRoute, Color.BLUE);
 	}
 
 }

@@ -2,6 +2,7 @@ package com.mapgame.streetsgraph;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,11 +30,24 @@ public class SpatialiteDb {
 	}
 
 	//slowest method!
-	protected ArrayList<Point> geoJSONToPointsList(String json)
+	protected ArrayList<Point> geoJSONToPointsArray(String json)
 			throws JSONException {
 		JSONObject way = new JSONObject(json);
 		JSONArray geom = way.getJSONArray("coordinates");
 		ArrayList<Point> points = new ArrayList<Point>();
+		for (int j = 0; j < geom.length(); j++) {
+			JSONArray lonLat = geom.getJSONArray(j);
+			Point point = new Point(lonLat.optDouble(1), lonLat.getDouble(0));
+			points.add(point);
+		}
+		return points;
+	}
+	
+	protected LinkedList<Point> geoJSONToPointsList(String json)
+			throws JSONException {
+		JSONObject way = new JSONObject(json);
+		JSONArray geom = way.getJSONArray("coordinates");
+		LinkedList<Point> points = new LinkedList<Point>();
 		for (int j = 0; j < geom.length(); j++) {
 			JSONArray lonLat = geom.getJSONArray(j);
 			Point point = new Point(lonLat.optDouble(1), lonLat.getDouble(0));
