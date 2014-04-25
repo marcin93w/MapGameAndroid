@@ -1,12 +1,15 @@
 package com.mapgame.streetsgraph.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /*
  * Node of a tree
  */
-public class CrossroadNode {
+public class CrossroadNode implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private Way way; //way from parent
     private CrossroadNode parent;
     private List<CrossroadNode> children;

@@ -3,8 +3,6 @@ package com.mapgame.mapprojection;
 import org.osmdroid.api.IMapController;
 
 import com.mapgame.mapprojection.MapViewManageableActivity.MapControllerRunable;
-import com.mapgame.mapprojection.MapViewManageableActivity.MapType;
-import com.mapgame.mapprojection.gamemap.GameMap;
 import com.mapgame.mapprojection.gamemap.GameMapCallback;
 import com.mapgame.streetsgraph.model.Point;
 
@@ -15,17 +13,10 @@ public abstract class AnimatedMap {
 	protected double moveStep;
 	public Point position;
 	
-	MapType mapType;
-	
 	protected final int moveTimeout = 40;
 	
 	public AnimatedMap(MapViewManageableActivity mapActivity) {
 		this.mapActivity = mapActivity;
-		
-		if(this instanceof GameMap)
-			mapType = MapType.GAME_MAP;
-		else
-			mapType = MapType.PREVIEW_MAP;
 	}
 	
 	public class MoveAnimation extends Thread {
@@ -57,7 +48,7 @@ public abstract class AnimatedMap {
 					public void run(IMapController controller) {
 						controller.setCenter(position);
 					}
-				}, mapType);
+				});
 				
 				position.setLatitudeE6(position.getLatitudeE6() + (int)stepLat);
 				position.setLongitudeE6(position.getLongitudeE6() + (int)stepLon);

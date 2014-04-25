@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/mappreview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" >
+    </org.osmdroid.views.MapView>
+
+    <TextView
+        android:id="@+id/TextView03"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/Transparent"
+        android:text="Start: "
+        android:textColor="@color/White" />
+
+    <TextView
+        android:id="@+id/preview_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/TextView03"
+        android:background="@color/Transparent"
+        android:text="Krakowska"
+        android:textColor="@color/White" />
+
+    <TextView
+        android:id="@+id/TextView02"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="@color/Transparent"
+        android:text="Cel: "
+        android:textColor="@color/White" />
+
+    <TextView
+        android:id="@+id/preview_destination"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/TextView02"
+        android:background="@color/Transparent"
+        android:text="Warszawska"
+        android:textColor="@color/White" />
+
+</RelativeLayout>

@@ -19,7 +19,17 @@
         android:theme="@style/AppTheme"
         android:largeHeap="true" >
         <activity
-            android:name="com.mapgame.MainActivity"
+            android:name="com.mapgame.RaceActivity"
+            android:label="@string/app_name" 
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name="com.mapgame.RaceIntroActivity"
+            android:label="@string/app_name" 
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name="com.mapgame.RaceFinishActivity"
             android:label="@string/app_name" 
             android:screenOrientation="landscape" >
         </activity>

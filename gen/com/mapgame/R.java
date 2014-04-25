@@ -13,6 +13,8 @@ public final class R {
     public static final class color {
         public static final int Red=0x7f070000;
         public static final int Silver=0x7f070001;
+        public static final int Transparent=0x7f070003;
+        public static final int White=0x7f070002;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -37,28 +39,33 @@ public final class R {
         public static final int start_flag=0x7f020009;
     }
     public static final class id {
-        public static final int TextView01=0x7f090000;
-        public static final int action_settings=0x7f090011;
-        public static final int buttonsPanel=0x7f090007;
-        public static final int cost=0x7f090003;
-        public static final int fakeView=0x7f090008;
-        public static final int length=0x7f090001;
-        public static final int mapprevievLayout=0x7f09000d;
+        public static final int TextView01=0x7f090002;
+        public static final int TextView02=0x7f090012;
+        public static final int TextView03=0x7f090010;
+        public static final int action_settings=0x7f090014;
+        public static final int buttonsPanel=0x7f090009;
+        public static final int cost=0x7f090005;
+        public static final int fakeView=0x7f09000a;
+        public static final int length=0x7f090003;
         public static final int mappreview=0x7f09000e;
-        public static final int mapview=0x7f090005;
-        public static final int pauseScreen=0x7f09000a;
+        public static final int mapview=0x7f090007;
+        public static final int pauseScreen=0x7f09000c;
         public static final int playagain=0x7f09000f;
-        public static final int slowButton=0x7f090004;
-        public static final int start=0x7f090010;
-        public static final int street=0x7f090009;
-        public static final int surfaceView1=0x7f090006;
-        public static final int textView1=0x7f09000b;
-        public static final int textView2=0x7f090002;
-        public static final int unpause=0x7f09000c;
+        public static final int preview_destination=0x7f090013;
+        public static final int preview_start=0x7f090011;
+        public static final int slowButton=0x7f090006;
+        public static final int start=0x7f090001;
+        public static final int street=0x7f09000b;
+        public static final int surfaceView1=0x7f090008;
+        public static final int textView1=0x7f090000;
+        public static final int textView2=0x7f090004;
+        public static final int unpause=0x7f09000d;
     }
     public static final class layout {
-        public static final int activity_main=0x7f030000;
-        public static final int activity_menu=0x7f030001;
+        public static final int activity_menu=0x7f030000;
+        public static final int activity_race=0x7f030001;
+        public static final int activity_racefinish=0x7f030002;
+        public static final int activity_raceintro=0x7f030003;
     }
     public static final class menu {
         public static final int main=0x7f080000;

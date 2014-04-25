@@ -1,13 +1,10 @@
 package com.mapgame.mapprojection.gamemap;
 
-import org.osmdroid.views.overlay.OverlayItem;
-
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
+import com.mapgame.RaceActivity;
 import com.mapgame.mapprojection.AnimatedMap;
-import com.mapgame.mapprojection.MapViewManageableActivity;
-import com.mapgame.mapprojection.MapViewManageableActivity.MapType;
 import com.mapgame.streetsgraph.model.Point;
 
 public class GameMap extends AnimatedMap implements OnCheckedChangeListener {
@@ -17,21 +14,22 @@ public class GameMap extends AnimatedMap implements OnCheckedChangeListener {
 
 	public enum MoveSpeed { FAST, SLOW };
 	
-	public GameMap(MapViewManageableActivity mapActivity) {
+	public GameMap(RaceActivity mapActivity) {
 		super(mapActivity);
+		
 		setSpeed(MoveSpeed.FAST);
 		
-		mapActivity.getController(MapType.GAME_MAP).setZoom(zoom);
+		mapActivity.getController().setZoom(zoom);
 	}
 
 	public void setStartEnd(Point start, Point end) {
-		mapActivity.addStartFlagToMap(new OverlayItem("Start", "", start.clone()), MapType.GAME_MAP);
-		mapActivity.addEndFlagToMap(new OverlayItem("End", "", end.clone()), MapType.GAME_MAP);
+		((RaceActivity)mapActivity).addStartFlagToMap(start.clone());
+		((RaceActivity)mapActivity).addEndFlagToMap(end.clone());
 		setPosition(start);
 	}
 	
 	public void setPosition(Point position) {
-		mapActivity.getController(MapType.GAME_MAP).setCenter(position);
+		mapActivity.getController().setCenter(position);
 		this.position =  position.clone();
 	}
 	

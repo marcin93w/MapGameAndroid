@@ -7,10 +7,9 @@ import jsqlite.Exception;
 
 import org.json.JSONException;
 
-import com.mapgame.MainActivity;
+import com.mapgame.RaceActivity;
 import com.mapgame.arrowsturn.TurnArrows;
 import com.mapgame.mapprojection.gamemap.GameMap;
-import com.mapgame.mapprojection.previewmap.PreviewMap;
 import com.mapgame.mapprojection.previewmap.PreviewMapCallback;
 import com.mapgame.overlaycomponents.ComponentsManager;
 import com.mapgame.overlaycomponents.GameComponentsCallback;
@@ -24,17 +23,17 @@ import com.mapgame.streetsgraph.model.Way;
  */
 public class Game implements GameComponentsCallback, RaceFinishedCallback {
 	GameMap gameMap;
-	PreviewMap previewMap;
 	TurnArrows turnArrows;
 	ComponentsManager componentsManager;
 	StreetsDataSource sds;
+	RaceActivity raceActivity;
 	
 	Race race;
 	CrossroadNode startNode, endNode;
 	
-	public Game(MainActivity gameActivity) {
+	public Game(RaceActivity gameActivity) {
+		this.raceActivity = gameActivity;
 		this.gameMap = new GameMap(gameActivity);
-		this.previewMap = new PreviewMap(gameActivity, new Point(50.065404,19.949255));
 		this.turnArrows = new TurnArrows(gameActivity, gameActivity.getApplicationContext());
 		this.componentsManager = new ComponentsManager(gameActivity.getResources(), this);
 		this.sds = new StreetsDataSource();
@@ -43,9 +42,9 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 		gameActivity.initializeCarSurfaceView(componentsManager);
 	}
 	
-	public void startTheGame() {
+	public void startTheRace() {
 		this.race = new Race(gameMap, componentsManager, 
-				new DrivingController(turnArrows, sds), this);
+				new DrivingEngine(turnArrows, sds), this);
 		
 		try {
 			startNode = sds.getRandomCrossroadNode();
@@ -62,7 +61,7 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 		Point start = startNode.getWay().getFirstPoint();
 		Point end = endNode.getCrossroadPoint();
 		gameMap.setStartEnd(start, end);
-		previewMap.showIntroPreview(start, end, new PreviewMapCallback() {
+		raceActivity.showRaceIntro(startNode, endNode, new PreviewMapCallback() {
 			@Override
 			public void onPreviewFinished() {
 				race.start(startNode, endNode);
@@ -73,21 +72,24 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 	
 	@Override
 	public void onRaceFinished(LinkedList<Way> route) {
-		LinkedList<Point> bestRoute = null;
+		LinkedList<Point> bestRoute = new LinkedList<Point>();
+		bestRoute.addAll(startNode.getWay().getRoadGeometry());		
 		try {
-			bestRoute = sds.getShortestRoute(startNode, endNode);
+			bestRoute.addAll(sds.getShortestRoute(startNode, endNode));
 		} catch (Exception e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		
-		previewMap.showOutroPreview(route, bestRoute, new PreviewMapCallback() {
-			@Override
-			public void onPreviewFinished() {
-				startTheGame();
-			}
-		});		
+		raceActivity.showRaceFinish(startNode.getWay().getFirstPoint(),
+				endNode.getCrossroadPoint(), 
+				route, bestRoute, new PreviewMapCallback() {
+					@Override
+					public void onPreviewFinished() {
+						startTheRace();
+					}
+				});
 	}
 	
 	public void pause() {
@@ -99,8 +101,9 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 	}
 
 	@Override
-	public void gameComponentsCreated() {		
-		startTheGame();
+	public void gameComponentsCreated() {
+		if(race == null)
+			startTheRace();
 	}
 
 	@Override

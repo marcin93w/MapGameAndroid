@@ -28,7 +28,7 @@ public class MenuActivity extends Activity {
 		start.setOnClickListener(new OnClickListener() {		
 			@Override
 			public void onClick(View arg0) {
-				Intent intent = new Intent(context, MainActivity.class);
+				Intent intent = new Intent(context, RaceActivity.class);
 				startActivity(intent);
 			}
 		});

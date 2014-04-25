@@ -13,7 +13,7 @@ import com.mapgame.streetsgraph.model.CrossroadNode;
 import com.mapgame.streetsgraph.model.Way;
 import com.mapgame.streetsgraph.model.Way.Position;
 
-public class DrivingController {
+public class DrivingEngine {
 	final static double minTreeLengthForMainRoads = 100;
 	final static double minTreeLengthForNormalRoads = 30;
 	final static int maxChildTurnAngle = 150;
@@ -22,7 +22,7 @@ public class DrivingController {
 	TurnArrows arrowsManager;
 	StreetsDataSource sds;
 	
-	public DrivingController(TurnArrows arrowsManager, StreetsDataSource sds) {
+	public DrivingEngine(TurnArrows arrowsManager, StreetsDataSource sds) {
 		this.arrowsManager = arrowsManager;
 		this.sds = sds;
 	}

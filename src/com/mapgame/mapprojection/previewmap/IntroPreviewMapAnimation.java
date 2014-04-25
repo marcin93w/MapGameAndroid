@@ -2,9 +2,9 @@ package com.mapgame.mapprojection.previewmap;
 
 import org.osmdroid.api.IMapController;
 
+import com.mapgame.RacePreviewActivity;
 import com.mapgame.mapprojection.AnimatedMap.MoveAnimation;
 import com.mapgame.mapprojection.MapViewManageableActivity.MapControllerRunable;
-import com.mapgame.mapprojection.MapViewManageableActivity.MapType;
 import com.mapgame.mapprojection.gamemap.GameMapCallback;
 import com.mapgame.streetsgraph.model.Point;
 
@@ -43,7 +43,7 @@ class IntroPreviewMapAnimation extends Thread {
 				controller.setZoom(14);
 				controller.zoomIn();
 			}
-		}, MapType.PREVIEW_MAP);
+		});
 		try {
 			sleep(4000);
 		} catch (InterruptedException e) {
@@ -62,7 +62,7 @@ class IntroPreviewMapAnimation extends Thread {
 					public void run(IMapController controller) {
 						controller.zoomIn();
 					}
-				}, MapType.PREVIEW_MAP);
+				});
 				try {
 					sleep(4000);
 				} catch (InterruptedException e) {
@@ -79,7 +79,7 @@ class IntroPreviewMapAnimation extends Thread {
 			public void run(IMapController controller) {
 				controller.zoomOut();
 			}
-		}, MapType.PREVIEW_MAP);
+		});
 		
 		try {
 			sleep(1000);
@@ -95,7 +95,7 @@ class IntroPreviewMapAnimation extends Thread {
 					public void run(IMapController controller) {
 						controller.zoomIn();
 					}
-				}, MapType.PREVIEW_MAP);	
+				});	
 				try {
 					sleep(4000);
 				} catch (InterruptedException e) {
@@ -107,7 +107,7 @@ class IntroPreviewMapAnimation extends Thread {
 	}
 	
 	private void onAnimationEnd() {
-		map.mapActivity.hidePreviewMap(false);
+		((RacePreviewActivity)map.mapActivity).invokeEndPreview();
 		callback.onPreviewFinished();
 	}
 }

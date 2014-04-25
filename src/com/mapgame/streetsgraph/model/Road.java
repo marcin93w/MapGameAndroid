@@ -1,11 +1,14 @@
 package com.mapgame.streetsgraph.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Locale;
 
 
-public class Road {
+public class Road implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	public enum Class { 
 		MOTORWAY,
 		MOTORWAY_LINK,

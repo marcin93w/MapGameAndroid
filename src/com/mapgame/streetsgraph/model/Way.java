@@ -1,7 +1,12 @@
 package com.mapgame.streetsgraph.model;
 
+import java.io.Serializable;
+import java.util.LinkedList;
 
-public class Way {
+
+public class Way implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	Road road;
 	boolean backward;
 	
@@ -35,6 +40,20 @@ public class Way {
 	public Way reverse() {
 		backward = !backward;
 		return this;
+	}
+	
+	public LinkedList<Point> getRoadGeometry() {
+		LinkedList<Point> points = new LinkedList<Point>();
+		if(!isBackward()) {
+			points.addAll(road.getGeometry());
+		} else {
+			int pos = points.size();
+			for(Point p : road.getGeometry()) {
+				points.add(pos, p);
+			}
+		}
+		
+		return points;
 	}
 	
 	public Point getFirstPoint() {

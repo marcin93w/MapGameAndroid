@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity" >
+    tools:context=".RaceActivity" >
 
 	<LinearLayout
 	    android:layout_width="match_parent"
@@ -137,35 +137,6 @@
 		    android:layout_centerHorizontal="true"
 		    android:text="Start" />
 
-	</RelativeLayout>
-
-	<RelativeLayout
-	    android:id="@+id/mapprevievLayout"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
-	    android:visibility="gone" >
-				
-	    	<org.osmdroid.views.MapView
-	                android:id="@+id/mappreview"
-	                android:layout_width="fill_parent"
-	                android:layout_height="fill_parent"
-	                android:layout_alignParentBottom="true"
-	                android:layout_alignParentRight="true"
-	                android:layout_alignParentTop="true"
-	                tilesource="Mapnik" >
-	            </org.osmdroid.views.MapView>
-
-	    	<Button
-	    	    android:id="@+id/playagain"
-	    	    android:layout_width="wrap_content"
-	    	    android:layout_height="wrap_content"
-	    	    android:layout_alignParentBottom="true"
-	    	    android:layout_alignParentRight="true"
-	    	    android:layout_marginBottom="16dp"
-	    	    android:layout_marginRight="21dp"
-	    	    android:visibility="gone" 
-	    	    android:text="Zagraj jeszcze raz" />
-	    
 	</RelativeLayout>
 	
 </FrameLayout>

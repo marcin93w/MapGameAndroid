@@ -12,7 +12,7 @@ import com.mapgame.streetsgraph.model.Way;
 public class Race implements GameMapCallback {
 	GameMap map;
 	ComponentsManager cm;
-	DrivingController dc;
+	DrivingEngine dc;
 	RaceFinishedCallback finishedCallback;
 	
 	Car car;
@@ -22,7 +22,7 @@ public class Race implements GameMapCallback {
 	
 	private LinkedList<Way> route;
 
-	public Race(GameMap map, ComponentsManager cm, DrivingController dc,
+	public Race(GameMap map, ComponentsManager cm, DrivingEngine dc,
 			RaceFinishedCallback callback) {
 		this.map = map;
 		this.cm = cm;
@@ -38,6 +38,7 @@ public class Race implements GameMapCallback {
 		map.setPosition(car.getPoint());
 		map.moveTo(car.moveAndReturnPoint(), this);
 		dc.initialize(startNode);
+		stop = false;
 	}
 
 	public void pause() {

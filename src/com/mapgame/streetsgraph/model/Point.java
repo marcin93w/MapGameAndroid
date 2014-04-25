@@ -1,10 +1,12 @@
 package com.mapgame.streetsgraph.model;
 
+import android.annotation.SuppressLint;
 import org.osmdroid.util.GeoPoint;
 
+@SuppressLint("ParcelCreator") 
 public class Point extends GeoPoint {
 	private static final long serialVersionUID = 1L;
-
+	
 	public Point(double aLatitude, double aLongitude) {
 		super(aLatitude, aLongitude);
 	}
@@ -13,12 +15,13 @@ public class Point extends GeoPoint {
 		super(aLatitudeE6, aLongitudeE6);
 	}
 	
+	public Point(GeoPoint geoPoint) {
+		super(geoPoint);
+	}
+	
 	public double getLonLatDistance(Point other) {
 		double dis2 = Math.pow(other.getLongitude() - this.getLongitude(), 2) +
 					Math.pow(other.getLatitude() - this.getLatitude(), 2);
-				//* (other.getLongitudeE6() - this.getLongitudeE6())
-				//+ (other.getLatitudeE6() - this.getLatitudeE6())
-				//* (other.getLatitudeE6() - this.getLatitudeE6());
 		return Math.sqrt(dis2)*1000000;
 	}
 	
