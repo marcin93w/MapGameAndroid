@@ -17,7 +17,7 @@ public class Race implements GameMapCallback {
 	
 	Car car;
 	int turnAngle = 0;
-	boolean stop = false;
+	boolean running = false;
 	CrossroadNode endNode;
 	
 	private LinkedList<Way> route;
@@ -30,31 +30,39 @@ public class Race implements GameMapCallback {
 		this.finishedCallback = callback;
 	}
 
-	public void start(CrossroadNode startNode, CrossroadNode endNode) {		
+	public void initialize(CrossroadNode startNode, CrossroadNode endNode) {		
 		this.car = new Car(startNode.getWay());
 		this.endNode = endNode;
 		this.route = new LinkedList<Way>();
 		route.add(startNode.getWay());
 		map.setPosition(car.getPoint());
-		map.moveTo(car.moveAndReturnPoint(), this);
 		dc.initialize(startNode);
-		stop = false;
+		cm.prepareCar(car.getWay().createDirectionVector(car.getPointIdx()));
+	}
+	
+	public void start() {
+		map.moveTo(car.moveAndReturnPoint(), this);
+		running = true;
 	}
 
-	public void pause() {
-		stop = true;
+	public boolean pause() {
+		if(running) {
+			running = false;
+			return true;
+		}
+		return false;
 	}
 	
 	public void unpause() {
-		if(stop) {
-			stop = false;
+		if(!running) {
+			running = true;
 			continueDrive();
 		}
 	}
 
 	@Override
 	public void mapMoveFinished() {
-		if (!stop)
+		if (running)
 			continueDrive();
 	}
 
@@ -63,10 +71,6 @@ public class Race implements GameMapCallback {
 			map.moveTo(car.moveAndReturnPoint(), this);
 			cm.drawCar(car.getWay().createDirectionVector(car.getPointIdx()));
 		} else {
-			//cm.updateCounters(car.getRoad().getRoad().getLength(), 
-			//		car.getRoad().getRoad().getCost());
-
-			//FIXME ten if jest zły
 			if(car.getWay().getEndCrossroadNode() == endNode.getNodeId()) {
 				cm.eraseCar();
 				finishedCallback.onRaceFinished(route);

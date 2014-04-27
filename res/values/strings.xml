@@ -6,5 +6,12 @@
     <string name="hello_world">Hello world!</string>
     <string name="length">Length:</string>
     <string name="cost">Cost:</string>
+    <string-array name="gears">
+        
+        
+        
+        
+        <item >4</item><item>3</item><item>2</item><item>1</item><item>R</item>
+    </string-array>
 
 </resources>

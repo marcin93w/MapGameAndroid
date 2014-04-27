@@ -14,21 +14,25 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.mapgame.arrowsturn.ArrowsDisplayableActivity;
 import com.mapgame.engine.Game;
+import com.mapgame.mapprojection.gamemap.SpeedChangeListener;
 import com.mapgame.mapprojection.previewmap.PreviewMapCallback;
+import com.mapgame.overlaycomponents.RaceCountdownAnimation;
+import com.mapgame.overlaycomponents.RaceCountdownAnimation.Callback;
 import com.mapgame.streetsgraph.model.CrossroadNode;
 import com.mapgame.streetsgraph.model.Point;
 import com.mapgame.streetsgraph.model.Way;
 
 public class RaceActivity extends MapActivity 
-		implements ArrowsDisplayableActivity {
+		implements ArrowsDisplayableActivity, RaceCountdownAnimation.CountdownActivity {
 
 	View pauseScreen;
 	View turnArrowsView;
@@ -66,9 +70,31 @@ public class RaceActivity extends MapActivity
 		});
 	}
 	
-	public void setOnSlowClickListener(OnCheckedChangeListener listener) {
-		ToggleButton slowButton = (ToggleButton) findViewById(R.id.slowButton);
-		slowButton.setOnCheckedChangeListener(listener);
+	public void setOnGearChangedListener(final SpeedChangeListener scl) {
+		ListView gearView = (ListView) findViewById(R.id.listView1);
+		gearView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> adapter, View view,
+					int position, long id) {
+				switch(position) {
+				case 0:
+					scl.setSpeed(4);
+					break;
+				case 1:
+					scl.setSpeed(3);
+					break;
+				case 2:
+					scl.setSpeed(2);
+					break;
+				case 3:
+					scl.setSpeed(1);
+					break;
+				case 4:
+					scl.setSpeed(-1);
+				}
+			}
+		});
+		gearView.setItemChecked(3, true);
 	}
 
 	public void initializeCarSurfaceView(SurfaceHolder.Callback callback) {
@@ -78,11 +104,6 @@ public class RaceActivity extends MapActivity
 		SurfaceHolder carSufraceHolder = carSurface.getHolder();
 		carSufraceHolder.setFormat(PixelFormat.TRANSPARENT);
 		carSufraceHolder.addCallback(callback);
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
 	}
 
 	private void resumeSetUp() {
@@ -99,8 +120,8 @@ public class RaceActivity extends MapActivity
 	
 	@Override
 	protected void onPause() {
-		game.pause();
-		pauseScreen.setVisibility(View.VISIBLE);
+		if(game.pause())
+			pauseScreen.setVisibility(View.VISIBLE);
 		super.onPause();
 	}
 	
@@ -170,8 +191,32 @@ public class RaceActivity extends MapActivity
 		return nextStreetView;
 	}
 
+	///Race Countdown
+	public void startCountdown(final RaceCountdownAnimation.Callback raceCountdownCallback) {
+		final View contdownView = findViewById(R.id.countdownScreen);
+		contdownView.setVisibility(View.VISIBLE);
+		(new RaceCountdownAnimation(new Callback() {
+			@Override
+			public void raceCountdownFinished() {
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						contdownView.setVisibility(View.GONE);	
+					}
+				});
+				raceCountdownCallback.raceCountdownFinished();
+			}
+		}, this)).start();
+	}
 	
-	
-	//******************************************************************************
+	public void updateCountdownCounter(final String text) {
+		final TextView countdown = (TextView) findViewById(R.id.countdownText);
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				countdown.setText(text);
+			}
+		});
+	}
 	
 }

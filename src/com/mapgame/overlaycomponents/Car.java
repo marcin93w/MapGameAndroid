@@ -28,7 +28,7 @@ public class Car extends Component {
 	}
 
 	public void draw(Canvas canvas) {
-		if(vector != null) {
+		if(vector != null && canvas != null) {
 			int centerX = canvas.getWidth()/2;
 			int centerY = canvas.getHeight()/2;
 			

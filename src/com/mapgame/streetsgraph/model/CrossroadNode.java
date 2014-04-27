@@ -31,6 +31,10 @@ public class CrossroadNode implements Serializable {
 		return selectedChild;
 	}
 
+	public void setSelectedChild(CrossroadNode selectedChild) {
+		this.selectedChild = selectedChild;
+	}
+
 	public void select() {
 		if(parent != null) {
 			parent.selectedChild = this;
@@ -42,7 +46,7 @@ public class CrossroadNode implements Serializable {
 		if(parent == null || children == null) {
 			return children;
 		} else {
-			//return children without parent node
+			//return children excluding parent node
 			List<CrossroadNode> list = new ArrayList<CrossroadNode>();
 			for(CrossroadNode child : children) {
 				if(child.getNodeId() != parent.getNodeId()) {
@@ -59,7 +63,7 @@ public class CrossroadNode implements Serializable {
 		return false;
 	}
 
-	public void addChildren(List<Way> roadsToChildren) {
+	public void setChildren(List<Way> roadsToChildren) {
 		children = new ArrayList<CrossroadNode>();
 		for(Way r : roadsToChildren) {
 			CrossroadNode childNode = new CrossroadNode(r);
@@ -67,21 +71,24 @@ public class CrossroadNode implements Serializable {
 			children.add(childNode);
 		}
 		
-		//if its a one way, dead road - enable turn around
+		//if its a one way, dead road - add turn around node
+		//FIXME if this turn around node has only oneway and backward children
+		//race loops for infinity
 		if(children.size() == 0) {
 			CrossroadNode backNode = new CrossroadNode(
 					new Way(way.getRoad(), !way.isBackward()));
 			backNode.parent = this;
 			children.add(backNode);
 		}
-		
-		selectedChild = children.get(
-				getIndexOfMostForwardNode(children));
 	}
 	
-	public int getIndexOfMostForwardNode(List<CrossroadNode> nodes) {
+	public CrossroadNode getMostForwardNode(List<CrossroadNode> nodes) {
+		return getMostForwardNode(nodes, Double.MAX_VALUE);
+	}
+	
+	public CrossroadNode getMostForwardNode(List<CrossroadNode> nodes, double maxAngle) {
 		double angle = Double.MAX_VALUE;
-		int idx = 0;
+		int idx = -1;
 
 		for (int i = 0; i < nodes.size(); i++) {
 			DirectionVector vectorToChild = nodes.get(i).getWay()
@@ -90,18 +97,17 @@ public class CrossroadNode implements Serializable {
 					.getDirectionVector(Way.Position.END);
 			double calculatedAngle = vectorToChild.getAbsAngle(vectorToThis);
 			
-			//exception
-			if(this.way.road.getName().equals(nodes.get(i).way.road.getName()) &&
-					calculatedAngle < Math.PI/4)
-				return i;
-			
-			if (calculatedAngle < angle) {
+			if (calculatedAngle <= angle && calculatedAngle <= maxAngle) {
 				angle = calculatedAngle;
 				idx = i;
 			}
 		}
 
-		return idx;
+		return idx > -1 ? nodes.get(idx) : null;
+	}
+	
+	public CrossroadNode getMostForwardChild() {
+		return getMostForwardNode(children);
 	}
 	
 	public CrossroadNode separate() {

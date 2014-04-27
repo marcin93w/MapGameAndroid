@@ -5,7 +5,6 @@ import java.util.LinkedList;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.PathOverlay;
 
 import android.os.Bundle;

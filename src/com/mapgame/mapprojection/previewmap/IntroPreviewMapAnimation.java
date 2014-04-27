@@ -52,27 +52,6 @@ class IntroPreviewMapAnimation extends Thread {
 		moveToDestination();
 	}
 	
-	@SuppressWarnings("unused")
-	private void moveToStartSmoothly() {
-		map.new MoveAnimation(start, new GameMapCallback() {
-			@Override
-			public void mapMoveFinished() {
-				map.mapActivity.invokeMapController(new MapControllerRunable() {		
-					@Override
-					public void run(IMapController controller) {
-						controller.zoomIn();
-					}
-				});
-				try {
-					sleep(4000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				moveToDestination();						
-			}
-		}).start();
-	}
-	
 	private void moveToDestination() {
 		map.mapActivity.invokeMapController(new MapControllerRunable() {
 			@Override
@@ -87,7 +66,7 @@ class IntroPreviewMapAnimation extends Thread {
 			e.printStackTrace();
 		}
 		
-		map.new MoveAnimation(destination, new GameMapCallback() {
+		map.new MoveAnimation(null, destination, new GameMapCallback() {
 			@Override
 			public void mapMoveFinished() {
 				map.mapActivity.invokeMapController(new MapControllerRunable() {

@@ -13,6 +13,7 @@ import com.mapgame.mapprojection.gamemap.GameMap;
 import com.mapgame.mapprojection.previewmap.PreviewMapCallback;
 import com.mapgame.overlaycomponents.ComponentsManager;
 import com.mapgame.overlaycomponents.GameComponentsCallback;
+import com.mapgame.overlaycomponents.RaceCountdownAnimation.Callback;
 import com.mapgame.streetsgraph.StreetsDataSource;
 import com.mapgame.streetsgraph.model.CrossroadNode;
 import com.mapgame.streetsgraph.model.Point;
@@ -38,8 +39,8 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 		this.componentsManager = new ComponentsManager(gameActivity.getResources(), this);
 		this.sds = new StreetsDataSource();
 		
-		gameActivity.setOnSlowClickListener(gameMap);
 		gameActivity.initializeCarSurfaceView(componentsManager);
+		gameActivity.setOnGearChangedListener(gameMap);
 	}
 	
 	public void startTheRace() {
@@ -57,14 +58,20 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 			return;
 		}
 		
-		
+		race.initialize(startNode, endNode);
 		Point start = startNode.getWay().getFirstPoint();
 		Point end = endNode.getCrossroadPoint();
-		gameMap.setStartEnd(start, end);
+		gameMap.setStartEndFlags(start, end);
+		
 		raceActivity.showRaceIntro(startNode, endNode, new PreviewMapCallback() {
 			@Override
 			public void onPreviewFinished() {
-				race.start(startNode, endNode);
+				raceActivity.startCountdown(new Callback() {
+					@Override
+					public void raceCountdownFinished() {
+						race.start();		
+					}
+				});	
 			}
 		});
 		
@@ -92,8 +99,8 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 				});
 	}
 	
-	public void pause() {
-		race.pause();
+	public boolean pause() {
+		return race.pause();
 	}
 	
 	public void unpause() {

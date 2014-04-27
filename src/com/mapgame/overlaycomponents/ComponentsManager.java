@@ -16,6 +16,7 @@ public class ComponentsManager implements SurfaceHolder.Callback {
 	
 	SurfaceHolder carSurfaceHolder;
 	Car car;
+	DirectionVector lastCarDirection;
 	
 	Resources resources;
 	GameComponentsCallback callback;
@@ -31,10 +32,15 @@ public class ComponentsManager implements SurfaceHolder.Callback {
 		car = new Car(resources);
 	}
 
+	public void prepareCar(DirectionVector vector) {
+		lastCarDirection = vector;
+	}
+	
 	public void drawCar(DirectionVector vector) {
 		if(car == null || carSurfaceHolder == null) {
 			//warning - not initialized
 		} else {
+			lastCarDirection = vector;
 			car.setVector(vector);
 			Canvas c = carSurfaceHolder.lockCanvas();
 			car.draw(c);
@@ -57,6 +63,8 @@ public class ComponentsManager implements SurfaceHolder.Callback {
 	public void surfaceCreated(SurfaceHolder holder) {
 		setCarSurfaceHolder(holder, resources);
 		callback.gameComponentsCreated();
+		if(lastCarDirection != null)
+			drawCar(lastCarDirection);
 	}
 
 	@Override

@@ -1,9 +1,7 @@
 package com.mapgame.streetsgraph.model;
 
-import android.annotation.SuppressLint;
 import org.osmdroid.util.GeoPoint;
 
-@SuppressLint("ParcelCreator") 
 public class Point extends GeoPoint {
 	private static final long serialVersionUID = 1L;
 	

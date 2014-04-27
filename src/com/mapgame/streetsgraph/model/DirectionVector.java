@@ -16,9 +16,13 @@ public class DirectionVector {
 	}
 
 	public double getAbsAngle(DirectionVector other) {
-		return Math.acos((this.a * other.a + this.b * other.b)
+		double cos = (this.a * other.a + this.b * other.b)
 				/ (Math.sqrt(this.a * this.a + this.b * this.b) * 
-					Math.sqrt(other.a * other.a + other.b * other.b)));
+						Math.sqrt(other.a * other.a + other.b * other.b));
+		if(cos > 1) cos = 1;
+		else if (cos < -1) cos = -1;
+		
+		return Math.acos(cos);
 	}
 
 	public double getAngleInDegrees(DirectionVector other) {

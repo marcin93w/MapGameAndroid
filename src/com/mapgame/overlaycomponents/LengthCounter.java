@@ -6,7 +6,7 @@ import android.app.Activity;
 import android.widget.TextView;
 
 public class LengthCounter {
-	double length;
+	/*double length;
 	double cost;
 	
 	TextView lengthCounter;
@@ -48,5 +48,5 @@ public class LengthCounter {
 				costCounter.setText(Double.toString(getCost())+" min");
 			}
 		});
-	}
+	}*/
 }

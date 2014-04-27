@@ -71,8 +71,23 @@ public class DrivingEngine {
 				e.printStackTrace();
 			}
 			
-			node.addChildren(childRoads);
+			node.setChildren(childRoads);
+			
+			markDefaultSelectedChild(node);
 		}
+	}
+
+	private void markDefaultSelectedChild(CrossroadNode node) {
+		ArrayList<CrossroadNode> sameNamedChildren = new ArrayList<CrossroadNode>();
+		for(CrossroadNode cn : node.getChildren()) {
+			if(node.getWay().getRoad().getName().equals(cn.getWay().getRoad().getName()))
+				sameNamedChildren.add(cn);
+		}
+		
+		CrossroadNode defaultChild = node.getMostForwardNode(sameNamedChildren, Math.PI/3);
+		
+		node.setSelectedChild(defaultChild != null ? 
+				defaultChild : node.getMostForwardChild());
 	}
 	
 	private ArrayList<Arrow> arrows;
