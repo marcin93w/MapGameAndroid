@@ -1,6 +1,8 @@
 package com.mapgame.streetsgraph.model;
 
-
+/*
+ * Car position
+ */
 public class Car {
 	Way way;
 	int pointIdx;
@@ -18,6 +20,11 @@ public class Car {
 		return getPoint();
 	}
 	
+	public Point moveBackAndReturnPoint() {
+		pointIdx += way.isBackward() ? 1 : -1;
+		return getPoint();
+	}
+	
 	public Way getWay() {
 		return way;
 	}
@@ -26,11 +33,30 @@ public class Car {
 		this.way = road;
 		pointIdx = road.isBackward() ? road.getRoad().getGeometry().size() - 1 : 0;
 	}
+	
+	public void setBackWay(Way road) {
+		this.way = road;
+		pointIdx = road.isBackward() ? 0 : road.getRoad().getGeometry().size() - 1;
+	}
 
-	public boolean isOnCrossroad() {
+	public boolean isOnEndCrossroad() {
 		if(way.isBackward() && pointIdx == 0)
 			return true;
 		if(!way.isBackward() && pointIdx == way.getRoad().getGeometry().size()-1)
+			return true;
+		return false;
+	}
+	
+	public boolean isOnStartCrossroad() {
+		if(!way.isBackward() && pointIdx == 0)
+			return true;
+		if(way.isBackward() && pointIdx == way.getRoad().getGeometry().size()-1)
+			return true;
+		return false;
+	}
+	
+	public boolean isOnCrossroad() {
+		if(pointIdx == 0 || pointIdx == way.getRoad().getGeometry().size()-1)
 			return true;
 		return false;
 	}

@@ -33,6 +33,11 @@ public class DrivingEngine {
 		updateArrows();
 	}
 	
+	public void dispose() {
+		arrowsManager.clearArrows();
+		treeRoot = null;
+	}
+	
 	public Way getNextWay() {
 		Way nextRoad = treeRoot.getSelectedChild().getWay();
 		updateTree(nextRoad);

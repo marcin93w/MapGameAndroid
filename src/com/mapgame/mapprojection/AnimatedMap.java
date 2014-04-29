@@ -20,14 +20,15 @@ public abstract class AnimatedMap {
 	}
 	
 	public class MoveAnimation extends Thread {
-		protected Point start, end;
+		protected Point end;
 		protected GameMapCallback sender;
 
 		double stepsCount;
 		double stepLon, stepLat;
 		
-		public MoveAnimation(Point start, Point end, GameMapCallback sender) {
-			this.start = start;
+		volatile boolean stop = false;
+		
+		public MoveAnimation(Point end, GameMapCallback sender) {
 			this.end = end;
 			this.sender = sender;
 			setMoveStep(moveStep);
@@ -43,8 +44,8 @@ public abstract class AnimatedMap {
 
 		@Override
 		public void run() {
-			while(position.isBefore(stepsCount > 0 ? end : start, 
-					stepLon > 0 ? false : true, stepLat > 0 ? false : true)) {
+			while(position.isBefore(end, stepLon > 0 ? false : true, stepLat > 0 ? false : true) 
+					&& !stop) {
 				mapActivity.invokeMapController(new MapControllerRunable() {
 					@Override
 					public void run(IMapController controller) {
@@ -61,7 +62,12 @@ public abstract class AnimatedMap {
 					e.printStackTrace();
 				}
 			}
-			sender.mapMoveFinished();
+			if(!stop)
+				sender.mapMoveFinished();
+		}
+		
+		public void terminate() {
+			stop = true;
 		}
 	}
 	

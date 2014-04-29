@@ -66,7 +66,7 @@ class IntroPreviewMapAnimation extends Thread {
 			e.printStackTrace();
 		}
 		
-		map.new MoveAnimation(null, destination, new GameMapCallback() {
+		map.new MoveAnimation(destination, new GameMapCallback() {
 			@Override
 			public void mapMoveFinished() {
 				map.mapActivity.invokeMapController(new MapControllerRunable() {

@@ -40,12 +40,12 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 		this.sds = new StreetsDataSource();
 		
 		gameActivity.initializeCarSurfaceView(componentsManager);
-		gameActivity.setOnGearChangedListener(gameMap);
 	}
 	
 	public void startTheRace() {
 		this.race = new Race(gameMap, componentsManager, 
 				new DrivingEngine(turnArrows, sds), this);
+		raceActivity.setOnGearChangedListener(race);
 		
 		try {
 			startNode = sds.getRandomCrossroadNode();

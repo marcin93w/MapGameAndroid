@@ -1,9 +1,5 @@
 package com.mapgame.overlaycomponents;
 
-import com.mapgame.R;
-
-import android.app.Activity;
-import android.widget.TextView;
 
 public class LengthCounter {
 	/*double length;

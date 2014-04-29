@@ -4,7 +4,7 @@ import com.mapgame.RaceActivity;
 import com.mapgame.mapprojection.AnimatedMap;
 import com.mapgame.streetsgraph.model.Point;
 
-public class GameMap extends AnimatedMap implements SpeedChangeListener {
+public class GameMap extends AnimatedMap {
 	final int zoom = 17;
 	
 	MoveAnimation moveAnimation;
@@ -36,8 +36,20 @@ public class GameMap extends AnimatedMap implements SpeedChangeListener {
 	}
 
 	public void moveTo(Point destination, GameMapCallback sender) {
-		moveAnimation = new MoveAnimation(position.clone(), destination, sender);
+		moveAnimation = new MoveAnimation(destination, sender);
 		moveAnimation.start();
 	}
 
+	public Point stopMove() {
+		moveAnimation.terminate();
+		try {
+			moveAnimation.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		moveAnimation = null;
+		
+		return position;
+	}
+	
 }
