@@ -1,7 +1,5 @@
 package com.mapgame.mapprojection.previewmap;
 
-import java.util.LinkedList;
-
 import org.osmdroid.api.IMapController;
 
 import android.graphics.Color;
@@ -10,7 +8,7 @@ import com.mapgame.RaceFinishActivity;
 import com.mapgame.RacePreviewActivity;
 import com.mapgame.mapprojection.AnimatedMap;
 import com.mapgame.streetsgraph.model.Point;
-import com.mapgame.streetsgraph.model.Way;
+import com.mapgame.streetsgraph.model.Route;
 
 public class PreviewMap extends AnimatedMap {
 
@@ -41,22 +39,16 @@ public class PreviewMap extends AnimatedMap {
 	}
 	
 	public void showOutroPreview(Point start, Point destination, 
-			LinkedList<Way> userRoute, LinkedList<Point> bestRoute) {
+			Route userRoute, Route bestRoute) {
 		//TODO change map view from all city to route bounded
 		controller.setZoom(initialZoom);
 		controller.setCenter(cityCenterPoint);
 		
 		((RacePreviewActivity)mapActivity).addStartFlagToMap(start);
 		((RacePreviewActivity)mapActivity).addEndFlagToMap(destination);
-
 		
-		LinkedList<Point> points = new LinkedList<Point>();
-		for(Way w : userRoute) {
-			points.addAll(w.getRoadGeometry());
-		}
-		
-		((RaceFinishActivity)mapActivity).addPathToPreviewMap(points, Color.RED);
-		((RaceFinishActivity)mapActivity).addPathToPreviewMap(bestRoute, Color.BLUE);	
+		((RaceFinishActivity)mapActivity).addPathToPreviewMap(userRoute.getGeometry(), Color.RED);
+		((RaceFinishActivity)mapActivity).addPathToPreviewMap(bestRoute.getGeometry(), Color.BLUE);	
 	}
 
 }

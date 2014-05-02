@@ -17,6 +17,7 @@ import com.mapgame.overlaycomponents.RaceCountdownAnimation.Callback;
 import com.mapgame.streetsgraph.StreetsDataSource;
 import com.mapgame.streetsgraph.model.CrossroadNode;
 import com.mapgame.streetsgraph.model.Point;
+import com.mapgame.streetsgraph.model.Route;
 import com.mapgame.streetsgraph.model.Way;
 
 /*
@@ -69,7 +70,7 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 				raceActivity.startCountdown(new Callback() {
 					@Override
 					public void raceCountdownFinished() {
-						race.start();		
+						race.start();
 					}
 				});	
 			}
@@ -79,10 +80,10 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 	
 	@Override
 	public void onRaceFinished(LinkedList<Way> route) {
-		LinkedList<Point> bestRoute = new LinkedList<Point>();
-		bestRoute.addAll(startNode.getWay().getRoadGeometry());		
+		Route bestRoute = null;	
 		try {
-			bestRoute.addAll(sds.getShortestRoute(startNode, endNode));
+			bestRoute = sds.getShortestRoute(startNode, endNode);
+			bestRoute.addWayToBegin(startNode.getWay());
 		} catch (Exception e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
@@ -91,7 +92,7 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 		
 		raceActivity.showRaceFinish(startNode.getWay().getFirstPoint(),
 				endNode.getCrossroadPoint(), 
-				route, bestRoute, new PreviewMapCallback() {
+				new Route(route), bestRoute, new PreviewMapCallback() {
 					@Override
 					public void onPreviewFinished() {
 						startTheRace();

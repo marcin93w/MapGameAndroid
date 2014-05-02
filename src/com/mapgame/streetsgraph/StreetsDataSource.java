@@ -12,55 +12,10 @@ import org.json.JSONException;
 import com.mapgame.streetsgraph.model.CrossroadNode;
 import com.mapgame.streetsgraph.model.Point;
 import com.mapgame.streetsgraph.model.Road;
+import com.mapgame.streetsgraph.model.Route;
 import com.mapgame.streetsgraph.model.Way;
 
 public class StreetsDataSource extends SpatialiteDb {
-
-	public Road getRandomWay() throws Exception, JSONException {
-		Road way = null;
-		String query = "SELECT oneway_fromto, oneway_tofrom, "
-				+ "AsGeoJSON(geometry), node_from, node_to, " 
-				+ "length, cost, "
-				+ "name, class "
-				+ "FROM roads " + "LIMIT 1";
-
-		Stmt stmt = db.prepare(query);
-		if (stmt.step()) {
-			boolean forward = stmt.column_int(0) == 1 ? true : false;
-			boolean backward = stmt.column_int(1) == 1 ? true : false;
-			way = new Road(geoJSONToPointsArray(stmt.column_string(2)), forward,
-					backward, stmt.column_int(3), stmt.column_int(4),
-					stmt.column_double(5), stmt.column_double(6),
-					stmt.column_string(7), stmt.column_string(8));
-		}
-		stmt.close();
-
-		return way;
-	}
-	
-	public Road getWay(String name) throws Exception, JSONException {
-		Road way = null;
-		String query = "SELECT oneway_fromto, oneway_tofrom, "
-				+ "AsGeoJSON(geometry), node_from, node_to, " 
-				+ "length, cost, "
-				+ "name, class "
-				+ "FROM roads "
-				+ "WHERE name='" + name  +  "' "
-				+ "LIMIT 1";
-
-		Stmt stmt = db.prepare(query);
-		if (stmt.step()) {
-			boolean forward = stmt.column_int(0) == 1 ? true : false;
-			boolean backward = stmt.column_int(1) == 1 ? true : false;
-			way = new Road(geoJSONToPointsArray(stmt.column_string(2)), forward,
-					backward, stmt.column_int(3), stmt.column_int(4),
-					stmt.column_double(5), stmt.column_double(6),
-					stmt.column_string(7), stmt.column_string(8));
-		}
-		stmt.close();
-
-		return way;
-	}
 
 	String possibleRoadsFromCrossroadQuery = "SELECT oneway_fromto, oneway_tofrom, "
 			+ "AsGeoJSON(geometry), node_from, node_to, "
@@ -141,11 +96,13 @@ public class StreetsDataSource extends SpatialiteDb {
 		return node;
 	}
 	
-	public LinkedList<Point> getShortestRoute(CrossroadNode a, CrossroadNode b) 
+	public Route getShortestRoute(CrossroadNode a, CrossroadNode b) 
 			throws Exception, JSONException
 	{
 		LinkedList<Point> route = new LinkedList<Point>();
-		String query = "SELECT Cost, AsGeoJSON(Geometry) " +
+		double cost = 0, length = 0;
+		
+		String query = "SELECT Cost, AsGeoJSON(Geometry), GreatCircleLength(Geometry) " +
 						"FROM roads_net " +
 						"WHERE NodeFrom = $1 " +
 						"AND NodeTo = $2 " +
@@ -156,10 +113,12 @@ public class StreetsDataSource extends SpatialiteDb {
 		stmt.bind(2, b.getNodeId());
 		if (stmt.step()) {
 			route = geoJSONToPointsList(stmt.column_string(1));
+			cost = stmt.column_double(0);
+			length = stmt.column_double(2);
 		}
 		stmt.close();
 
-		return route;
+		return new Route(route, cost, length);
 	}
 
 }

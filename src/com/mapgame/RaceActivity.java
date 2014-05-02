@@ -1,7 +1,5 @@
 package com.mapgame;
 
-import java.util.LinkedList;
-
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.OverlayItem;
 
@@ -29,7 +27,7 @@ import com.mapgame.overlaycomponents.RaceCountdownAnimation;
 import com.mapgame.overlaycomponents.RaceCountdownAnimation.Callback;
 import com.mapgame.streetsgraph.model.CrossroadNode;
 import com.mapgame.streetsgraph.model.Point;
-import com.mapgame.streetsgraph.model.Way;
+import com.mapgame.streetsgraph.model.Route;
 
 public class RaceActivity extends MapActivity 
 		implements ArrowsDisplayableActivity, RaceCountdownAnimation.CountdownActivity {
@@ -137,15 +135,15 @@ public class RaceActivity extends MapActivity
 		startActivityForResult(intent, 1);
 	}
 	
-	public void showRaceFinish(Point start, Point end, LinkedList<Way> userWay,
-			LinkedList<Point> bestWay, PreviewMapCallback callback) {
+	public void showRaceFinish(Point start, Point end, Route route,
+			Route bestRoute, PreviewMapCallback callback) {
 		this.callback = callback;
 		Intent intent = new Intent(getApplicationContext(), RaceFinishActivity.class);
 		Bundle b = new Bundle();
 		b.putParcelable("start", start);
 		b.putParcelable("end", end);
-		b.putSerializable("userRoute", userWay);
-		b.putSerializable("bestRoute", bestWay);
+		b.putSerializable("userRoute", route);
+		b.putSerializable("bestRoute", bestRoute);
 		intent.putExtras(b);
 		startActivityForResult(intent, 2);
 	}

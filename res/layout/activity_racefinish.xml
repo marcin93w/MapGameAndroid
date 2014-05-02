@@ -11,14 +11,117 @@
         android:layout_alignParentTop="true" >
     </org.osmdroid.views.MapView>
 
-    <Button
-        android:id="@+id/playagain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="18dp"
-        android:layout_marginRight="20dp"
-        android:text="Zagraj jeszcze raz" />
+	<Button
+	    android:id="@+id/playagain"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignParentBottom="true"
+	    android:layout_marginBottom="18dp"
+	    android:layout_marginRight="20dp"
+	    android:visibility="gone"
+	    android:text="Zagraj jeszcze raz" />
 
+	<RelativeLayout
+	    android:id="@+id/statslayout"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:background="@color/Transparent" >
+
+	    <TextView
+	        android:id="@+id/stats_title"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentTop="true"
+	        android:layout_centerHorizontal="true"
+	        android:layout_marginTop="61dp"
+	        android:text="Congratulations!"
+	        android:textAppearance="?android:attr/textAppearanceLarge"
+	        android:textColor="@color/White" />
+
+	    <TextView
+	        android:id="@+id/stats_result"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerHorizontal="true"
+	        android:layout_centerVertical="true"
+            android:textColor="@color/White"
+	        android:text="+ 1,5%"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+	    <TableLayout
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/stats_result"
+	        android:layout_centerHorizontal="true"
+	        android:layout_marginTop="18dp" >
+
+	        <TableRow
+	            android:id="@+id/tableRow1"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+
+	            <TextView
+	                android:id="@+id/textView3"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="Your&apos;s route: "
+	                android:textColor="@color/White" />
+
+	            <TableLayout
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content" >
+
+	                <TextView
+	                    android:id="@+id/stats_usercost"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:text="23 min"
+	                    android:textAlignment="viewEnd"
+	                    android:textColor="@color/White" />
+
+	                <TextView
+	                    android:id="@+id/stats_userlength"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:text="15,8 km"
+	                    android:textColor="@color/White" />
+	            </TableLayout>
+	        </TableRow>
+
+	        <TableRow
+	            android:id="@+id/tableRow2"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+
+	            <TextView
+	                android:id="@+id/textView6"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="Best route: "
+	                android:textColor="@color/White" />
+
+	            <TableLayout
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content" >
+
+	                <TextView
+	                    android:id="@+id/stats_bestcost"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:text="21 min"
+	                    android:textColor="@color/White" />
+
+	                <TextView
+	                    android:id="@+id/stats_bestlength"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:text="14 km"
+	                    android:textColor="@color/White" />
+	            </TableLayout>
+	        </TableRow>
+	    </TableLayout>
+
+	</RelativeLayout>
+    
 </RelativeLayout>

@@ -49,9 +49,11 @@ public class ComponentsManager implements SurfaceHolder.Callback {
 	}
 	
 	public void eraseCar() {
-		Canvas c = carSurfaceHolder.lockCanvas();
-		c.drawColor(0, Mode.CLEAR);
-		carSurfaceHolder.unlockCanvasAndPost(c);
+		if(car != null || carSurfaceHolder != null) {
+			Canvas c = carSurfaceHolder.lockCanvas();
+			c.drawColor(0, Mode.CLEAR);
+			carSurfaceHolder.unlockCanvasAndPost(c);
+		}
 	}
 
 	@Override
@@ -70,6 +72,7 @@ public class ComponentsManager implements SurfaceHolder.Callback {
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		callback.gameComponentsDestroyed();
+		carSurfaceHolder = null;
 	}
 	
 	

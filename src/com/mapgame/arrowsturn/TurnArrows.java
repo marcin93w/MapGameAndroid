@@ -43,7 +43,7 @@ public class TurnArrows {
 	final int imageHeight = 256;
 	int halfWidthInDp, halfHeightInDp;
 	
-	final int arrowsZeroZIndex = 0;
+	final int arrowsZeroZIndex = 1;
 
 	public TurnArrows(ArrowsDisplayableActivity activity, Context context) {
 		this.mainActivity = activity;
@@ -101,15 +101,10 @@ public class TurnArrows {
 	}
 	
 	public void addArrowsEnd() {
-		hideMainArrow();
+		//FIXME jeśli najpierw dodajemy strzałki a potem je usuwamy 
+		//to w przypadku tej samej strzałki jest exception że ma już rodzica
 		s.acquireUninterruptibly();
 		for(final ImageArrow ia : arrowsTmp) {
-			mainActivity.invokeArrowsView(new ViewRunnable() {
-				@Override
-				public void run(View arrowsView) {
-					((ViewGroup) arrowsView).addView(ia.image, arrowsZeroZIndex);				
-				}
-			});
 			if(ia.arrow.main) {
 				mainActivity.invokeNextStreetView(new ViewRunnable() {
 					@Override
@@ -119,8 +114,23 @@ public class TurnArrows {
 					}		
 				});
 				
+				mainActivity.invokeArrowsView(new ViewRunnable() {
+					@Override
+					public void run(View arrowsView) {
+						((ViewGroup) arrowsView).addView(ia.image, arrowsZeroZIndex-1);				
+					}
+				});
+				
+			} else {
+				mainActivity.invokeArrowsView(new ViewRunnable() {
+					@Override
+					public void run(View arrowsView) {
+						((ViewGroup) arrowsView).addView(ia.image, arrowsZeroZIndex);				
+					}
+				});
 			}
 		}
+		
 		clearArrows();
 		arrows = arrowsTmp;
 		s.release();
@@ -158,13 +168,6 @@ public class TurnArrows {
 				(int) vector.getB() - halfHeightInDp);
 
 		view.setLayoutParams(params);
-	}
-	
-	private void hideMainArrow() {
-		for(ImageArrow ia : arrowsTmp) {
-			if(!ia.arrow.main)
-				ia.image.bringToFront();
-		}
 	}
 
 	private void rotateArrow(ImageView imageView, float angle) {
