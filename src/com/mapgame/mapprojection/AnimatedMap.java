@@ -1,9 +1,11 @@
 package com.mapgame.mapprojection;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.util.constants.GeoConstants;
 
 import com.mapgame.mapprojection.MapViewManageableActivity.MapControllerRunable;
 import com.mapgame.mapprojection.gamemap.GameMapCallback;
+import com.mapgame.streetsgraph.model.DirectionVector;
 import com.mapgame.streetsgraph.model.Point;
 
 public abstract class AnimatedMap {
@@ -40,6 +42,10 @@ public abstract class AnimatedMap {
 				this.stepsCount = 1;
 			this.stepLat = (end.getLatitudeE6() - position.getLatitudeE6()) / stepsCount;
 			this.stepLon = (end.getLongitudeE6() - position.getLongitudeE6()) / stepsCount;
+			//FIXME nie działa - prawdopodobnie trzeba wyliczac wektor przy kazdym przesunieciu punktu
+			//DirectionVector v = new DirectionVector(position, end, 10d);
+			//this.stepLon = v.getA() / GeoConstants.RADIUS_EARTH_METERS * 10E6;
+			//this.stepLat = v.getB() / GeoConstants.RADIUS_EARTH_METERS * 10E6;
 		}
 
 		@Override

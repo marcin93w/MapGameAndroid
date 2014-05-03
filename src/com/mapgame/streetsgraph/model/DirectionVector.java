@@ -1,13 +1,25 @@
 package com.mapgame.streetsgraph.model;
 
+import org.osmdroid.util.GeometryMath;
+
+import com.mapgame.arrowsturn.TurnArrows;
+
 
 public class DirectionVector {
 	double a;
 	double b;
 
+	double magnitude;
+	
+	public DirectionVector(Point p1, Point p2, double magnitude) {
+		this.magnitude = magnitude;
+		double angle = GeometryMath.DEG2RAD * p1.bearingTo(p2);
+		this.a = magnitude * Math.sin(angle);
+		this.b = magnitude * Math.cos(angle);
+	}
+	
 	public DirectionVector(Point p1, Point p2) {
-		this.a = p2.getLongitude() - p1.getLongitude();
-		this.b = p2.getLatitude() - p1.getLatitude();
+		this(p1, p2, TurnArrows.distanceFromCenter);
 	}
 
 	public DirectionVector(double a, double b) {
@@ -15,6 +27,7 @@ public class DirectionVector {
 		this.b = b;
 	}
 
+	//TODO usunac z tad te funkcje i brac katy bezposrednio z Pointsow poprzez bearing
 	public double getAbsAngle(DirectionVector other) {
 		double cos = (this.a * other.a + this.b * other.b)
 				/ (Math.sqrt(this.a * this.a + this.b * this.b) * 
@@ -57,9 +70,12 @@ public class DirectionVector {
 	}
 
 	public void scaleToMagnitude(double size) {
-		double scale = Math.sqrt((size * size) / (a * a + b * b));
-		a = a * scale;
-		b = b * scale;
+		if(magnitude != size) {
+			double scale = Math.sqrt((size * size) / (a * a + b * b));
+			a = a * scale;
+			b = b * scale;
+			magnitude = size;
+		}
 	}
 
 	public DirectionVector rotate(int degrees) {

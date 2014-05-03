@@ -38,7 +38,7 @@ public class TurnArrows {
 
 	Semaphore s;
 
-	final int distanceFromCenter = 150;
+	public final static int distanceFromCenter = 150;
 	final int imageWidth = 256;
 	final int imageHeight = 256;
 	int halfWidthInDp, halfHeightInDp;
