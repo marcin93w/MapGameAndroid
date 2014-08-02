@@ -122,10 +122,7 @@ public class DrivingEngine {
 				boolean addedChildren = false;
 				for(CrossroadNode childNode : arrow.node.getChildren()) {
 					//block sharp turns in children - may cause problems!
-					if(arrow.node.getWay().getDirectionVector(Position.END)
-							.getAbsAngleInDegrees(
-									childNode.getWay().getDirectionVector(Position.START))
-									> maxChildTurnAngle) {
+					if(isSharpTurn(arrow.node, childNode)) {
 						blockedChild = true;
 					} else {
 						addArrowsForNodeRecursive(new Arrow(childNode));
@@ -146,6 +143,17 @@ public class DrivingEngine {
 				addArrowsForNodeRecursive(arrow);
 			}
 		}
+	}
+	
+	private boolean isSharpTurn(CrossroadNode a, CrossroadNode b) {
+		double angle = Math.abs(a.getWay().getAzimuth(Position.END) - 
+				b.getWay().getAzimuth(Position.START));
+		if(angle > 180)
+			angle = 360 - angle;
+		if(angle > maxChildTurnAngle)
+			return true;
+		else
+			return false;
 	}
 	
 	private void markMainArrow() {

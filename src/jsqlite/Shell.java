@@ -1,5 +1,6 @@
 package jsqlite;
 
+import android.annotation.SuppressLint;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -63,7 +64,8 @@ public class Shell implements Callback {
 	return s;
     }
 
-    static public String sql_quote_dbl(String str) {
+    @SuppressWarnings("unused")
+	static public String sql_quote_dbl(String str) {
 	if (str == null) {
 	    return "NULL";
 	}
@@ -145,7 +147,8 @@ public class Shell implements Callback {
 	return sb.toString();
     }
 
-    static boolean is_numeric(String str) {
+    @SuppressWarnings("unused")
+	static boolean is_numeric(String str) {
 	try {
 	    Double d = Double.valueOf(str);
 	} catch (java.lang.Exception e) {
@@ -298,7 +301,7 @@ public class Shell implements Callback {
 	return false;
     }
 
-    void do_meta(String line) {
+    @SuppressLint("DefaultLocale") void do_meta(String line) {
         StringTokenizer st = new StringTokenizer(line.toLowerCase());
 	int n = st.countTokens();
 	if (n <= 0) {

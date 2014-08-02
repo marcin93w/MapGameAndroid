@@ -18,9 +18,12 @@ public class SpatialiteDb {
 
 	public SpatialiteDb() {
 		try {
+			//String sdcardDir = "/storage/emulated/0/spatialite/";
 			String sdcardDir = "/storage/sdcard1/spatialite/";
-			File spatialDbFile = new File(sdcardDir + "dbb.sqlite");
-
+			File spatialDbFile;
+			
+			spatialDbFile = new File(sdcardDir + "dbb.sqlite");
+			
 			db = new jsqlite.Database();
 			db.open(spatialDbFile.getAbsolutePath(),
 					jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);

@@ -68,6 +68,11 @@ public class RaceActivity extends MapActivity
 		});
 	}
 	
+	public void setDestinationText(String text) {
+		TextView dest = (TextView)findViewById(R.id.destiantion);
+		dest.setText(text);
+	}
+	
 	public void setOnGearChangedListener(final SpeedChangeListener scl) {
 		ListView gearView = (ListView) findViewById(R.id.listView1);
 		gearView.setOnItemClickListener(new OnItemClickListener() {
@@ -114,6 +119,18 @@ public class RaceActivity extends MapActivity
 				pauseScreen.setVisibility(View.GONE);
 			}
 		});
+		
+		Button exit = (Button) findViewById(R.id.exit);
+		exit.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				exit();
+			}
+		});
+	}
+	
+	private void exit() {
+		super.onBackPressed();
 	}
 	
 	@Override
@@ -121,6 +138,14 @@ public class RaceActivity extends MapActivity
 		if(game.pause())
 			pauseScreen.setVisibility(View.VISIBLE);
 		super.onPause();
+	}
+	
+	@Override
+	public void onBackPressed() {
+		if(game.pause())
+			pauseScreen.setVisibility(View.VISIBLE);
+		else
+			exit();
 	}
 	
 	PreviewMapCallback callback;

@@ -4,6 +4,7 @@ package jsqlite;
  * Class for SQLite related exceptions.
  */
 
+@SuppressWarnings("serial")
 public class Exception extends java.lang.Exception {
 
     /**

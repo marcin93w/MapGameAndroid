@@ -65,4 +65,8 @@ public abstract class MapActivity extends Activity implements MapViewManageableA
 		map.getOverlays().add(itemLocationOverlay);
 	}
 	
+	public void clearOverlays() {
+		map.getOverlays().clear();
+	}
+	
 }

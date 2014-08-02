@@ -18,6 +18,7 @@ public class GameMap extends AnimatedMap {
 	}
 
 	public void setStartEndFlags(Point start, Point end) {
+		((RaceActivity)mapActivity).clearOverlays();
 		((RaceActivity)mapActivity).addStartFlagToMap(start.clone());
 		((RaceActivity)mapActivity).addEndFlagToMap(end.clone());
 		setPosition(start);

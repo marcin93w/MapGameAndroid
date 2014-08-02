@@ -8,11 +8,10 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 
 import com.mapgame.R;
-import com.mapgame.streetsgraph.model.DirectionVector;
 
 public class Car extends Component {
 	
-	DirectionVector vector;
+	double azimuth;
 	Paint p;
 	
 	Bitmap b;
@@ -23,21 +22,21 @@ public class Car extends Component {
 		b = BitmapFactory.decodeResource(getResources(), R.drawable.car);
 	}
 	
-	public void setVector(DirectionVector vector) {
-		this.vector = vector;
+	public void setAzimuth(double azimuth) {
+		this.azimuth = azimuth;
 	}
 
 	public void draw(Canvas canvas) {
-		if(vector != null && canvas != null) {
+		if(canvas != null) {
 			int centerX = canvas.getWidth()/2;
 			int centerY = canvas.getHeight()/2;
 			
 			canvas.drawColor(0, Mode.CLEAR);
 	        int bitmapPositionX = centerX - b.getWidth()/2;
 	        int bitmapPositionY = centerY - b.getHeight()/2;
-	        float angle = (float)vector.getAngleInDegrees(new DirectionVector(-1, 0));
+	        float angle = (float)azimuth + 90;
 	        canvas.save(Canvas.MATRIX_SAVE_FLAG);
-	        canvas.rotate(-angle, centerX, centerY);
+	        canvas.rotate(angle, centerX, centerY);
 	        canvas.drawBitmap(b, bitmapPositionX, bitmapPositionY, p);
 	        canvas.restore();
 		}

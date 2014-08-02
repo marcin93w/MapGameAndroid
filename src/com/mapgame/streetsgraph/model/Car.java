@@ -15,6 +15,10 @@ public class Car {
 		return way.getRoad().getGeometry().get(pointIdx);
 	}
 	
+	public int moveAndReturnPointIdx() {
+		return pointIdx += way.isBackward() ? -1 : 1;
+	}
+	
 	public Point moveAndReturnPoint() {
 		pointIdx += way.isBackward() ? -1 : 1;
 		return getPoint();

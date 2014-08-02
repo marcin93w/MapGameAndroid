@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mapgame.streetsgraph.model.Way.Position;
+
 /*
  * Node of a tree
  */
@@ -87,15 +89,15 @@ public class CrossroadNode implements Serializable {
 	}
 	
 	public CrossroadNode getMostForwardNode(List<CrossroadNode> nodes, double maxAngle) {
+		double currentAzimuth = way.getAzimuth(Position.END);
 		double angle = Double.MAX_VALUE;
 		int idx = -1;
 
 		for (int i = 0; i < nodes.size(); i++) {
-			DirectionVector vectorToChild = nodes.get(i).getWay()
-					.getDirectionVector(Way.Position.START);
-			DirectionVector vectorToThis = way
-					.getDirectionVector(Way.Position.END);
-			double calculatedAngle = vectorToChild.getAbsAngle(vectorToThis);
+			double calculatedAngle = Math.abs(
+					nodes.get(i).getWay().getAzimuth(Position.START) - currentAzimuth);
+			if(calculatedAngle > 180)
+				calculatedAngle = 360 - calculatedAngle;
 			
 			if (calculatedAngle <= angle && calculatedAngle <= maxAngle) {
 				angle = calculatedAngle;

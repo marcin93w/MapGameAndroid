@@ -1,7 +1,5 @@
 package com.mapgame.overlaycomponents;
 
-import com.mapgame.streetsgraph.model.DirectionVector;
-
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
@@ -16,7 +14,7 @@ public class ComponentsManager implements SurfaceHolder.Callback {
 	
 	SurfaceHolder carSurfaceHolder;
 	Car car;
-	DirectionVector lastCarDirection;
+	Double lastCarDirection;
 	
 	Resources resources;
 	GameComponentsCallback callback;
@@ -32,16 +30,16 @@ public class ComponentsManager implements SurfaceHolder.Callback {
 		car = new Car(resources);
 	}
 
-	public void prepareCar(DirectionVector vector) {
-		lastCarDirection = vector;
+	public void prepareCar(double azimuth) {
+		lastCarDirection = azimuth;
 	}
 	
-	public void drawCar(DirectionVector vector) {
+	public void drawCar(double azimuth) {
 		if(car == null || carSurfaceHolder == null) {
 			//warning - not initialized
 		} else {
-			lastCarDirection = vector;
-			car.setVector(vector);
+			lastCarDirection = azimuth;
+			car.setAzimuth(azimuth);
 			Canvas c = carSurfaceHolder.lockCanvas();
 			car.draw(c);
 			carSurfaceHolder.unlockCanvasAndPost(c);

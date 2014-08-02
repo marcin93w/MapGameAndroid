@@ -12,6 +12,7 @@ import com.mapgame.overlaycomponents.ComponentsManager;
 import com.mapgame.streetsgraph.model.Car;
 import com.mapgame.streetsgraph.model.CrossroadNode;
 import com.mapgame.streetsgraph.model.Way;
+import com.mapgame.streetsgraph.model.Way.Position;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD) 
 public class Race implements GameMapCallback, SpeedChangeListener {
@@ -27,10 +28,10 @@ public class Race implements GameMapCallback, SpeedChangeListener {
 	
 	boolean runningBack = false;
 	double rewindedLength = 0;
-	final static double maxRewindedLength = 500;
+	final static double maxRewindedLength = 300;
 	
 	private LinkedList<Way> route;
-
+	
 	public Race(GameMap map, ComponentsManager cm, DrivingEngine dc,
 			RaceFinishedCallback callback) {
 		this.map = map;
@@ -46,7 +47,7 @@ public class Race implements GameMapCallback, SpeedChangeListener {
 		route.add(startNode.getWay());
 		map.setPosition(car.getPoint());
 		dc.initialize(startNode);
-		cm.prepareCar(car.getWay().createDirectionVector(car.getPointIdx()));
+		cm.prepareCar(car.getWay().getAzimuth(Position.START));
 	}
 	
 	public void start() {
@@ -83,7 +84,7 @@ public class Race implements GameMapCallback, SpeedChangeListener {
 	private void continueDrive() {
 		if (!car.isOnEndCrossroad()) {
 			map.moveTo(car.moveAndReturnPoint(), this);
-			cm.drawCar(car.getWay().createDirectionVector(car.getPointIdx()));
+			cm.drawCar(car.getWay().getAzimuth(car.getPointIdx()));
 		} else {
 			if(car.getWay().getEndCrossroadNode() == endNode.getNodeId()) {
 				cm.eraseCar();
@@ -93,6 +94,7 @@ public class Race implements GameMapCallback, SpeedChangeListener {
 				Way nextWay = dc.getNextWay();
 				car.setWay(nextWay);
 				route.add(nextWay);
+				decreaseRewindedLength(nextWay.getRoad().getLength());
 				continueDrive();
 			}
 		}
@@ -100,14 +102,33 @@ public class Race implements GameMapCallback, SpeedChangeListener {
 	
 	private void undoDrive() {
 		if(!car.isOnStartCrossroad()) {
+			cm.drawCar(car.getWay().getAzimuth(car.getPointIdx()));
 			map.moveTo(car.moveBackAndReturnPoint(), this);
-			int vectorPoint = car.getPointIdx() == 0 ? 0 : car.getPointIdx() - 1;
-			cm.drawCar(car.getWay().createDirectionVector(vectorPoint));
+			
 		} else {
 			if(route.peekLast() != null) {
-				car.setBackWay(route.pollLast());
-				undoDrive();
+				if(increaseRewindedLength(route.peekLast().getRoad().getLength())) {
+					car.setBackWay(route.pollLast());
+					undoDrive();
+				}
 			}
+		}
+	}
+	
+	private boolean increaseRewindedLength(double length) {
+		if(rewindedLength < maxRewindedLength) {
+			rewindedLength += length;
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private void decreaseRewindedLength(double length) {
+		if(rewindedLength != 0) {
+			rewindedLength -= length;
+			if(rewindedLength < 0)
+				rewindedLength = 0;
 		}
 	}
 

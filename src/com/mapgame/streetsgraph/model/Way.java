@@ -60,34 +60,30 @@ public class Way implements Serializable {
 		return road.geometry.get(backward ? road.geometry.size() - 1 : 0);
 	}
 	
+	public Point getSecondPoint() {
+		return road.geometry.get(backward ? road.geometry.size() - 2 : 1);
+	}
+	
 	public Point getLastPoint() {
 		return road.geometry.get(!backward ? road.geometry.size() - 1 : 0);
 	}
 	
-	public enum Position { START, END };
-	
-	public DirectionVector getDirectionVector(Position position) {
-		if(position == Position.START)
-			return createDirectionVector(0);
-		else
-			return createDirectionVector(road.getGeometry().size()-1);
+	public Point getPreLastPoint() {
+		return road.geometry.get(!backward ? road.geometry.size() - 2 : 1);
 	}
 	
-	public DirectionVector createDirectionVector(int pointId) {
-		Point a,b;
-		if(pointId < road.getGeometry().size()-1) {
-			a = road.getGeometry().get(pointId); 
-			b = road.getGeometry().get(pointId+1);
-		} else {
-			a = road.getGeometry().get(pointId-1);
-			b = road.getGeometry().get(pointId);
-		}
-		
-		if(backward) {
-			return (new DirectionVector(b,a));
-		} else {
-			return (new DirectionVector(a,b));
-		}
+	public enum Position { START, END };
+	
+	public double getAzimuth(Position position) {
+		if(position == Position.START)
+			return getAzimuth(backward ? road.geometry.size() - 2 : 1);
+		else
+			return getAzimuth(!backward ? road.geometry.size() - 1 : 0);
+	}
+	
+	public double getAzimuth(int pointId) {	
+		return road.getGeometry().get(pointId + (backward ? 1 : -1)).bearingTo( 
+				road.getGeometry().get(pointId));
 	}
 	
 }

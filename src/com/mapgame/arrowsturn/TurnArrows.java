@@ -6,11 +6,13 @@ import java.util.concurrent.Semaphore;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
@@ -19,7 +21,7 @@ import android.widget.TextView;
 import com.mapgame.R;
 import com.mapgame.arrowsturn.ArrowsDisplayableActivity.ViewRunnable;
 import com.mapgame.streetsgraph.model.DirectionVector;
-import com.mapgame.streetsgraph.model.Way;
+import com.mapgame.streetsgraph.model.Way.Position;
 
 public class TurnArrows {
 	ArrowsDisplayableActivity mainActivity;
@@ -38,10 +40,7 @@ public class TurnArrows {
 
 	Semaphore s;
 
-	public final static int distanceFromCenter = 150;
-	final int imageWidth = 256;
-	final int imageHeight = 256;
-	int halfWidthInDp, halfHeightInDp;
+	public final static int distanceFromCenter = 90;
 	
 	final int arrowsZeroZIndex = 1;
 
@@ -51,14 +50,6 @@ public class TurnArrows {
 		arrows = new ArrayList<ImageArrow>();
 
 		s = new Semaphore(1);
-
-		DisplayMetrics displayMetrics = context
-				.getResources().getDisplayMetrics();
-
-		halfWidthInDp = Math.round(imageWidth / 2
-				/ (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-		halfHeightInDp = Math.round(imageHeight / 2
-				/ (displayMetrics.ydpi / DisplayMetrics.DENSITY_DEFAULT));
 	}
 	
 	public void addArrowsBegin() {
@@ -66,7 +57,7 @@ public class TurnArrows {
 	}
 	
 	public void addArrow(final Arrow arrow) {
-		DirectionVector vector = arrow.node.getWay().getDirectionVector(Way.Position.START);
+		double azimuth = arrow.node.getWay().getAzimuth(Position.START);
 		final ImageView imageView = new ImageView(context);
 		if (arrow.main) {
 			imageView.setImageResource(R.drawable.arrow_selected);
@@ -75,9 +66,8 @@ public class TurnArrows {
 			imageView.setImageResource(getProperImage(arrow));
 		}
 		
-		rotateArrow(imageView,
-				(float) vector.getAngleInDegrees(new DirectionVector(1, 0)));
-		locateArrow(imageView, vector, arrow.main);
+		rotateArrow(imageView, (float)azimuth - 90);
+		locateArrow(imageView, new DirectionVector(azimuth, distanceFromCenter), arrow.main);
 
 		imageView.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -157,26 +147,44 @@ public class TurnArrows {
 		}
 	}
 
-	private void locateArrow(ImageView view, DirectionVector vector, boolean main) {
-		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+	private void locateArrow(final ImageView view, final DirectionVector vector, boolean main) {
+		final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		params.addRule(RelativeLayout.RIGHT_OF, R.id.fakeView);
 		params.addRule(RelativeLayout.ABOVE, R.id.fakeView);
+		params.addRule(RelativeLayout.RIGHT_OF, R.id.fakeView);
 
 		vector.scaleToMagnitude(distanceFromCenter);
-		params.setMargins((int) vector.getA() - halfWidthInDp, 0, 0,
-				(int) vector.getB() - halfHeightInDp);
-
-		view.setLayoutParams(params);
+		ViewTreeObserver vto = view.getViewTreeObserver();
+		vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+		    public boolean onPreDraw() {
+		    	view.getViewTreeObserver().removeOnPreDrawListener(this);
+		        params.setMargins((int)dpToPx((float)vector.getX()) - view.getWidth()/2, 
+		        		0, 0, 
+		        		(int)dpToPx((float)vector.getY()) - view.getHeight()/2);
+				view.setLayoutParams(params);
+		        return true;
+		    }
+		});
 	}
 
-	private void rotateArrow(ImageView imageView, float angle) {
-		Matrix matrix = new Matrix();
-		imageView.setScaleType(ScaleType.MATRIX);
-		matrix.preRotate(angle, halfWidthInDp, halfHeightInDp);
-		imageView.setImageMatrix(matrix);
+	private void rotateArrow(final ImageView imageView, final float angle) {
+		ViewTreeObserver vto = imageView.getViewTreeObserver();
+		vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+		    public boolean onPreDraw() {
+				Matrix matrix = new Matrix();
+				imageView.setScaleType(ScaleType.MATRIX);
+				matrix.preRotate(angle, imageView.getWidth()/2, imageView.getHeight()/2);
+				imageView.setImageMatrix(matrix);
+				return true;
+		    }
+		});
 	}
 
+	private float dpToPx(float dp) {
+		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, 
+				context.getResources().getDisplayMetrics());
+	}
+	
 	public void clearArrows() {
 		for (final ImageArrow arrow : arrows) {
 			mainActivity.invokeArrowsView(new ViewRunnable() {

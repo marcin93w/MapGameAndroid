@@ -8,44 +8,6 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
 	     >
-	
-	    <!--LinearLayout
-	        android:layout_width="60dp"
-	        android:layout_height="match_parent"
-	        android:orientation="vertical" >
-	
-	        <TextView
-	            android:id="@+id/TextView01"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:text="@string/length" />
-	
-	        <TextView
-	            android:id="@+id/length"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:text="0.00 km" />
-	
-	        <TextView
-	            android:id="@+id/textView2"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:text="@string/cost" />
-	
-	        <TextView
-	            android:id="@+id/cost"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:text="0.00 min" />
-	
-	        <ToggleButton
-	            android:id="@+id/slowButton"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:layout_gravity="bottom"
-	            android:text="SLOW" />
-	
-	    </LinearLayout-->
 
 	    <RelativeLayout
 	        android:layout_width="70dp"
@@ -72,8 +34,8 @@
 
 	        <RelativeLayout
 	            android:layout_width="match_parent"
-	            android:layout_height="222dp"
-	            android:layout_weight="0.43" >
+	            android:layout_height="match_parent"
+	            android:layout_weight="0.8" >
 
 	            <org.osmdroid.views.MapView
 	                android:id="@+id/mapview"
@@ -123,16 +85,33 @@
 	                android:layout_height="match_parent"
 	                android:text="Krakowska" />
 	        </LinearLayout>
+
+	        <LinearLayout
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:orientation="horizontal" >
+
+	            <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="match_parent"
+	                android:text="Cel: " />
+
+	            <TextView
+	                android:id="@+id/destiantion"
+	                android:layout_width="match_parent"
+	                android:layout_height="match_parent"
+	                android:text="Krakowska" />
+	        </LinearLayout>
 	    </LinearLayout>
 	
 	</LinearLayout>
 
 	<RelativeLayout
+	    android:id="@+id/pauseScreen"
 	    android:layout_width="200dp"
 	    android:layout_height="100dp"
 	    android:layout_gravity="center"
 	    android:background="@color/Silver"
-	    android:id="@+id/pauseScreen"
 	    android:visibility="gone" >
 
 		<TextView
@@ -150,8 +129,16 @@
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:layout_alignParentBottom="true"
-		    android:layout_centerHorizontal="true"
+		    android:layout_toRightOf="@+id/textView1"
 		    android:text="Start" />
+
+		<Button
+		    android:id="@+id/exit"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentBottom="true"
+		    android:layout_toLeftOf="@+id/textView1"
+		    android:text="Exit" />
 
 	</RelativeLayout>
 

@@ -57,7 +57,8 @@ public class TableResult implements Callback {
      * Rows of the result set. Each row is stored as a String array.
      */
 
-    public Vector rows;
+    @SuppressWarnings("rawtypes")
+	public Vector rows;
 
     /**
      * Maximum number of rows to hold in the table.
@@ -92,7 +93,8 @@ public class TableResult implements Callback {
      * Clear result set.
      */
 
-    public void clear() {
+    @SuppressWarnings("rawtypes")
+	public void clear() {
 	column = new String[0];
 	types = null;
 	rows = new Vector();
@@ -121,7 +123,8 @@ public class TableResult implements Callback {
      * Callback method used while the query is executed.
      */
 
-    public boolean newrow(String rowdata[]) {
+    @SuppressWarnings("unchecked")
+	public boolean newrow(String rowdata[]) {
 	if (rowdata != null) {
 	    if (maxrows > 0 && nrows >= maxrows) {
 		atmaxrows = true;

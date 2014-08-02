@@ -31,7 +31,6 @@ class IntroPreviewMapAnimation extends Thread {
 			e.printStackTrace();
 		}
 		moveToStart();
-		//onAnimationEnd();
 	}
 	
 	private void moveToStart() {

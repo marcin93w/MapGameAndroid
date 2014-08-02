@@ -33,12 +33,17 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 	Race race;
 	CrossroadNode startNode, endNode;
 	
+	enum GameState { OFF, PREVIEW, COUNTDOWN, RACE, FINISH};
+	GameState gameState;
+	
 	public Game(RaceActivity gameActivity) {
 		this.raceActivity = gameActivity;
 		this.gameMap = new GameMap(gameActivity);
 		this.turnArrows = new TurnArrows(gameActivity, gameActivity.getApplicationContext());
 		this.componentsManager = new ComponentsManager(gameActivity.getResources(), this);
 		this.sds = new StreetsDataSource();
+		
+		gameState = GameState.OFF;
 		
 		gameActivity.initializeCarSurfaceView(componentsManager);
 	}
@@ -64,17 +69,21 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 		Point end = endNode.getCrossroadPoint();
 		gameMap.setStartEndFlags(start, end);
 		
+		gameState = GameState.PREVIEW;
 		raceActivity.showRaceIntro(startNode, endNode, new PreviewMapCallback() {
 			@Override
 			public void onPreviewFinished() {
+				gameState = GameState.COUNTDOWN;
 				raceActivity.startCountdown(new Callback() {
 					@Override
 					public void raceCountdownFinished() {
+						gameState = GameState.RACE;
 						race.start();
 					}
 				});	
 			}
 		});
+		raceActivity.setDestinationText(endNode.getWay().getRoad().getName());
 		
 	}
 	
@@ -90,6 +99,7 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 			e.printStackTrace();
 		}
 		
+		gameState = GameState.FINISH;
 		raceActivity.showRaceFinish(startNode.getWay().getFirstPoint(),
 				endNode.getCrossroadPoint(), 
 				new Route(route), bestRoute, new PreviewMapCallback() {
@@ -101,6 +111,7 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 	}
 	
 	public boolean pause() {
+		
 		return race.pause();
 	}
 	

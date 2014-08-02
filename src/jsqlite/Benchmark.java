@@ -150,6 +150,7 @@ public abstract class Benchmark {
 	}
     }
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void benchmark(String url, String user, String password, boolean init) {
 	Vector vClient = new Vector();
 	Thread Client = null;
