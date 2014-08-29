@@ -5,24 +5,26 @@ import java.util.LinkedList;
 
 
 public class Way implements Serializable {
+	public enum Position { START, END };
+	
 	private static final long serialVersionUID = 1L;
 	
-	Road road;
-	boolean backward;
+	private Road road;
+	private boolean backward;
 	
 	public Way(Road road, boolean backward) {
 		this.road = road;
 		this.backward = backward;
 	}
 	
-	public int getEndCrossroadNode() {
+	public int getEndCrossroadNodeId() {
 		if(backward)
 			return road.getStartNodeId();
 		else
 			return road.getEndNodeId();
 	}
 	
-	public int getStartCrossroadNode() {
+	public int getStartCrossroadNodeId() {
 		if(backward)
 			return road.getEndNodeId();
 		else
@@ -71,8 +73,6 @@ public class Way implements Serializable {
 	public Point getPreLastPoint() {
 		return road.geometry.get(!backward ? road.geometry.size() - 2 : 1);
 	}
-	
-	public enum Position { START, END };
 	
 	public double getAzimuth(Position position) {
 		if(position == Position.START)

@@ -76,8 +76,10 @@ public class RaceFinishActivity extends RacePreviewActivity {
 		result.setText("+ " + Float.toString(resultProcentage) + "%");
 	}
 	
-	private String doubleToCostString(double cost) {
-		return Double.toString(Math.round(cost*10)/10.0) + " min";
+	private String doubleToCostString(double costInSeconds) {
+		int minutes = (int) costInSeconds/60;
+		double seconds = costInSeconds - minutes * 60;
+		return Integer.toString(minutes) + " min " + Long.toString(Math.round(seconds)) + " sec";
 	}
 	
 	private String doubleToLengthString(double length) {

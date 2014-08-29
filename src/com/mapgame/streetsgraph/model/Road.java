@@ -93,4 +93,8 @@ public class Road implements Serializable {
 		return true;
 	}
 
+	public boolean isUnnamed() {
+		return name.equals("*** Unknown ****");
+	}
+
 }

@@ -5,7 +5,6 @@ import java.util.concurrent.Semaphore;
 
 import android.content.Context;
 import android.graphics.Matrix;
-import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -66,8 +65,7 @@ public class TurnArrows {
 			imageView.setImageResource(getProperImage(arrow));
 		}
 		
-		rotateArrow(imageView, (float)azimuth - 90);
-		locateArrow(imageView, new DirectionVector(azimuth, distanceFromCenter), arrow.main);
+		locateAndRotateArrow(imageView, new DirectionVector(azimuth, distanceFromCenter), arrow.main, (float)azimuth - 90);
 
 		imageView.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -77,6 +75,13 @@ public class TurnArrows {
 					if(arrowImage.image != imageView) {
 						arrowImage.image.setImageResource(getProperImage(arrowImage.arrow));
 						arrowImage.image.bringToFront();
+						mainActivity.invokeArrowsView(new ViewRunnable() {
+							@Override
+							public void run(View view) {
+								view.requestLayout();
+								view.invalidate();
+							}
+						});
 					}
 				}
 				s.release();
@@ -147,7 +152,7 @@ public class TurnArrows {
 		}
 	}
 
-	private void locateArrow(final ImageView view, final DirectionVector vector, boolean main) {
+	private void locateAndRotateArrow(final ImageView view, final DirectionVector vector, boolean main, final float angle) {
 		final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		params.addRule(RelativeLayout.ABOVE, R.id.fakeView);
@@ -162,20 +167,12 @@ public class TurnArrows {
 		        		0, 0, 
 		        		(int)dpToPx((float)vector.getY()) - view.getHeight()/2);
 				view.setLayoutParams(params);
-		        return true;
-		    }
-		});
-	}
-
-	private void rotateArrow(final ImageView imageView, final float angle) {
-		ViewTreeObserver vto = imageView.getViewTreeObserver();
-		vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-		    public boolean onPreDraw() {
+				
 				Matrix matrix = new Matrix();
-				imageView.setScaleType(ScaleType.MATRIX);
-				matrix.preRotate(angle, imageView.getWidth()/2, imageView.getHeight()/2);
-				imageView.setImageMatrix(matrix);
-				return true;
+				view.setScaleType(ScaleType.MATRIX);
+				matrix.preRotate(angle, view.getWidth()/2, view.getHeight()/2);
+				view.setImageMatrix(matrix);
+				return false;
 		    }
 		});
 	}

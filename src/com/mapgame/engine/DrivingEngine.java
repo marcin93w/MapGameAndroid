@@ -69,7 +69,7 @@ public class DrivingEngine {
 		if(node.getChildren() == null) {
 			ArrayList<Way> childRoads = null;
 			try {
-				childRoads = sds.getPossibleRoadsFromCrossroad(node.getNodeId());
+				childRoads = sds.getPossibleWaysFromCrossroad(node.getNodeId());
 			} catch (Exception e) {
 				e.printStackTrace();
 			} catch (JSONException e) {

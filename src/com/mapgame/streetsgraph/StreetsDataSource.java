@@ -2,12 +2,15 @@ package com.mapgame.streetsgraph;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Random;
 
 import jsqlite.Exception;
 import jsqlite.Stmt;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.content.Context;
 
 import com.mapgame.streetsgraph.model.CrossroadNode;
 import com.mapgame.streetsgraph.model.Point;
@@ -15,7 +18,13 @@ import com.mapgame.streetsgraph.model.Road;
 import com.mapgame.streetsgraph.model.Route;
 import com.mapgame.streetsgraph.model.Way;
 
-public class StreetsDataSource extends SpatialiteDb {
+public class StreetsDataSource {
+
+	private SpatialiteDb spatialite;
+	
+	public StreetsDataSource(Context context) {
+		spatialite = new SpatialiteDb(context);
+	}
 
 	String possibleRoadsFromCrossroadQuery = "SELECT oneway_fromto, oneway_tofrom, "
 			+ "AsGeoJSON(geometry), node_from, node_to, "
@@ -25,11 +34,11 @@ public class StreetsDataSource extends SpatialiteDb {
 			+ " AND oneway_fromto = 1) OR " + "(node_to = $1"
 			+ " AND oneway_tofrom = 1)";
 	
-	public ArrayList<Way> getPossibleRoadsFromCrossroad(
+	public ArrayList<Way> getPossibleWaysFromCrossroad(
 			int crossroadNodeId) throws Exception, JSONException {
 		ArrayList<Way> roads = new ArrayList<Way>();
 
-		Stmt stmt = db.prepare(possibleRoadsFromCrossroadQuery);
+		Stmt stmt = spatialite.getDb().prepare(possibleRoadsFromCrossroadQuery);
 		stmt.bind(1, crossroadNodeId);
 		
 		while (stmt.step()) {
@@ -63,28 +72,32 @@ public class StreetsDataSource extends SpatialiteDb {
 		Stmt stmt;
 		if(other == null || minDistance == 0) {
 			String query = "SELECT node_id FROM roads_nodes ORDER BY RANDOM() LIMIT 1";
-			stmt = db.prepare(query);
+			stmt = spatialite.getDb().prepare(query);
 		} else {
 			String query = "SELECT node_id FROM roads_nodes "+
 					//"WHERE PtDistWithin(geometry, MakePoint($1, $2), $3) = 0 "+
 					//for debug:
-					"WHERE PtDistWithin(geometry, MakePoint($1, $2), 0.025) = 1 "+
+					"WHERE PtDistWithin(geometry, MakePoint($1, $2), 0.025) = 1 " +
 					"ORDER BY RANDOM() LIMIT 1";
-			stmt = db.prepare(query);
+			stmt = spatialite.getDb().prepare(query);
 			stmt.bind(1, other.getLongitude());
 			stmt.bind(2, other.getLatitude());
 			//stmt.bind(3, minDistance);
 		}
 		
 		CrossroadNode node = null;
-		Random rand = new Random();
 		
 		while(node == null) {		
 			if(stmt.step()) {
 				int nodeId = stmt.column_int(0);
-				ArrayList<Way> ways = getPossibleRoadsFromCrossroad(nodeId);
+				ArrayList<Way> ways = getPossibleWaysFromCrossroad(nodeId);
 				if(ways.size() > 0) {
-					node = new CrossroadNode(ways.get(rand.nextInt(ways.size())));
+					for(Way w : ways) {
+						if(!w.getRoad().isUnnamed()) {
+							node = new CrossroadNode(w);
+							break;
+						}
+					}
 				}
 			}
 			if(node == null)
@@ -108,7 +121,7 @@ public class StreetsDataSource extends SpatialiteDb {
 						"AND NodeTo = $2 " +
 						"LIMIT 1;";
 		
-		Stmt stmt = db.prepare(query);
+		Stmt stmt = spatialite.getDb().prepare(query);
 		stmt.bind(1, a.getNodeId());
 		stmt.bind(2, b.getNodeId());
 		if (stmt.step()) {
@@ -119,6 +132,33 @@ public class StreetsDataSource extends SpatialiteDb {
 		stmt.close();
 
 		return new Route(route, cost, length);
+	}
+	
+	//slowest method!
+	protected ArrayList<Point> geoJSONToPointsArray(String json)
+			throws JSONException {
+		JSONObject way = new JSONObject(json);
+		JSONArray geom = way.getJSONArray("coordinates");
+		ArrayList<Point> points = new ArrayList<Point>();
+		for (int j = 0; j < geom.length(); j++) {
+			JSONArray lonLat = geom.getJSONArray(j);
+			Point point = new Point(lonLat.optDouble(1), lonLat.getDouble(0));
+			points.add(point);
+		}
+		return points;
+	}
+	
+	protected LinkedList<Point> geoJSONToPointsList(String json)
+			throws JSONException {
+		JSONObject way = new JSONObject(json);
+		JSONArray geom = way.getJSONArray("coordinates");
+		LinkedList<Point> points = new LinkedList<Point>();
+		for (int j = 0; j < geom.length(); j++) {
+			JSONArray lonLat = geom.getJSONArray(j);
+			Point point = new Point(lonLat.optDouble(1), lonLat.getDouble(0));
+			points.add(point);
+		}
+		return points;
 	}
 
 }

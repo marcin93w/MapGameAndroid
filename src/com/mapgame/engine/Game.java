@@ -41,8 +41,8 @@ public class Game implements GameComponentsCallback, RaceFinishedCallback {
 		this.gameMap = new GameMap(gameActivity);
 		this.turnArrows = new TurnArrows(gameActivity, gameActivity.getApplicationContext());
 		this.componentsManager = new ComponentsManager(gameActivity.getResources(), this);
-		this.sds = new StreetsDataSource();
-		
+		this.sds = new StreetsDataSource(gameActivity.getApplicationContext());
+			
 		gameState = GameState.OFF;
 		
 		gameActivity.initializeCarSurfaceView(componentsManager);

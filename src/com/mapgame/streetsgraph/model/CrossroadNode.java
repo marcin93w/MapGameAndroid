@@ -22,7 +22,7 @@ public class CrossroadNode implements Serializable {
 	}
     
     public int getNodeId() {
-    	return way.getEndCrossroadNode();
+    	return way.getEndCrossroadNodeId();
     }
     
     public Way getWay() {
@@ -60,7 +60,7 @@ public class CrossroadNode implements Serializable {
 	}
 	
 	public boolean isReturnToParent(CrossroadNode child) {
-		if(child.getNodeId() == way.getStartCrossroadNode())
+		if(child.getNodeId() == way.getStartCrossroadNodeId())
 			return true;
 		return false;
 	}

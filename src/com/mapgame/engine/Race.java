@@ -58,6 +58,7 @@ public class Race implements GameMapCallback, SpeedChangeListener {
 	public boolean pause() {
 		if(running) {
 			running = false;
+			map.stopMove();
 			return true;
 		}
 		return false;
@@ -86,7 +87,7 @@ public class Race implements GameMapCallback, SpeedChangeListener {
 			map.moveTo(car.moveAndReturnPoint(), this);
 			cm.drawCar(car.getWay().getAzimuth(car.getPointIdx()));
 		} else {
-			if(car.getWay().getEndCrossroadNode() == endNode.getNodeId()) {
+			if(car.getWay().getEndCrossroadNodeId() == endNode.getNodeId()) {
 				cm.eraseCar();
 				running = false;
 				finishedCallback.onRaceFinished(route);
@@ -141,8 +142,7 @@ public class Race implements GameMapCallback, SpeedChangeListener {
 				if(speed < 0) {
 					route.removeLast();
 					dc.dispose();
-				}
-				else {
+				} else {
 					route.add(car.getWay());
 					dc.initialize(new CrossroadNode(car.getWay()));
 				}
