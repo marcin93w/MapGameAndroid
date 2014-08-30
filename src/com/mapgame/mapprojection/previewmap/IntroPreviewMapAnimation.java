@@ -3,24 +3,25 @@ package com.mapgame.mapprojection.previewmap;
 import org.osmdroid.api.IMapController;
 
 import com.mapgame.RacePreviewActivity;
-import com.mapgame.mapprojection.AnimatedMap.MoveAnimation;
 import com.mapgame.mapprojection.MapViewManageableActivity.MapControllerRunable;
 import com.mapgame.mapprojection.gamemap.GameMapCallback;
 import com.mapgame.streetsgraph.model.Point;
 
 class IntroPreviewMapAnimation extends Thread {
-	Point start, destination;
-	PreviewMap map;
-	PreviewMapCallback callback;
+	private Point start, destination;
+	private PreviewMap map;
+	private PreviewMapCallback finishCallback;
+	private PreviewMapCallback afterStartCallback;
 	
-	MoveAnimation moveAnimation;
+	//private MoveAnimation moveAnimation;
 	
 	public IntroPreviewMapAnimation(PreviewMap map, Point start, Point destination,
-			PreviewMapCallback callback) {
+			PreviewMapCallback afterStartCallback, PreviewMapCallback finishCallback) {
 		this.start = start;
 		this.destination = destination;
 		this.map = map;
-		this.callback = callback;
+		this.finishCallback = finishCallback;
+		this.afterStartCallback = afterStartCallback;
 	}
 	
 	@Override
@@ -65,6 +66,8 @@ class IntroPreviewMapAnimation extends Thread {
 			e.printStackTrace();
 		}
 		
+		afterStartCallback.onPreviewFinished();
+		
 		map.new MoveAnimation(destination, new GameMapCallback() {
 			@Override
 			public void mapMoveFinished() {
@@ -86,6 +89,6 @@ class IntroPreviewMapAnimation extends Thread {
 	
 	private void onAnimationEnd() {
 		((RacePreviewActivity)map.mapActivity).invokeEndPreview();
-		callback.onPreviewFinished();
+		finishCallback.onPreviewFinished();
 	}
 }

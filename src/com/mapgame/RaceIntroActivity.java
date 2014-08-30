@@ -34,21 +34,34 @@ public class RaceIntroActivity extends RacePreviewActivity {
 		
 		Bundle b = getIntent().getExtras();
 		CrossroadNode start = (CrossroadNode) b.getSerializable("start");
-		CrossroadNode end = (CrossroadNode) b.getSerializable("end");
+		final CrossroadNode end = (CrossroadNode) b.getSerializable("end");
 		
-		TextView startStreet = (TextView) findViewById(R.id.preview_start);
-		TextView endStreet = (TextView) findViewById(R.id.preview_destination);
+		final TextView street = (TextView) findViewById(R.id.preview_street_name);
+		final TextView label = (TextView) findViewById(R.id.TextView02);
 		
-		startStreet.setText(start.getWay().getRoad().getName());
-		endStreet.setText(end.getWay().getRoad().getName());
+		label.setText(R.string.source);
+		street.setText(start.getWay().getRoad().getName());
 		
 		PreviewMap previewController = new PreviewMap(this, new Point(50.065404,19.949255));
 		previewController.showIntroPreview(start.getWay().getFirstPoint(), 
-				end.getCrossroadPoint(), new PreviewMapCallback() {
-			@Override
-			public void onPreviewFinished() {
-				invokeEndPreview();	
-			}
+				end.getCrossroadPoint(), 
+			new PreviewMapCallback() {
+				@Override
+				public void onPreviewFinished() {
+					runOnUiThread(new Runnable() {	
+						@Override
+						public void run() {
+							label.setText(R.string.target);
+							street.setText(end.getWay().getRoad().getName());
+						}
+					});
+				}
+			},
+			new PreviewMapCallback() {
+				@Override
+				public void onPreviewFinished() {
+					invokeEndPreview();	
+				}
 		});
 	}
 }

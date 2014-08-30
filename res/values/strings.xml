@@ -16,5 +16,7 @@
     <string name="start">Start</string>
     <string name="exit">Wyjscie</string>
     <string name="background">tlo</string>
+    <string name="target">Cel:  </string>
+    <string name="source">Start:  </string>
 
 </resources>

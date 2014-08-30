@@ -20,5 +20,6 @@
     <color name="Silver">#999</color>
     <color name="White">#FFF</color>
     <color name="Transparent">#8000</color>
+    <color name="TextOnWhite">#333333</color>
 
 </resources>

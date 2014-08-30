@@ -26,7 +26,7 @@ public class PreviewMap extends AnimatedMap {
 	}
 	
 	public void showIntroPreview(Point start, Point destination, 
-			PreviewMapCallback callback) {
+			PreviewMapCallback afterStartCallback, PreviewMapCallback finishCallback) {
 		controller.setZoom(initialZoom);
 		controller.setCenter(cityCenterPoint);
 		
@@ -35,7 +35,8 @@ public class PreviewMap extends AnimatedMap {
 		
 		this.position = cityCenterPoint;
 		this.moveStep = 1000;
-		(new IntroPreviewMapAnimation(this, start, destination, callback)).start();
+		(new IntroPreviewMapAnimation(this, start, destination, 
+				afterStartCallback, finishCallback)).start();
 	}
 	
 	public void showOutroPreview(Point start, Point destination, 
