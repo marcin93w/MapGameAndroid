@@ -124,7 +124,7 @@ public class RaceActivity extends MapActivity
 
 	private void resumeSetUp() {
 		pauseScreen.setVisibility(View.GONE);
-		Button resume = (Button) findViewById(R.id.unpause);
+		ImageButton resume = (ImageButton) findViewById(R.id.unpause);
 		resume.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -133,7 +133,7 @@ public class RaceActivity extends MapActivity
 			}
 		});
 		
-		Button exit = (Button) findViewById(R.id.exit);
+		ImageButton exit = (ImageButton) findViewById(R.id.pause_exit);
 		exit.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

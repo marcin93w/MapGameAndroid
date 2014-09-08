@@ -155,6 +155,7 @@
 	                        android:layout_height="wrap_content"
 	                        android:layout_alignParentLeft="true"
 	                        android:layout_centerVertical="true"
+	                        android:layout_marginRight="2dp"
 	                        android:textColor="@color/TextOnWhite"
 	                        android:text="@string/next_street" />
 
@@ -166,6 +167,7 @@
 	                        android:layout_alignBottom="@+id/textView2"
 	                        android:layout_alignParentRight="true"
 	                        android:textColor="@color/TextOnWhite"
+	                        android:layout_marginRight="2dp"
 					        android:singleLine="true" 
 							android:ellipsize="marquee"
 							android:marqueeRepeatLimit ="marquee_forever"
@@ -187,6 +189,7 @@
 	                        android:layout_width="wrap_content"
 	                        android:layout_height="wrap_content"
 	                        android:layout_alignParentLeft="true"
+	                        android:layout_marginRight="2dp"
 	                        android:layout_centerVertical="true"
 	                        android:textColor="@color/TextOnWhite"
 	                        android:text="@string/target" />
@@ -195,6 +198,7 @@
 	                        android:id="@+id/destiantion"
 	                        android:layout_width="wrap_content"
 	                        android:layout_height="wrap_content"
+	                        android:layout_marginRight="2dp"
 	                        android:layout_alignBaseline="@+id/textView4"
 	                        android:layout_alignBottom="@+id/textView4"
 	                        android:layout_toRightOf="@+id/textView4"
@@ -227,37 +231,43 @@
 
 	<RelativeLayout
 	    android:id="@+id/pauseScreen"
-	    android:layout_width="200dp"
-	    android:layout_height="100dp"
+	    android:layout_width="228dp"
+	    android:layout_height="126dp"
 	    android:layout_gravity="center"
-	    android:background="@color/Silver"
+	    android:background="@drawable/pause"
 	    android:visibility="gone" >
 
-		<TextView
-		    android:id="@+id/textView1"
+		<ImageButton
+		    android:id="@+id/imageButton2"
+		    android:background="@null"
+		    android:padding="12dp"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:layout_alignParentTop="true"
-		    android:layout_centerHorizontal="true"
-		    android:layout_marginTop="14dp"
-		    android:text="Pause"
-		    android:textAppearance="?android:attr/textAppearanceLarge" />
+		    android:layout_alignTop="@+id/unpause"
+		    android:layout_toRightOf="@+id/unpause"
+		    android:src="@drawable/restart" />
 
-		<Button
+		<ImageButton
+		    android:id="@+id/pause_exit"
+		    android:background="@null"
+		    android:padding="12dp"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignTop="@+id/imageButton2"
+		    android:layout_toRightOf="@+id/imageButton2"
+		    android:src="@drawable/pause_exit" />
+
+		<ImageButton
 		    android:id="@+id/unpause"
+		    android:background="@null"
+		    android:padding="12dp"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:layout_alignParentBottom="true"
-		    android:layout_toRightOf="@+id/textView1"
-		    android:text="Start" />
-
-		<Button
-		    android:id="@+id/exit"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:layout_alignParentBottom="true"
-		    android:layout_toLeftOf="@+id/textView1"
-		    android:text="Exit" />
+		    android:layout_alignParentLeft="true"
+		    android:layout_marginBottom="18dp"
+		    android:layout_marginLeft="15dp"
+		    android:src="@drawable/play" />
 
 	</RelativeLayout>
 
@@ -280,10 +290,3 @@
 	</RelativeLayout>
 	
 </FrameLayout>
-
-
-<!-- <TextView -->
-<!--          android:id="@+id/street" -->
-<!--          android:layout_width="82dp" -->
-<!--          android:layout_height="match_parent" -->
-<!--          android:text="Krakowska troce dlzsza azwa" /> -->
