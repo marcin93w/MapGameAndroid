@@ -21,5 +21,6 @@
     <color name="White">#FFF</color>
     <color name="Transparent">#8000</color>
     <color name="TextOnWhite">#333333</color>
+    <color name="Black">#000000</color>
 
 </resources>

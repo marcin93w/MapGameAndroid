@@ -13,17 +13,66 @@
 	        android:layout_width="70dp"
 	        android:layout_height="match_parent" >
 
-	        <ListView
-	            android:id="@+id/listView1"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
+	        <ImageView
+	            android:id="@+id/imageView1"
+	            android:layout_width="wrap_content"
+	            android:layout_height="fill_parent"
 	            android:layout_alignParentTop="true"
 	            android:layout_centerHorizontal="true"
-	            android:choiceMode="singleChoice"
-	            android:listSelector="@color/Red"
-	            android:entries="@array/gears" >
-				
-	        </ListView>
+	            android:scaleType="fitXY"
+	            android:background="@color/Black"
+	            android:src="@drawable/gearsbar" />
+			
+	        <LinearLayout
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:layout_alignParentTop="true"
+	            android:layout_marginBottom="50dp"
+	            android:layout_centerHorizontal="true"
+	            android:orientation="vertical" 
+	            android:weightSum="5">
+	        
+		        <ImageButton
+		            android:id="@+id/gear_4"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:background="@null"
+		            android:src="@drawable/gear_4" />
+	
+		        <ImageButton
+		            android:id="@+id/gear_3"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:background="@drawable/selected_gear"
+		            android:src="@drawable/gear_3" />
+	
+		        <ImageButton
+		            android:id="@+id/gear_2"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:background="@null"
+		            android:src="@drawable/gear_2" />
+	
+		        <ImageButton
+		            android:id="@+id/gear_1"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:background="@null"
+		            android:src="@drawable/gear_1" />
+	
+		        <ImageButton
+		            android:id="@+id/gear_r"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:background="@null"
+		            android:src="@drawable/gear_r" />
+	        
+	        </LinearLayout>
 
 	    </RelativeLayout>
 
@@ -69,39 +118,109 @@
 	            </RelativeLayout>
 	        </RelativeLayout>
 
-	        <LinearLayout
+	        <RelativeLayout
 	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:orientation="horizontal" >
+	            android:layout_height="32dp" >
 
-	            <TextView
+	            <ImageView
+	                android:id="@+id/imageView2"
 	                android:layout_width="wrap_content"
-	                android:layout_height="match_parent"
-	                android:text="Jedziesz w: " />
+	                android:layout_height="wrap_content"
+	                android:layout_alignParentLeft="true"
+	                android:layout_alignParentRight="true"
+	                android:layout_alignParentTop="true"
+	                android:scaleType="fitXY"
+	                android:src="@drawable/button_bar" />
 
-	            <TextView
-	                android:id="@+id/street"
+	           <LinearLayout
 	                android:layout_width="match_parent"
 	                android:layout_height="match_parent"
-	                android:text="Krakowska" />
-	        </LinearLayout>
+	                android:weightSum="18" >
 
-	        <LinearLayout
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:orientation="horizontal" >
+	                <RelativeLayout 
+	                    android:id="@+id/fake1"
+	                    android:layout_width="0dp"
+	                    android:layout_height="match_parent"
+	                    android:layout_weight="1" >
+	                </RelativeLayout>
+	                
+	                <RelativeLayout
+	                    android:layout_width="0dp"
+	                    android:layout_height="match_parent"
+	                    android:layout_weight="8" >
 
-	            <TextView
-	                android:layout_width="wrap_content"
-	                android:layout_height="match_parent"
-	                android:text="Cel: " />
+	                    <TextView
+	                        android:id="@+id/textView2"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:layout_alignParentLeft="true"
+	                        android:layout_centerVertical="true"
+	                        android:textColor="@color/TextOnWhite"
+	                        android:text="@string/next_street" />
 
-	            <TextView
-	                android:id="@+id/destiantion"
-	                android:layout_width="match_parent"
-	                android:layout_height="match_parent"
-	                android:text="Krakowska" />
-	        </LinearLayout>
+	                    <TextView
+	                        android:id="@+id/street"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:layout_alignBaseline="@+id/textView2"
+	                        android:layout_alignBottom="@+id/textView2"
+	                        android:layout_alignParentRight="true"
+	                        android:textColor="@color/TextOnWhite"
+					        android:singleLine="true" 
+							android:ellipsize="marquee"
+							android:marqueeRepeatLimit ="marquee_forever"
+							android:scrollHorizontally="true"
+							android:focusable="true"
+							android:focusableInTouchMode="true" 
+	                        android:layout_toRightOf="@+id/textView2"
+	                        android:text="TextView" />
+
+	                </RelativeLayout>
+
+	                <RelativeLayout
+	                    android:layout_width="0dp"
+	                    android:layout_height="match_parent"
+	                    android:layout_weight="8" >
+
+	                    <TextView
+	                        android:id="@+id/textView4"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:layout_alignParentLeft="true"
+	                        android:layout_centerVertical="true"
+	                        android:textColor="@color/TextOnWhite"
+	                        android:text="@string/target" />
+
+	                    <TextView
+	                        android:id="@+id/destiantion"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:layout_alignBaseline="@+id/textView4"
+	                        android:layout_alignBottom="@+id/textView4"
+	                        android:layout_toRightOf="@+id/textView4"
+	                        android:textColor="@color/TextOnWhite"
+					        android:singleLine="true" 
+							android:ellipsize="marquee"
+							android:marqueeRepeatLimit ="marquee_forever"
+							android:scrollHorizontally="true"
+							android:focusable="true"
+							android:focusableInTouchMode="true" 
+	                        android:text="asd asd" />
+
+	                </RelativeLayout>
+	                
+
+	                <RelativeLayout 
+	                    android:id="@+id/fake2"
+	                    android:layout_width="0dp"
+	                    android:layout_height="match_parent"
+	                    android:layout_weight="1" >
+	                </RelativeLayout>
+
+	            </LinearLayout>
+
+	        </RelativeLayout>
+
 	    </LinearLayout>
 	
 	</LinearLayout>
@@ -161,3 +280,10 @@
 	</RelativeLayout>
 	
 </FrameLayout>
+
+
+<!-- <TextView -->
+<!--          android:id="@+id/street" -->
+<!--          android:layout_width="82dp" -->
+<!--          android:layout_height="match_parent" -->
+<!--          android:text="Krakowska troce dlzsza azwa" /> -->

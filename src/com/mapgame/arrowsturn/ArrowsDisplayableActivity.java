@@ -1,7 +1,6 @@
 package com.mapgame.arrowsturn;
 
 import android.view.View;
-import android.widget.TextView;
 
 public interface ArrowsDisplayableActivity {
 	public interface ViewRunnable {
@@ -9,7 +8,6 @@ public interface ArrowsDisplayableActivity {
 	}
 	
 	void invokeArrowsView(ViewRunnable viewRunnable);
-	void invokeNextStreetView(ViewRunnable job);
 	
-	TextView getStreetNameView();
+	void setStreetNameView(String text);
 }

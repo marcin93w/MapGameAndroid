@@ -13,57 +13,24 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:scaleType="fitXY"
+        android:layout_centerHorizontal="true"
+        android:background="@null"
+        android:scaleType="fitStart"
         android:src="@drawable/button_bar" />
 
-    
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:scaleType="fitXY"
-        android:src="@drawable/top_bar"
-        android:visibility="gone" />
-    
     <TextView
         android:id="@+id/TextView02"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/imageView1"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
         android:paddingBottom="10dp"
         android:paddingLeft="35dp"
         android:text="@string/source"
         android:textColor="@color/TextOnWhite" />
-
-    <TextView
-        android:id="@+id/TextView03"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:paddingTop="7dp"
-        android:paddingLeft="35dp"
-        android:text="@string/source"
-        android:textColor="@color/TextOnWhite"
-        android:visibility="gone"  />
-
-    <TextView
-        android:id="@+id/preview_start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/TextView03"
-        android:layout_alignBottom="@+id/TextView03"
-        android:layout_toRightOf="@+id/TextView03"
-        android:text="Krakowska"
-        android:textColor="@color/TextOnWhite"
-        android:visibility="gone"  />
 
     <TextView
         android:id="@+id/preview_street_name"

@@ -1,5 +1,7 @@
 package com.mapgame;
 
+import java.util.ArrayList;
+
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.OverlayItem;
 
@@ -12,10 +14,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -74,30 +74,43 @@ public class RaceActivity extends MapActivity
 	}
 	
 	public void setOnGearChangedListener(final SpeedChangeListener scl) {
-		ListView gearView = (ListView) findViewById(R.id.listView1);
-		gearView.setOnItemClickListener(new OnItemClickListener() {
+		final ArrayList<ImageButton> gears = new ArrayList<ImageButton>();
+		gears.add((ImageButton) findViewById(R.id.gear_1));
+		gears.add((ImageButton) findViewById(R.id.gear_2));
+		gears.add((ImageButton) findViewById(R.id.gear_3));
+		gears.add((ImageButton) findViewById(R.id.gear_4));
+		gears.add((ImageButton) findViewById(R.id.gear_r));
+		OnClickListener l = new OnClickListener() {
+			@SuppressWarnings("deprecation")
 			@Override
-			public void onItemClick(AdapterView<?> adapter, View view,
-					int position, long id) {
-				switch(position) {
-				case 0:
+			public void onClick(View v) {
+				switch(v.getId()) {
+				case R.id.gear_4:
 					scl.setSpeed(4);
 					break;
-				case 1:
+				case R.id.gear_3:
 					scl.setSpeed(3);
 					break;
-				case 2:
+				case R.id.gear_2:
 					scl.setSpeed(2);
 					break;
-				case 3:
+				case R.id.gear_1:
 					scl.setSpeed(1);
 					break;
-				case 4:
+				case R.id.gear_r:
 					scl.setSpeed(-1);
 				}
+				for(ImageButton gear : gears) {
+					gear.setBackgroundDrawable(null);
+				}
+				((ImageButton)v).setBackgroundDrawable(
+						getResources().getDrawable(R.drawable.selected_gear));
 			}
-		});
-		gearView.setItemChecked(3, true);
+		};
+		for(ImageButton gear : gears) {
+			gear.setOnClickListener(l);
+		}
+		scl.setSpeed(3);
 	}
 
 	public void initializeCarSurfaceView(SurfaceHolder.Callback callback) {
@@ -198,20 +211,17 @@ public class RaceActivity extends MapActivity
 			}
 		});
 	}
-	
-	@Override
-	public void invokeNextStreetView(final ViewRunnable job) {
-		runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				job.run(nextStreetView);
-			}
-		});
-	}
 
 	@Override
-	public TextView getStreetNameView() {
-		return nextStreetView;
+	public void setStreetNameView(final String text) {
+		if(!nextStreetView.getText().equals(text)) {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					nextStreetView.setText(text);
+				}
+			});
+		}
 	}
 
 	///Race Countdown

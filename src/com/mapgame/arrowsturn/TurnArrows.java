@@ -15,7 +15,6 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.mapgame.R;
 import com.mapgame.arrowsturn.ArrowsDisplayableActivity.ViewRunnable;
@@ -65,28 +64,29 @@ public class TurnArrows {
 			imageView.setImageResource(getProperImage(arrow));
 		}
 		
-		locateAndRotateArrow(imageView, new DirectionVector(azimuth, distanceFromCenter), arrow.main, (float)azimuth - 90);
+		locateAndRotateArrow(imageView, new DirectionVector(azimuth, distanceFromCenter), 
+				arrow.main, (float)azimuth - 90);
 
 		imageView.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View arg0, MotionEvent arg1) {
+				imageView.setImageResource(R.drawable.arrow_selected);
 				s.acquireUninterruptibly();
 				for (ImageArrow arrowImage : arrows) {
 					if(arrowImage.image != imageView) {
 						arrowImage.image.setImageResource(getProperImage(arrowImage.arrow));
-						arrowImage.image.bringToFront();
-						mainActivity.invokeArrowsView(new ViewRunnable() {
-							@Override
-							public void run(View view) {
-								view.requestLayout();
-								view.invalidate();
-							}
-						});
+						arrowImage.image.bringToFront(); //Kurwa nie dziala
 					}
 				}
 				s.release();
-				imageView.setImageResource(R.drawable.arrow_selected);
-				mainActivity.getStreetNameView().setText(arrow.node.getWay().getRoad().getName());
+				mainActivity.invokeArrowsView(new ViewRunnable() {
+					@Override
+					public void run(View view) {
+						view.requestLayout();
+						view.invalidate();
+					}
+				});
+				mainActivity.setStreetNameView(arrow.node.getWay().getRoad().getName());
 				arrow.node.select();
 				return false;
 			}
@@ -101,14 +101,7 @@ public class TurnArrows {
 		s.acquireUninterruptibly();
 		for(final ImageArrow ia : arrowsTmp) {
 			if(ia.arrow.main) {
-				mainActivity.invokeNextStreetView(new ViewRunnable() {
-					@Override
-					public void run(View streetNameView) {
-						((TextView) streetNameView).setText(
-								ia.arrow.node.getWay().getRoad().getName());
-					}		
-				});
-				
+				mainActivity.setStreetNameView(ia.arrow.node.getWay().getRoad().getName());
 				mainActivity.invokeArrowsView(new ViewRunnable() {
 					@Override
 					public void run(View arrowsView) {
